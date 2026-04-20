@@ -37,7 +37,7 @@ jobs:
       - name: Checkout infra scripts
         uses: actions/checkout@v4
         with:
-          repository: FEASTorg/bread-infra
+          repository: feastorg/bread-infra
           ref: main
           path: _infra
 
