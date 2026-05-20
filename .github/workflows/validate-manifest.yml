@@ -1,0 +1,46 @@
+name: Validate Manifest
+
+on:
+  workflow_call:
+    inputs:
+      manifest_path:
+        description: "Path to slice.yaml (relative to repo root)"
+        required: false
+        type: string
+        default: "slice.yaml"
+      schema_ref:
+        description: "bread-infra ref to use for schema (tag or branch)"
+        required: false
+        type: string
+        default: "schema-v1.0"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout calling repo
+        uses: actions/checkout@v4
+
+      - name: Checkout bread-infra (schema + validator)
+        uses: actions/checkout@v4
+        with:
+          repository: feastorg/bread-infra
+          ref: ${{ inputs.schema_ref }}
+          path: _bread-infra
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install pyyaml jsonschema
+
+      - name: Validate manifest
+        run: |
+          python _bread-infra/scripts/validate_manifest.py \
+            "${{ inputs.manifest_path }}" \
+            --schema _bread-infra/schemas/slice.schema.json
