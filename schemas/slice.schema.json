@@ -1,0 +1,503 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/feastorg/bread-infra/main/schemas/slice.schema.json",
+  "title": "BREAD Slice Manifest",
+  "description": "Schema for slice.yaml manifest files in BREAD ecosystem Slice repos.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "id",
+    "name",
+    "status",
+    "category",
+    "summary",
+    "version",
+    "compatibility",
+    "hardware",
+    "electrical",
+    "interfaces",
+    "firmware",
+    "artifacts",
+    "license",
+    "repository",
+    "metadata"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+$",
+      "description": "Schema version this manifest conforms to."
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^slice-[a-z0-9-]+$",
+      "description": "Unique identifier: repo name lowercased, underscores replaced with hyphens."
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Human-readable display name."
+    },
+    "status": {
+      "type": "string",
+      "enum": ["concept", "prototype", "validated", "released", "deprecated"],
+      "description": "Development lifecycle stage."
+    },
+    "category": {
+      "type": "string",
+      "enum": ["actuation", "sensing", "integrated", "power", "interface", "template", "prototype"],
+      "description": "BREADS taxonomy classification."
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 1,
+      "description": "One-line description of the slice's purpose."
+    },
+    "description": {
+      "type": ["string", "null"],
+      "description": "Extended description. Null if not yet written."
+    },
+    "version": {
+      "type": "object",
+      "required": ["hardware", "firmware", "manifest"],
+      "additionalProperties": false,
+      "properties": {
+        "hardware": {
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+\\.\\d+$"
+        },
+        "firmware": {
+          "type": ["string", "null"],
+          "pattern": "^\\d+\\.\\d+\\.\\d+$"
+        },
+        "manifest": {
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+\\.\\d+$"
+        }
+      }
+    },
+    "compatibility": {
+      "type": "object",
+      "required": ["slice_spec", "crumbs_protocol", "anolis_provider_api"],
+      "additionalProperties": false,
+      "properties": {
+        "slice_spec": {
+          "type": "string",
+          "description": "Semver range of supported slice spec versions."
+        },
+        "crumbs_protocol": {
+          "type": ["string", "null"],
+          "description": "Semver range of supported CRUMBS protocol versions."
+        },
+        "anolis_provider_api": {
+          "type": ["string", "null"],
+          "description": "Semver range of Anolis provider API. Null if no provider exists."
+        }
+      }
+    },
+    "hardware": {
+      "type": "object",
+      "required": ["mcu", "hw_gen_current", "hw_gen_supported", "pcb", "connectors", "mounting"],
+      "additionalProperties": false,
+      "properties": {
+        "mcu": {
+          "type": ["object", "null"],
+          "description": "MCU configuration. Null for passive boards.",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["dev-board-socket", "embedded"],
+              "description": "Whether MCU is a socketed dev board or soldered on PCB."
+            },
+            "form_factor": {
+              "type": ["string", "null"],
+              "enum": ["nano", "nucleo32", "pico", null],
+              "description": "Dev board form factor. Null for embedded MCUs."
+            },
+            "primary": {
+              "type": "string",
+              "description": "Primary/default MCU chip."
+            },
+            "supported": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "All MCUs the firmware supports on this PCB."
+            }
+          },
+          "required": ["type", "form_factor", "primary", "supported"]
+        },
+        "primary_ic": {
+          "type": ["object", "null"],
+          "properties": {
+            "manufacturer": { "type": "string" },
+            "part_number": { "type": "string" }
+          },
+          "required": ["manufacturer", "part_number"]
+        },
+        "hw_gen_current": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Current hardware generation."
+        },
+        "hw_gen_supported": {
+          "type": "array",
+          "items": { "type": "integer", "minimum": 1 },
+          "description": "All hardware generations this firmware supports."
+        },
+        "pcb": {
+          "type": "object",
+          "required": ["layers", "dimensions"],
+          "additionalProperties": false,
+          "properties": {
+            "layers": { "type": "integer", "minimum": 1 },
+            "thickness": { "type": ["string", "null"] },
+            "copper_weight": { "type": ["string", "null"] },
+            "dimensions": { "type": "string" }
+          }
+        },
+        "connectors": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["ref", "type", "purpose"],
+            "additionalProperties": false,
+            "properties": {
+              "ref": { "type": "string" },
+              "type": { "type": "string" },
+              "purpose": { "type": "string" }
+            }
+          }
+        },
+        "mounting": {
+          "type": "object",
+          "required": ["pattern", "hole_size", "inset"],
+          "additionalProperties": false,
+          "properties": {
+            "pattern": { "type": "string" },
+            "hole_size": { "type": "string" },
+            "inset": { "type": "string" }
+          }
+        },
+        "pcb_color_prototype": {
+          "type": ["string", "null"]
+        },
+        "pcb_color_production": {
+          "type": ["string", "null"]
+        },
+        "enclosure": {
+          "type": ["object", "null"],
+          "properties": {
+            "supported": { "type": "boolean" },
+            "path": { "type": ["string", "null"] }
+          },
+          "required": ["supported", "path"]
+        }
+      }
+    },
+    "electrical": {
+      "type": "object",
+      "required": ["input_voltage", "logic_voltage"],
+      "additionalProperties": false,
+      "properties": {
+        "input_voltage": { "type": ["string", "null"] },
+        "logic_voltage": { "type": ["string", "null"] },
+        "max_current": { "type": ["string", "null"] },
+        "protection": {
+          "type": ["object", "null"],
+          "additionalProperties": false,
+          "properties": {
+            "reverse_polarity": { "type": "boolean" },
+            "input_esd": { "type": "boolean" },
+            "fuse": { "type": "boolean" }
+          }
+        },
+        "isolation": {
+          "type": ["object", "null"],
+          "additionalProperties": false,
+          "properties": {
+            "present": { "type": "boolean" }
+          }
+        }
+      }
+    },
+    "interfaces": {
+      "type": "object",
+      "required": ["host"],
+      "additionalProperties": false,
+      "properties": {
+        "host": {
+          "type": "object",
+          "required": ["type", "address_default", "address_configurable"],
+          "additionalProperties": false,
+          "properties": {
+            "type": { "type": "string" },
+            "address_default": { "type": ["integer", "null"] },
+            "address_configurable": { "type": "boolean" }
+          }
+        },
+        "data": {
+          "type": ["object", "null"],
+          "additionalProperties": false,
+          "properties": {
+            "inputs": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": ["name", "type"],
+                "additionalProperties": false,
+                "properties": {
+                  "name": { "type": "string" },
+                  "type": { "type": "string" }
+                }
+              }
+            },
+            "outputs": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": ["name", "type"],
+                "additionalProperties": false,
+                "properties": {
+                  "name": { "type": "string" },
+                  "type": { "type": "string" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "capabilities": {
+      "type": ["array", "null"],
+      "items": {
+        "type": "object",
+        "required": ["id"],
+        "properties": {
+          "id": { "type": "string" },
+          "channels": { "type": "integer" },
+          "control_modes": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        }
+      }
+    },
+    "firmware": {
+      "type": ["object", "null"],
+      "description": "Null for hardware-only slices with no firmware.",
+      "properties": {
+        "required": { "type": "boolean" },
+        "path": { "type": "string" },
+        "language": { "type": "string" },
+        "framework": { "type": "string" },
+        "targets": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "lib_deps": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "required": ["required", "path", "language", "framework", "targets", "lib_deps"]
+    },
+    "protocol": {
+      "type": ["object", "null"],
+      "properties": {
+        "type": { "type": "string" },
+        "discovery": {
+          "type": "object",
+          "properties": {
+            "supported": { "type": "boolean" }
+          }
+        },
+        "commands": {
+          "type": "array",
+          "items": { "type": "object" }
+        }
+      }
+    },
+    "software": {
+      "type": ["object", "null"],
+      "properties": {
+        "drivers": {
+          "type": ["object", "null"],
+          "properties": {
+            "python": { "type": ["string", "null"] },
+            "arduino": { "type": ["string", "null"] }
+          }
+        },
+        "provider": {
+          "type": ["object", "null"],
+          "properties": {
+            "supported": { "type": "boolean" },
+            "path": { "type": ["string", "null"] }
+          }
+        }
+      }
+    },
+    "artifacts": {
+      "type": "object",
+      "required": ["schematic", "pcb"],
+      "additionalProperties": false,
+      "properties": {
+        "schematic": { "type": ["string", "null"] },
+        "pcb": { "type": ["string", "null"] },
+        "firmware": { "type": ["string", "null"] },
+        "docs": { "type": ["string", "null"] },
+        "bom": { "type": ["string", "null"] },
+        "gerbers": { "type": ["string", "null"] },
+        "pick_and_place": { "type": ["string", "null"] },
+        "datasheets": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "manufacturing": {
+      "type": ["object", "null"],
+      "properties": {
+        "assembly_type": {
+          "type": "string",
+          "enum": ["manual", "pcba", "mixed"]
+        },
+        "preferred_fab": { "type": ["string", "null"] },
+        "dnp_parts": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "critical_parts": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "substitutions_allowed": { "type": "boolean" }
+      }
+    },
+    "validation": {
+      "type": ["object", "null"],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": ["not_validated", "in_progress", "validated"]
+        },
+        "tested_revisions": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "tests": {
+          "type": "object",
+          "properties": {
+            "electrical": { "type": "boolean" },
+            "firmware": { "type": "boolean" },
+            "environmental": { "type": "boolean" },
+            "integration": { "type": "boolean" }
+          }
+        },
+        "known_issues": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "safety": {
+      "type": ["object", "null"],
+      "properties": {
+        "hazards": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "max_safe_voltage": { "type": ["string", "null"] },
+        "intended_environment": { "type": ["string", "null"] },
+        "not_for": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "dependencies": {
+      "type": ["object", "null"],
+      "properties": {
+        "hardware": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "firmware_libraries": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "software_packages": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "related": {
+      "type": ["object", "null"],
+      "properties": {
+        "supersedes": { "type": ["string", "null"] },
+        "superseded_by": { "type": ["string", "null"] },
+        "variants": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "compatible_slices": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "maintainers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "role"],
+        "properties": {
+          "name": { "type": "string" },
+          "role": { "type": "string" }
+        }
+      }
+    },
+    "license": {
+      "type": "object",
+      "required": ["hardware", "firmware", "docs"],
+      "additionalProperties": false,
+      "properties": {
+        "hardware": { "type": "string" },
+        "firmware": { "type": ["string", "null"] },
+        "software": { "type": ["string", "null"] },
+        "docs": { "type": "string" }
+      }
+    },
+    "repository": {
+      "type": "object",
+      "required": ["url"],
+      "additionalProperties": false,
+      "properties": {
+        "url": {
+          "type": "string",
+          "format": "uri"
+        }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "required": ["created", "updated", "tags"],
+      "additionalProperties": false,
+      "properties": {
+        "created": {
+          "type": "string",
+          "format": "date"
+        },
+        "updated": {
+          "type": "string",
+          "format": "date"
+        },
+        "tags": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    }
+  }
+}

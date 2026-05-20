@@ -1,0 +1,206 @@
+# slice.yaml — BREAD Slice Manifest Template
+# Copy this file to the root of your Slice repo and fill in values.
+# Fields marked "# nullable" can be set to null if unknown/not applicable.
+# Validate with: python bread-infra/scripts/validate_manifest.py slice.yaml
+
+schema_version: "1.0"
+
+# ── Identity ──────────────────────────────────────────────────────────────────
+id: "slice-xxxx"                  # repo name lowercased, underscores → hyphens
+name: "Your Slice Name"
+status: "concept"                 # concept | prototype | validated | released | deprecated
+category: "actuation"             # actuation | sensing | integrated | power | interface | template | prototype
+
+summary: "One-line description of what this slice does."
+description: null                 # nullable — extended description
+
+# ── Versioning ────────────────────────────────────────────────────────────────
+version:
+  hardware: "0.1.0"
+  firmware: null                  # nullable — null if no firmware
+  manifest: "0.1.0"
+
+# ── Compatibility ─────────────────────────────────────────────────────────────
+compatibility:
+  slice_spec: ">=0.1.0 <0.2.0"
+  crumbs_protocol: null           # nullable — null if no I2C comms
+  anolis_provider_api: null       # nullable — null if no Anolis provider
+
+# ── Hardware ──────────────────────────────────────────────────────────────────
+hardware:
+  mcu: null                       # nullable — null for passive boards
+  # mcu:
+  #   type: "dev-board-socket"    # dev-board-socket | embedded
+  #   form_factor: "nano"         # nano | nucleo32 | pico | null (for embedded)
+  #   primary: "ATmega328P"
+  #   supported:
+  #     - "ATmega328P"
+  primary_ic: null                # nullable
+  # primary_ic:
+  #   manufacturer: "Manufacturer"
+  #   part_number: "PARTNO"
+  hw_gen_current: 1
+  hw_gen_supported: [1]
+  pcb:
+    layers: 2
+    thickness: "1.6mm"            # nullable
+    copper_weight: "1oz"          # nullable
+    dimensions: "70mm x 100mm"
+  connectors:
+    - ref: "J1"
+      type: "slice-bus-10pin"
+      purpose: "power-and-i2c"
+  mounting:
+    pattern: "slice-standard-v0"
+    hole_size: "M3"
+    inset: "5mm"
+  pcb_color_prototype: null       # nullable
+  pcb_color_production: null      # nullable
+  enclosure: null                 # nullable
+  # enclosure:
+  #   supported: true
+  #   path: null
+
+# ── Electrical ────────────────────────────────────────────────────────────────
+electrical:
+  input_voltage: "12V"            # nullable
+  logic_voltage: "5V"             # nullable
+  max_current: null               # nullable
+  protection: null                # nullable
+  # protection:
+  #   reverse_polarity: false
+  #   input_esd: false
+  #   fuse: false
+  isolation: null                 # nullable
+  # isolation:
+  #   present: false
+
+# ── Interfaces ────────────────────────────────────────────────────────────────
+interfaces:
+  host:
+    type: "i2c"
+    address_default: null         # nullable — I2C address (decimal)
+    address_configurable: false
+  data: null                      # nullable
+  # data:
+  #   inputs: []
+  #   outputs:
+  #     - name: "OUTPUT1"
+  #       type: "digital"
+
+# ── Capabilities ──────────────────────────────────────────────────────────────
+capabilities: null                # nullable
+# capabilities:
+#   - id: "capability_name"
+#     channels: 1
+#     control_modes: ["open_loop"]
+
+# ── Firmware ──────────────────────────────────────────────────────────────────
+firmware: null                    # nullable — null for hardware-only slices
+# firmware:
+#   required: true
+#   path: "firmware/"
+#   language: "c++"
+#   framework: "arduino"
+#   targets:
+#     - "gen1_nano"
+#   lib_deps:
+#     - "cameronbrooks11/CRUMBS @ ^0.12.0"
+
+# ── Protocol ──────────────────────────────────────────────────────────────────
+protocol: null                    # nullable
+# protocol:
+#   type: "crumbs-i2c"
+#   discovery:
+#     supported: false
+#   commands: []
+
+# ── Software ──────────────────────────────────────────────────────────────────
+software: null                    # nullable
+# software:
+#   drivers:
+#     python: null
+#     arduino: null
+#   provider:
+#     supported: false
+#     path: null
+
+# ── Artifacts ─────────────────────────────────────────────────────────────────
+artifacts:
+  schematic: "hardware/BREAD_Slice.kicad_sch"
+  pcb: "hardware/BREAD_Slice.kicad_pcb"
+  firmware: null                  # nullable
+  docs: "docs/"                   # nullable
+  bom: null                       # nullable
+  gerbers: null                   # nullable
+  pick_and_place: null            # nullable
+  datasheets: []
+
+# ── Manufacturing ─────────────────────────────────────────────────────────────
+manufacturing: null               # nullable
+# manufacturing:
+#   assembly_type: "manual"       # manual | pcba | mixed
+#   preferred_fab: null
+#   dnp_parts: []
+#   critical_parts: []
+#   substitutions_allowed: true
+
+# ── Validation ────────────────────────────────────────────────────────────────
+validation: null                  # nullable
+# validation:
+#   status: "not_validated"       # not_validated | in_progress | validated
+#   tested_revisions: []
+#   tests:
+#     electrical: false
+#     firmware: false
+#     environmental: false
+#     integration: false
+#   known_issues: []
+
+# ── Safety ────────────────────────────────────────────────────────────────────
+safety: null                      # nullable
+# safety:
+#   hazards: []
+#   max_safe_voltage: "12V"
+#   intended_environment: "lab"
+#   not_for:
+#     - "human safety critical systems"
+
+# ── Dependencies ──────────────────────────────────────────────────────────────
+dependencies: null                # nullable
+# dependencies:
+#   hardware: []
+#   firmware_libraries: []
+#   software_packages: []
+
+# ── Relations ─────────────────────────────────────────────────────────────────
+related: null                     # nullable
+# related:
+#   supersedes: null
+#   superseded_by: null
+#   variants: []
+#   compatible_slices: []
+
+# ── Maintainers ───────────────────────────────────────────────────────────────
+maintainers:
+  - name: "Your Name"
+    role: "owner"
+
+# ── License ───────────────────────────────────────────────────────────────────
+license:
+  hardware: "CERN-OHL-S-2.0"
+  firmware: "GPL-3.0-or-later"    # nullable — null if no firmware
+  software: "GPL-3.0-or-later"    # nullable — null if no software
+  docs: "CC-BY-4.0"
+
+# ── Repository ────────────────────────────────────────────────────────────────
+repository:
+  url: "https://github.com/feastorg/Slice_XXXX"
+
+# ── Metadata ──────────────────────────────────────────────────────────────────
+metadata:
+  created: "2026-01-01"
+  updated: "2026-01-01"
+  tags:
+    - "tag1"
+    - "tag2"
