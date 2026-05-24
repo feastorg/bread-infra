@@ -45,6 +45,7 @@ Boards in the directory names are postfixed with an abbreviation or acronym corr
 | [Slice_RLAY](https://github.com/feastorg/Slice_RLAY) | Actuation  | 4 channel SPDT relay                                                             |
 | [Slice_SERV](https://github.com/feastorg/Slice_SERV) | Actuation  | Servo motor driver                                                               |
 | [Slice_STEP](https://github.com/feastorg/Slice_STEP) | Actuation  | Stepper motor driver using an IC                                                 |
+| [Slice_STPC](https://github.com/feastorg/Slice_STPC) | Actuation  | Stepper motor controller card                                                    |
 | [Slice_GDHB](https://github.com/feastorg/Slice_GDHB) | Actuation  | A4957 driving a full bridge for high current BDC motors                          |
 | [Slice_HEAT](https://github.com/feastorg/Slice_HEAT) | Integrated | DC heater slice using a pair of darlington transistors and MAX31855              |
 | [Slice_RLHT](https://github.com/feastorg/Slice_RLHT) | Integrated | Relay DC heater slice using MAX31855                                             |
