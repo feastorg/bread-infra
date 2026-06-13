@@ -1,0 +1,54 @@
+# grain.yaml — FEAST GRAIN Manifest Template
+# Copy this file to the root of your GRAIN repo and fill in values.
+# Fields marked "# nullable" can be set to null if unknown/not applicable.
+# Validate with: python bread-infra/scripts/validate_manifest.py grain.yaml
+
+grain_schema_version: "1.0"
+
+# ── Identity ──────────────────────────────────────────────────────────────────
+id: "your-repo-name"              # repo name, lowercase, underscores → hyphens
+name: "Your GRAIN Name"
+status: "concept"                 # concept | prototype | released | deprecated
+category: "shield"                # shield | card | adapter | module
+
+summary: "One-line description of what this grain does (≤ 120 chars)."
+
+# ── Versioning ────────────────────────────────────────────────────────────────
+version:
+  hardware: null                  # nullable — e.g. "1.0.0"
+
+# ── Licensing ─────────────────────────────────────────────────────────────────
+license:
+  hardware: "CERN-OHL-S-2.0"
+  firmware: null                  # nullable — null if no firmware
+  documentation: null             # nullable
+
+# ── Repository ────────────────────────────────────────────────────────────────
+repository:
+  url: "https://github.com/feastorg/your-repo-name"
+
+# ── Compatibility ─────────────────────────────────────────────────────────────
+compatibility: null               # nullable — list what this grain connects to or is designed for
+# compatibility:
+#   - "Arduino Nano"
+#   - "Arduino Nano Every"
+
+related_slices: null              # nullable — Slice repo names this grain works with
+# related_slices:
+#   - "Slice_STPC"
+
+# ── Hardware ──────────────────────────────────────────────────────────────────
+hardware:
+  form_factor: null               # nullable — e.g. arduino-nano-shield | pcie-edge
+  pcb_layers: null                # nullable — integer, e.g. 2
+
+# ── Firmware ──────────────────────────────────────────────────────────────────
+firmware: null                    # nullable — set to null (or remove section) if no firmware
+# firmware:
+#   language: "C++"
+#   framework: "arduino"          # arduino | platformio | zephyr | etc.
+
+# ── Metadata ──────────────────────────────────────────────────────────────────
+metadata:
+  tags: null                      # nullable — list of strings, e.g. ["can", "shield"]
+  updated: null                   # nullable — ISO 8601 date, e.g. "2026-06-12"

@@ -4,7 +4,7 @@ on:
   workflow_call:
     inputs:
       manifest_path:
-        description: "Path to slice.yaml (relative to repo root)"
+        description: "Path to manifest file (slice.yaml or grain.yaml, relative to repo root)"
         required: false
         type: string
         default: "slice.yaml"
@@ -42,5 +42,4 @@ jobs:
       - name: Validate manifest
         run: |
           python _bread-infra/scripts/validate_manifest.py \
-            "${{ inputs.manifest_path }}" \
-            --schema _bread-infra/schemas/slice.schema.json
+            "${{ inputs.manifest_path }}"

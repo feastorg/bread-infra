@@ -1,0 +1,147 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://feastorg.github.io/bread-infra/schemas/grain.schema.json",
+  "title": "GRAIN Manifest",
+  "description": "Schema for grain.yaml — FEAST GRAIN hardware manifest v1.0",
+  "type": "object",
+  "required": [
+    "grain_schema_version",
+    "id",
+    "name",
+    "category",
+    "status",
+    "summary",
+    "license",
+    "repository"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "grain_schema_version": {
+      "type": "string",
+      "const": "1.0",
+      "description": "Schema version. Must be \"1.0\"."
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*[a-z0-9]$",
+      "description": "Repo name slug — lowercase, hyphens only (underscores converted)."
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Human-readable display name."
+    },
+    "category": {
+      "type": "string",
+      "enum": ["shield", "card", "adapter", "module"],
+      "description": "GRAIN category."
+    },
+    "status": {
+      "type": "string",
+      "enum": ["concept", "prototype", "released", "deprecated"],
+      "description": "Maturity status."
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 120,
+      "description": "One-line description (120 chars max)."
+    },
+    "license": {
+      "type": "object",
+      "required": ["hardware"],
+      "additionalProperties": false,
+      "properties": {
+        "hardware": {
+          "type": "string",
+          "description": "SPDX expression for hardware license."
+        },
+        "firmware": {
+          "type": ["string", "null"],
+          "description": "SPDX expression for firmware license. Null if no firmware."
+        },
+        "documentation": {
+          "type": ["string", "null"],
+          "description": "SPDX expression for documentation license."
+        }
+      }
+    },
+    "repository": {
+      "type": "object",
+      "required": ["url"],
+      "additionalProperties": false,
+      "properties": {
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "description": "HTTPS URL of the GitHub repository."
+        }
+      }
+    },
+    "version": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "hardware": {
+          "type": ["string", "null"],
+          "description": "Hardware version string."
+        }
+      }
+    },
+    "compatibility": {
+      "type": ["array", "null"],
+      "items": { "type": "string" },
+      "description": "What this grain connects to or is designed for."
+    },
+    "related_slices": {
+      "type": ["array", "null"],
+      "items": { "type": "string" },
+      "description": "Slice repo names this grain is designed to work with."
+    },
+    "hardware": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "form_factor": {
+          "type": ["string", "null"],
+          "description": "Physical form descriptor (e.g. arduino-nano-shield, pcie-edge)."
+        },
+        "pcb_layers": {
+          "type": ["integer", "null"],
+          "minimum": 1,
+          "description": "Number of copper layers."
+        }
+      }
+    },
+    "firmware": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "properties": {
+        "language": {
+          "type": ["string", "null"],
+          "description": "Firmware language (e.g. C++)."
+        },
+        "framework": {
+          "type": ["string", "null"],
+          "description": "Firmware framework (e.g. arduino, platformio)."
+        }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tags": {
+          "type": ["array", "null"],
+          "items": { "type": "string" },
+          "description": "Searchable tags."
+        },
+        "updated": {
+          "type": ["string", "null"],
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+          "description": "ISO 8601 date of last manifest update (YYYY-MM-DD)."
+        }
+      }
+    }
+  }
+}
