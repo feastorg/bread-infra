@@ -1,18 +1,23 @@
 # bread-infra
 
-The BREAD ecosystem specification and CI infrastructure. Contains:
+BREADS definitions, specifications, schemas, templates, and reusable CI
+infrastructure for BREADS-compatible hardware repos.
 
-- **`spec/`** — The BREAD standard (slice, loaf, crust layer definitions)
+- **`spec/`** — Human-readable specifications and BREADS terminology
 - **`schemas/`** — JSON Schemas for manifest validation (machine-readable)
 - **`templates/`** — Copy-paste manifest templates for new repos
 - **`.github/workflows/`** — Reusable CI workflows (KiBot, docs deployment, manifest validation)
 - **`scripts/`** — Build and validation helper scripts
 
+Start with [`spec/terminology.md`](spec/terminology.md) for the active
+definitions of BREAD, BREADS, Slices, Loaves, and Grains.
+
 See [Slice_TEMP_NANO_S2L-r2](https://github.com/feastorg/Slice_TEMP_NANO_S2L-r2) for an example of the required auxiliary and template files.
 
 ## Usage
 
-This repo contains reusable workflows, specifications, and scripts for BREAD hardware repos.
+This repo contains reusable workflows, specifications, and scripts for
+BREADS-compatible hardware repos.
 It is not meant to be triggered directly.
 
 To use in other repos, call the workflow like this:

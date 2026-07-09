@@ -128,7 +128,7 @@ Object or null. The main functional IC on the board (not the MCU).
 
 ### `interfaces.host` (required)
 
-The primary communication interface to the LOAF controller.
+The primary communication interface exposed through the Loaf to the controller.
 
 | Field | Type | Notes |
 |---|---|---|
@@ -223,7 +223,7 @@ All nullable objects for tracking production readiness. See schema for full stru
 ## `dependencies`
 
 Object or null. Lists external dependencies by category:
-- `hardware` — other BREAD modules required
+- `hardware` — other BREADS-compatible hardware required
 - `firmware_libraries` — library dependencies
 - `software_packages` — host software dependencies
 

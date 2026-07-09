@@ -1,6 +1,10 @@
 # Getting Started
 
-To get started designing your own SLICE modules, please refer to the [Concept](concept.md) and [Naming](naming.md) documentation pages to understand the core principles and naming conventions used in this project. Then start by forking one of the following template repositories:
+To get started designing your own Slice modules, first read the
+[Terminology](../terminology.md), [Concept](concept.md), and
+[Naming](naming.md) pages to understand the core principles and naming
+conventions used in this project. Then start by forking one of the following
+template repositories:
 
 - [Slice_TEMP_NANO_S2L-r1](https://github.com/feastorg/Slice_TEMP_NANO_S2L-r1)
   - [Documentation](https://feastorg.github.io/Slice_TEMP_NANO_S2L-r1/)

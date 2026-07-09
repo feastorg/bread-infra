@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://feastorg.github.io/bread-infra/schemas/grain.schema.json",
-  "title": "GRAIN Manifest",
-  "description": "Schema for grain.yaml — FEAST GRAIN hardware manifest v1.0",
+  "title": "Grain Manifest",
+  "description": "Schema for grain.yaml adjacent hardware manifests v1.0",
   "type": "object",
   "required": [
     "grain_schema_version",
@@ -34,7 +34,7 @@
     "category": {
       "type": "string",
       "enum": ["shield", "card", "adapter", "module"],
-      "description": "GRAIN category."
+      "description": "Grain category."
     },
     "status": {
       "type": "string",

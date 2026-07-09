@@ -1,9 +1,21 @@
-# SLICE Concept
+# Slice Concept
 
-- **SLICE**
-  - Each PCB performs a single function
-  - This is referred to as a **SLICE** which stands for _Single-function Logic Interface & Controller Element_
-  - It has at minimum some onboard controller (processing) and logic (communication) interface along with supporting circuitry (function)
-  - **Example:** A temperature sensor PCB with an I2C capable MCU that reads temperature data and applies a control signal to a power switch.
+A **Slice** is a **Standardized Logic Interface and Capability Element**.
 
-SLICEs can operate either alone in **single** mode or together in **leader-follower** mode. The two primary tasks of a slice is to A) recieve messages and interpret instructions from it's supervisor, B) execute it's intended function according to instructions. In **single** mode the SLICE MCU recieves messages via _point-to-point communication_ (i.e. USB serial) from a (micro)computer (LOAF). In **leader-follower** mode one or more follower SLICEs recieve messages via a _shared bus_ from the MCU of the designated leader SLICE.
+Each Slice contributes a specific capability to a BREAD while presenting
+a standard BREADS-compatible interface. A Slice may provide sensing, actuation,
+power, interface, integrated control, template, or prototyping capability.
+
+A Slice generally includes:
+
+- a PCB in the Slice mechanical format
+- a Slice bus connector and compatible pinout
+- local circuitry for its capability
+- local MCU or logic when needed
+- a `slice.yaml` manifest
+- design artifacts and documentation
+
+Slices are combined through a Loaf. The Loaf provides the attachment,
+interconnect, power distribution, communication paths, and controller interface
+that allow multiple Slices to operate as one BREAD.
+

@@ -1,5 +1,5 @@
-# grain.yaml — FEAST GRAIN Manifest Template
-# Copy this file to the root of your GRAIN repo and fill in values.
+# grain.yaml — Grain Manifest Template
+# Copy this file to the root of your Grain repo and fill in values.
 # Fields marked "# nullable" can be set to null if unknown/not applicable.
 # Validate with: python bread-infra/scripts/validate_manifest.py grain.yaml
 
@@ -7,7 +7,7 @@ grain_schema_version: "1.0"
 
 # ── Identity ──────────────────────────────────────────────────────────────────
 id: "your-repo-name"              # repo name, lowercase, underscores → hyphens
-name: "Your GRAIN Name"
+name: "Your Grain Name"
 status: "concept"                 # concept | prototype | released | deprecated
 category: "shield"                # shield | card | adapter | module
 

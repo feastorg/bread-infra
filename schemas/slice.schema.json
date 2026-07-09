@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://raw.githubusercontent.com/feastorg/bread-infra/main/schemas/slice.schema.json",
-  "title": "BREAD Slice Manifest",
-  "description": "Schema for slice.yaml manifest files in BREAD ecosystem Slice repos.",
+  "title": "BREADS Slice Manifest",
+  "description": "Schema for slice.yaml manifest files in BREADS-compatible Slice repos.",
   "type": "object",
   "required": [
     "schema_version",

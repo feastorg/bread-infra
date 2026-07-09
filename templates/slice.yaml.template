@@ -1,4 +1,4 @@
-# slice.yaml — BREAD Slice Manifest Template
+# slice.yaml — BREADS Slice Manifest Template
 # Copy this file to the root of your Slice repo and fill in values.
 # Fields marked "# nullable" can be set to null if unknown/not applicable.
 # Validate with: python bread-infra/scripts/validate_manifest.py slice.yaml

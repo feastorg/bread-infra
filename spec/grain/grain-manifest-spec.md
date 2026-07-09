@@ -1,6 +1,6 @@
 # grain.yaml — Manifest Spec
 
-The `grain.yaml` file at the root of a GRAIN repo is the machine-readable
+The `grain.yaml` file at the root of a Grain repo is the machine-readable
 manifest that enables discovery, validation, and indexing on the FEAST site.
 
 Validate with:
@@ -46,12 +46,12 @@ Template: [`templates/grain.yaml.template`](../../templates/grain.yaml.template)
 ## Fields intentionally absent (vs slice.yaml)
 
 The following fields from the Slice manifest are not present in grain.yaml
-because grains do not participate in the BREAD bus:
+because Grains do not participate in the BREADS Slice interface:
 
 - `interfaces.host` — no I2C address or bus role
 - `capabilities` — no ADPP capability model
 - `protocol` — no CRUMBS/ADPP
-- `electrical.power_consumption` — grains don't sit on the BREAD bus power rail
+- `electrical.power_consumption` — Grains do not sit on the Slice bus power rail
 - `hw_gen_current` / `hw_gen_supported` — generation model is Slice-specific
 - `compatibility.slice_spec` / `crumbs_protocol` / `anolis_provider_api`
 
