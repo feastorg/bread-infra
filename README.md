@@ -28,6 +28,24 @@ that only run after merge cannot stop anything from breaking.
 Board repos also need [`templates/hardware.Makefile`](templates/hardware.Makefile) at
 `hardware/Makefile`, and [`templates/gitignore`](templates/gitignore) at `.gitignore`.
 
+### Migrating a board to KiCad 10
+
+```sh
+scripts/upgrade_kicad10.sh <repo>          # flatpak KiCad by default
+KICAD_CLI=kicad-cli scripts/upgrade_kicad10.sh <repo>   # native install
+```
+
+Uses KiCad's own `kicad-cli sch upgrade` / `pcb upgrade`. Lossless and idempotent —
+safe to re-run, including on boards already migrated.
+
+**`sch upgrade` does not cascade into hierarchical sub-sheets.** Upgrading only the
+root sheet leaves every sub-sheet on the old format, which looks migrated and is not.
+This script upgrades every sheet it finds.
+
+It only migrates the file format. It does **not** fix broken library references,
+re-link footprints from the schematic, or fix annotation errors — run
+`validate_board.py` afterwards to see what is still wrong.
+
 ### Board validation
 
 [`validate-board.yml`](.github/workflows/validate-board.yml) checks that a board is
