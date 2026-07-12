@@ -34,6 +34,12 @@ sym-lib-table
 fp-lib-table
 design-block-lib-table
 
+# Project-LOCAL settings: KiCad rewrites this on every open (open sheet, zoom,
+# selection filter, ...). It is per-developer scratch, not design intent, and
+# tracking it means the working tree goes dirty every time anyone opens the
+# board. If it is already tracked: git rm --cached hardware/*.kicad_prl
+*.kicad_prl
+
 # ── KiBot output ─────────────────────────────────────────────────────────────
 Generated/
 

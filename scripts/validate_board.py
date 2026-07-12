@@ -28,7 +28,7 @@ from inside KiCad and silently passes CI:
      KiBot's `-s`/`--skip-pre` SKIPS the named preflight, so `drc: kibot -s drc`
      skips DRC. Both checks still run, but under each other's names.
 
-  5. .gitignore ignores .history/.
+  5. .gitignore ignores .history/ and *.kicad_prl.
      KiCad 10's Local History runs git_repository_init() on <project>/.history,
      so it is a nested git repo. The .gitignore KiCad writes inside it governs
      KiCad's history repo, not the board repo -- which still sees an embedded
@@ -149,6 +149,12 @@ def check_gitignore(repo: Path, problems: list[str]) -> None:
         problems.append(
             ".gitignore: does not ignore '.history/' — KiCad 10 creates it as a nested "
             "git repo; committing it would add a broken gitlink"
+        )
+    if not rules & {"*.kicad_prl", "*.kicad_prl "}:
+        problems.append(
+            ".gitignore: does not ignore '*.kicad_prl' — KiCad rewrites it on every open, "
+            "so tracking it dirties the tree constantly (it is per-developer local state, "
+            "not design intent)"
         )
 
 

@@ -8,7 +8,12 @@ For schema-specific changes, see [SCHEMA_CHANGELOG.md](SCHEMA_CHANGELOG.md).
 
 ---
 
-## 2026-07-12
+## v1.0.0 — 2026-07-12
+
+First tagged release of the workflows and scripts. Board repos should pin this
+tag rather than `@main`: an unpinned reusable workflow means a bread-infra commit
+can silently change what every board's CI is gated on, which is the same class of
+drift this repo exists to eliminate.
 
 ### Added
 - `scripts/upgrade_kicad10.sh` — migrate a board's KiCad files to the KiCad 10
@@ -17,7 +22,11 @@ For schema-specific changes, see [SCHEMA_CHANGELOG.md](SCHEMA_CHANGELOG.md).
   leaves sub-sheets on the old format — a board that looks migrated and is not.
   This upgrades every sheet. Verified lossless on Slice_RLAY (identical netlist,
   footprint positions and routing) and idempotent on already-migrated boards.
-- `templates/gitignore` — board `.gitignore`, including `.history/`. KiCad 10's
+- `templates/gitignore` — board `.gitignore`, including `.history/` and
+  `*.kicad_prl`. KiCad rewrites `.kicad_prl` on every project open (open sheet,
+  zoom, selection filter), so tracking it dirties the working tree constantly.
+  It is per-developer local state, not design intent. Already-tracked files need
+  `git rm --cached hardware/*.kicad_prl`. KiCad 10's
   Local History creates `<project>/.history` and runs `git_repository_init()` on
   it, so it is a nested git repository. The `.gitignore` KiCad writes inside it
   governs KiCad's own history repo, not the board repo — which still reports the
