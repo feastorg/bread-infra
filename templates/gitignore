@@ -1,0 +1,43 @@
+# Copy to .gitignore in a BREAD board repo.
+
+# ── KiCad 10 local history ───────────────────────────────────────────────────
+# KiCad 10 added a Local History feature (common/local_history.cpp). On first
+# save it creates <project>/.history/ and runs git_repository_init() on it — so
+# it is a NESTED GIT REPOSITORY holding KiCad's own undo history.
+#
+# KiCad writes a .gitignore *inside* .history/, but that governs what KiCad's
+# history repo snapshots. It does nothing for the board repo, which sees
+# .history/ as an embedded repository and reports it untracked. Committing it
+# would put a broken gitlink in the repo.
+#
+# It is machine-local scratch state. Never commit it.
+.history/
+
+# ── KiCad backup and swap files ──────────────────────────────────────────────
+*.bak
+*.bck
+*.kicad_pcb-bak
+*.sch-bak
+*~
+*-backups/
+
+# ── KiCad autosave ───────────────────────────────────────────────────────────
+*.tmp
+*.sav
+
+# ── Machine-local KiCad configuration ────────────────────────────────────────
+# Library tables hold absolute paths, so they differ per machine and must not be
+# committed. CI generates them from KiCad-Master-Lib's committed tables via
+# scripts/write_project_lib_tables.py; do the same locally.
+fp-info-cache
+sym-lib-table
+fp-lib-table
+design-block-lib-table
+
+# ── KiBot output ─────────────────────────────────────────────────────────────
+Generated/
+
+# ── Misc ─────────────────────────────────────────────────────────────────────
+*.log
+*.swp
+working/
