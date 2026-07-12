@@ -11,6 +11,12 @@ For schema-specific changes, see [SCHEMA_CHANGELOG.md](SCHEMA_CHANGELOG.md).
 ## 2026-07-12
 
 ### Added
+- `scripts/upgrade_kicad10.sh` — migrate a board's KiCad files to the KiCad 10
+  format via `kicad-cli sch upgrade` / `pcb upgrade`. Note `sch upgrade` does
+  NOT cascade into hierarchical sub-sheets, so upgrading only the root sheet
+  leaves sub-sheets on the old format — a board that looks migrated and is not.
+  This upgrades every sheet. Verified lossless on Slice_RLAY (identical netlist,
+  footprint positions and routing) and idempotent on already-migrated boards.
 - `templates/gitignore` — board `.gitignore`, including `.history/`. KiCad 10's
   Local History creates `<project>/.history` and runs `git_repository_init()` on
   it, so it is a nested git repository. The `.gitignore` KiCad writes inside it
