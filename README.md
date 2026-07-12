@@ -26,7 +26,7 @@ and the docs site, and it runs on **pull requests** as well as pushes — hardwa
 that only run after merge cannot stop anything from breaking.
 
 Board repos also need [`templates/hardware.Makefile`](templates/hardware.Makefile) at
-`hardware/Makefile`.
+`hardware/Makefile`, and [`templates/gitignore`](templates/gitignore) at `.gitignore`.
 
 ### Board validation
 
@@ -39,6 +39,7 @@ actually aligned with BREADS, not merely that it opens in KiCad:
 | `footprint_symbol_mismatch` severity is `error` | KiCad's **default is `warning`**, and KiBot's DRC preflight only fails on errors — so `schematic_parity: true` runs the check and can never fail it. |
 | Every library reference resolves | KiCad embeds footprint geometry in the `.kicad_pcb`, so a board renders and fabricates long after its library reference has rotted. |
 | `hardware/Makefile` targets not swapped | KiBot's `-s` **skips** the named preflight, so `drc: kibot -s drc` skips DRC. |
+| `.gitignore` ignores `.history/` | KiCad 10's Local History `git_repository_init()`s `<project>/.history`. It is a **nested git repo**; the `.gitignore` KiCad writes *inside* it governs KiCad's history repo, not yours. Committing it adds a broken gitlink. |
 
 Run it locally:
 

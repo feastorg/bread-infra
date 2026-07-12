@@ -28,6 +28,12 @@ from inside KiCad and silently passes CI:
      KiBot's `-s`/`--skip-pre` SKIPS the named preflight, so `drc: kibot -s drc`
      skips DRC. Both checks still run, but under each other's names.
 
+  5. .gitignore ignores .history/.
+     KiCad 10's Local History runs git_repository_init() on <project>/.history,
+     so it is a nested git repo. The .gitignore KiCad writes inside it governs
+     KiCad's history repo, not the board repo -- which still sees an embedded
+     repository. Committing it adds a broken gitlink.
+
 Requires: KiCad-Master-Lib, via --master-lib or $KICAD_MASTER_LIB.
 """
 
@@ -126,6 +132,26 @@ def check_libraries(hw: Path, fp: dict, sym: dict, problems: list[str]) -> None:
             problems.append(f"unresolvable {kind}: {ref} — '{item}' not in library '{lib}'")
 
 
+def check_gitignore(repo: Path, problems: list[str]) -> None:
+    """.history/ must be ignored.
+
+    KiCad 10's Local History feature runs git_repository_init() on <project>/.history,
+    making it a nested git repository. KiCad writes a .gitignore *inside* it, but that
+    governs KiCad's own history repo -- the board repo still sees an embedded repository
+    and reports it untracked. Committing it puts a broken gitlink in the repo.
+    """
+    gitignore = repo / ".gitignore"
+    if not gitignore.is_file():
+        problems.append(".gitignore: missing")
+        return
+    rules = {line.strip() for line in gitignore.read_text().splitlines()}
+    if not rules & {".history/", ".history"}:
+        problems.append(
+            ".gitignore: does not ignore '.history/' — KiCad 10 creates it as a nested "
+            "git repo; committing it would add a broken gitlink"
+        )
+
+
 def check_makefile(hw: Path, problems: list[str]) -> None:
     mk = hw / "Makefile"
     if not mk.is_file():
@@ -161,6 +187,7 @@ def main() -> int:
     check_drc_severity(hw, problems)
     check_libraries(hw, fp, sym, problems)
     check_makefile(hw, problems)
+    check_gitignore(args.repo, problems)
 
     name = args.repo.resolve().name
     if problems:

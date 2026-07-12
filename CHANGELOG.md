@@ -11,10 +11,16 @@ For schema-specific changes, see [SCHEMA_CHANGELOG.md](SCHEMA_CHANGELOG.md).
 ## 2026-07-12
 
 ### Added
+- `templates/gitignore` — board `.gitignore`, including `.history/`. KiCad 10's
+  Local History creates `<project>/.history` and runs `git_repository_init()` on
+  it, so it is a nested git repository. The `.gitignore` KiCad writes inside it
+  governs KiCad's own history repo, not the board repo — which still reports the
+  directory untracked. Committing it would add a broken gitlink. No board
+  `.gitignore` in the fleet covered this; all 42 will hit it on KiCad 10.
 - `validate-board.yml` + `scripts/validate_board.py` — fails a board that is not
   aligned with BREADS: KiCad 10 file format, `footprint_symbol_mismatch` severity
-  of `error`, all library references resolving against KiCad-Master-Lib, and
-  un-swapped Makefile targets.
+  of `error`, all library references resolving against KiCad-Master-Lib,
+  un-swapped Makefile targets, and `.history/` gitignored.
 - `scripts/write_project_lib_tables.py` — generates project-level KiCad library
   tables from KiCad-Master-Lib's committed tables, so CI resolves `KMLib_*` and
   vendored nicknames without any global KiCad config.
