@@ -28,6 +28,11 @@ jobs:
   validate:
     name: Validate board
     runs-on: ubuntu-latest
+    # Runs inside KiCad so the schematic-load check can actually open every sheet.
+    # kicad-cli prints "Failed to load schematic" and still EXITS 0, so a board can
+    # look perfectly clean to a script while KiCad refuses to open it. The only way
+    # to know a schematic loads is to load it.
+    container: ghcr.io/inti-cmnb/kicad10_auto:1.9.0-5_k10.0.4_d13.2@sha256:46b44e62b483aba94085ba53f3efd15f9b2625c191ac2f6931ba34058bec1bfb
     steps:
       - name: Checkout calling repo
         uses: actions/checkout@v4
@@ -51,6 +56,8 @@ jobs:
             '!*.step' '!*.STEP' '!*.stp' '!*.STP' '!*.wrl' '!*.WRL'
 
       - name: Validate board
+        env:
+          KICAD_CLI: kicad-cli
         run: |
           python3 _bread-infra/scripts/validate_board.py . \
             --master-lib _master-lib

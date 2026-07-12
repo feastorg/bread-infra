@@ -8,6 +8,34 @@ For schema-specific changes, see [SCHEMA_CHANGELOG.md](SCHEMA_CHANGELOG.md).
 
 ---
 
+## v1.1.0 — 2026-07-12
+
+### Added
+- `validate_board.py`: check that every schematic **loads**, and that symbol
+  sub-unit names are well-formed.
+
+  A symbol's sub-units carry the bare item name:
+
+      (symbol "LIB:ITEM"
+          (symbol "ITEM_0_1" ...)
+
+  Rename a symbol's item without renaming its sub-units and KiCad refuses to
+  open the schematic (`Invalid symbol unit name prefix`).
+
+  **This was invisible to every existing check.** `kicad-cli` prints
+  "Failed to load schematic" and still **exits 0**, so a scripted ERC sweep reads
+  a completely unloadable schematic as "zero violations" — a board scores clean
+  while KiCad cannot open it. Only the GUI surfaced it.
+
+  Checked two ways: structurally in pure Python (works with no KiCad, gives a
+  precise message), and by actually loading each sheet with kicad-cli.
+
+### Changed
+- `validate-board.yml` now runs inside the KiCad 10 container, so the load check
+  can execute. The only way to know a schematic loads is to load it.
+
+---
+
 ## v1.0.0 — 2026-07-12
 
 First tagged release of the workflows and scripts. Board repos should pin this
