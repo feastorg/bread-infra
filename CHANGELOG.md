@@ -8,6 +8,35 @@ For schema-specific changes, see [SCHEMA_CHANGELOG.md](SCHEMA_CHANGELOG.md).
 
 ---
 
+## 2026-07-12
+
+### Added
+- `validate-board.yml` + `scripts/validate_board.py` — fails a board that is not
+  aligned with BREADS: KiCad 10 file format, `footprint_symbol_mismatch` severity
+  of `error`, all library references resolving against KiCad-Master-Lib, and
+  un-swapped Makefile targets.
+- `scripts/write_project_lib_tables.py` — generates project-level KiCad library
+  tables from KiCad-Master-Lib's committed tables, so CI resolves `KMLib_*` and
+  vendored nicknames without any global KiCad config.
+- `templates/docs-pipeline.yml` and `templates/hardware.Makefile`.
+
+### Changed
+- **KiBot CI now runs KiCad 10**, not KiCad 9, against what are now KiCad 10
+  projects. Images are pinned by tag *and* digest instead of `:latest`.
+- KiBot CI checks out KiCad-Master-Lib and resolves libraries before running.
+  Previously `KMLib_*` did not resolve in the container, producing ~100
+  `lib_footprint_issues` warnings per board — noise that concealed real defects.
+
+### Fixed
+- `hardware/Makefile` ERC and DRC targets were inverted fleet-wide: KiBot's
+  `-s`/`--skip-pre` *skips* the named preflight, so the `erc` target ran DRC and
+  vice versa. Both checks still ran, but every violation was reported under the
+  wrong job name. Corrected in `templates/hardware.Makefile`.
+- `templates/docs-pipeline.yml` adds a `pull_request` trigger. Hardware checks
+  previously ran only on `push: main`, i.e. only *after* a bad change had merged.
+
+---
+
 ## 2026-06-12
 
 ### Added
