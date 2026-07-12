@@ -34,6 +34,13 @@ from inside KiCad and silently passes CI:
      KiCad's history repo, not the board repo -- which still sees an embedded
      repository. Committing it adds a broken gitlink.
 
+  6. Every schematic actually LOADS, and its symbol sub-units are well-formed.
+     `kicad-cli` prints "Failed to load schematic" and still EXITS 0, so a
+     completely unloadable schematic reads as "zero ERC violations" to any script
+     that trusts the exit code. A board can therefore look perfectly clean while
+     KiCad refuses to open it. Never trust kicad-cli's exit status to tell you a
+     schematic is well-formed.
+
 Requires: KiCad-Master-Lib, via --master-lib or $KICAD_MASTER_LIB.
 """
 
@@ -41,7 +48,10 @@ import argparse
 import json
 import os
 import re
+import shlex
+import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 KICAD10_PCB = 20260206
@@ -102,6 +112,77 @@ def check_drc_severity(hw: Path, problems: list[str]) -> None:
                 f"{pro.name}: rule_severities.footprint_symbol_mismatch is '{got}', must be "
                 "'error' — otherwise the schematic-parity gate can never fail"
             )
+
+
+def check_symbol_units(hw: Path, problems: list[str]) -> None:
+    """Every symbol sub-unit must be named "<parent item>_<unit>_<style>".
+
+    In a schematic's lib_symbols block:
+
+        (symbol "LIB:ITEM"
+            (symbol "ITEM_0_1" ...)
+
+    The sub-units carry the BARE item name. Rename a symbol's item without also
+    renaming its sub-units and KiCad refuses to open the schematic:
+
+        Invalid symbol unit name prefix AP63205_0_1
+
+    Checked structurally, in pure Python, so it works with no KiCad present --
+    and because kicad-cli cannot be trusted to report a load failure (see
+    check_schematics_load).
+    """
+    parent = re.compile(r'^(\t\t)\(symbol "([^"]+)"', re.M)
+    child = re.compile(r'^(\t\t\t)\(symbol "([^"]+)"', re.M)
+
+    for sch in sorted(hw.glob("*.kicad_sch")):
+        src = sch.read_text(errors="ignore")
+        for m in parent.finditer(src):
+            if ":" not in m.group(2):
+                continue
+            item = m.group(2).split(":", 1)[1]
+            depth, end = 0, len(src)
+            for j in range(m.start(), len(src)):
+                if src[j] == "(":
+                    depth += 1
+                elif src[j] == ")":
+                    depth -= 1
+                    if depth == 0:
+                        end = j + 1
+                        break
+            for c in child.finditer(src[m.start() : end]):
+                um = re.match(r"^(.*)_(\d+)_(\d+)$", c.group(2))
+                if um and um.group(1) != item:
+                    problems.append(
+                        f"{sch.name}: symbol unit '{c.group(2)}' does not match its parent "
+                        f"'{m.group(2)}' — KiCad will refuse to open this schematic "
+                        f"(expected '{item}_{um.group(2)}_{um.group(3)}')"
+                    )
+
+
+def check_schematics_load(hw: Path, problems: list[str]) -> None:
+    """Actually open every schematic with KiCad.
+
+    kicad-cli EXITS 0 when it fails to load a schematic, so its exit status is
+    useless here -- the output has to be read. A scripted ERC sweep that trusts
+    the exit code will score an unloadable schematic as "zero violations".
+    """
+    cli = shlex.split(os.environ.get("KICAD_CLI", "kicad-cli"))
+    try:
+        subprocess.run([*cli, "version"], capture_output=True, timeout=60, check=True)
+    except (OSError, subprocess.SubprocessError):
+        print("  note: kicad-cli unavailable — skipping the schematic load check")
+        return
+
+    with tempfile.TemporaryDirectory() as tmp:
+        for sch in sorted(hw.glob("*.kicad_sch")):
+            r = subprocess.run(
+                [*cli, "sch", "erc", "-o", str(Path(tmp) / "erc.rpt"), str(sch)],
+                capture_output=True,
+                text=True,
+                timeout=300,
+            )
+            if "failed to load" in (r.stdout + r.stderr).lower():
+                problems.append(f"{sch.name}: KiCad cannot load this schematic")
 
 
 def check_libraries(hw: Path, fp: dict, sym: dict, problems: list[str]) -> None:
@@ -190,6 +271,8 @@ def main() -> int:
     fp, sym = load_tables(master_lib)
     problems: list[str] = []
     check_versions(hw, problems)
+    check_symbol_units(hw, problems)
+    check_schematics_load(hw, problems)
     check_drc_severity(hw, problems)
     check_libraries(hw, fp, sym, problems)
     check_makefile(hw, problems)
