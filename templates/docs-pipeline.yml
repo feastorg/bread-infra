@@ -1,0 +1,50 @@
+# Copy to .github/workflows/docs-pipeline.yml in a board repo.
+#
+# The `pull_request` trigger is the important part. The fleet previously ran ERC
+# and DRC only on `push: main` -- so hardware checks ran *after* a change had
+# already merged. They could report that main was broken; they could never stop
+# it from breaking. A gate that only fires post-merge is a notification, not a gate.
+
+name: Docs Pipeline
+
+on:
+  pull_request:
+    paths:
+      - "hardware/**"
+      - "docs/**"
+      - "scripts/**"
+      - ".github/workflows/**"
+  push:
+    branches: [main]
+    paths:
+      - "hardware/**"
+      - "docs/**"
+      - "scripts/**"
+      - ".github/workflows/**"
+  workflow_dispatch:
+
+jobs:
+  # Fails if the board is not aligned with BREADS: KiCad 10 file format, a real
+  # (error-severity) schematic-parity gate, every library reference resolving,
+  # and un-swapped Makefile targets. Green here means the board is done.
+  validate-board:
+    uses: feastorg/bread-infra/.github/workflows/validate-board.yml@main
+
+  kibot:
+    uses: feastorg/bread-infra/.github/workflows/kibot-ci.yml@main
+
+  # Publishing only makes sense for the canonical branch.
+  gen-kibot-index:
+    if: github.event_name != 'pull_request'
+    uses: feastorg/bread-infra/.github/workflows/publish-kibot.yml@main
+    needs: [kibot]
+    with:
+      kibot_run_id: ${{ needs.kibot.outputs.kibot_run_id }}
+
+  deploy-pages:
+    if: github.event_name != 'pull_request'
+    uses: feastorg/bread-infra/.github/workflows/deploy-pages.yml@main
+    needs: [gen-kibot-index, kibot]
+    with:
+      kibot_run_id: ${{ needs.kibot.outputs.kibot_run_id }}
+      commit_sha: ${{ needs.gen-kibot-index.outputs.kibot_index_sha }}

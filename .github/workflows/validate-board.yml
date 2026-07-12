@@ -1,0 +1,56 @@
+name: Validate Board
+
+# Checks that a board repo is actually aligned with BREADS, not merely that it
+# opens in KiCad. See scripts/validate_board.py for what each check catches and
+# why it is invisible without one.
+#
+# Adopt this per repo as it is remediated: a green Validate Board is the
+# definition of "this board is done".
+
+on:
+  workflow_call:
+    inputs:
+      infra_ref:
+        description: "bread-infra ref to use for the validator"
+        required: false
+        type: string
+        default: "main"
+      master_lib_ref:
+        description: "KiCad-Master-Lib ref to resolve libraries against"
+        required: false
+        type: string
+        default: "main"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate board
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout calling repo
+        uses: actions/checkout@v4
+
+      - name: Checkout bread-infra (validator)
+        uses: actions/checkout@v4
+        with:
+          repository: feastorg/bread-infra
+          ref: ${{ inputs.infra_ref }}
+          path: _bread-infra
+
+      # Library resolution comes from the tables committed to KiCad-Master-Lib,
+      # never from a developer's global KiCad config. 3D models are excluded:
+      # none of these checks opens one, and they are ~206MB of a ~269MB checkout.
+      - name: Checkout KiCad-Master-Lib (no 3D models)
+        run: |
+          git clone --filter=blob:none --sparse --depth 1 \
+            --branch "${{ inputs.master_lib_ref }}" \
+            https://github.com/feastorg/KiCad-Master-Lib.git _master-lib
+          git -C _master-lib sparse-checkout set --no-cone '/*' \
+            '!*.step' '!*.STEP' '!*.stp' '!*.STP' '!*.wrl' '!*.WRL'
+
+      - name: Validate board
+        run: |
+          python3 _bread-infra/scripts/validate_board.py . \
+            --master-lib _master-lib

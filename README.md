@@ -20,35 +20,30 @@ This repo contains reusable workflows, specifications, and scripts for
 BREADS-compatible hardware repos.
 It is not meant to be triggered directly.
 
-To use in other repos, call the workflow like this:
+To use in other repos, copy [`templates/docs-pipeline.yml`](templates/docs-pipeline.yml)
+to `.github/workflows/docs-pipeline.yml`. It wires up board validation, KiBot ERC/DRC,
+and the docs site, and it runs on **pull requests** as well as pushes — hardware checks
+that only run after merge cannot stop anything from breaking.
 
-```yaml
-name: Docs Pipeline
+Board repos also need [`templates/hardware.Makefile`](templates/hardware.Makefile) at
+`hardware/Makefile`.
 
-on:
-  push:
-    branches: [main]
-    paths:
-      - "hardware/**"
-      - "docs/**"
-      - "scripts/**"
-      - ".github/workflows/**"
-  workflow_dispatch:
+### Board validation
 
-jobs:
-  kibot:
-    uses: feastorg/bread-infra/.github/workflows/kibot-ci.yml@main
+[`validate-board.yml`](.github/workflows/validate-board.yml) checks that a board is
+actually aligned with BREADS, not merely that it opens in KiCad:
 
-  gen-kibot-index:
-    uses: feastorg/bread-infra/.github/workflows/publish-kibot.yml@main
-    needs: [kibot]
-    with:
-      kibot_run_id: ${{ needs.kibot.outputs.kibot_run_id }}
+| Check | Why |
+| --- | --- |
+| KiCad 10 file format | A board saved by KiCad 9 opens fine; the version stamp is the only signal. |
+| `footprint_symbol_mismatch` severity is `error` | KiCad's **default is `warning`**, and KiBot's DRC preflight only fails on errors — so `schematic_parity: true` runs the check and can never fail it. |
+| Every library reference resolves | KiCad embeds footprint geometry in the `.kicad_pcb`, so a board renders and fabricates long after its library reference has rotted. |
+| `hardware/Makefile` targets not swapped | KiBot's `-s` **skips** the named preflight, so `drc: kibot -s drc` skips DRC. |
 
-  deploy-pages:
-    uses: feastorg/bread-infra/.github/workflows/deploy-pages.yml@main
-    needs: [gen-kibot-index]
-    with:
-      kibot_run_id: ${{ needs.kibot.outputs.kibot_run_id }}
-      commit_sha: ${{ needs.gen-kibot-index.outputs.kibot_index_sha }}
+Run it locally:
+
+```sh
+python3 scripts/validate_board.py <repo> --master-lib <KiCad-Master-Lib>
 ```
+
+A green **Validate Board** is the definition of "this board is done".

@@ -2,13 +2,26 @@ name: KiBot CI/CD
 
 on:
   workflow_call:
+    inputs:
+      infra_ref:
+        description: "bread-infra ref to use for helper scripts"
+        type: string
+        default: main
+      master_lib_ref:
+        description: "KiCad-Master-Lib ref to resolve libraries against"
+        type: string
+        default: main
     outputs:
       kibot_run_id:
         description: "Run ID to fetch artifacts from"
         value: ${{ jobs.meta.outputs.run_id }}
 
+# Images are pinned by tag AND digest. `:latest` silently changing the tool that
+# decides whether a board is manufacturable is precisely the drift we are trying
+# to remove. Tag decodes as: KiBot 1.9.0-5, KiCad 10.0.4, Debian 13.2.
 env:
   OUT_DIR: Generated
+  MASTER_LIB: .master-lib
 
 permissions:
   contents: read
@@ -24,28 +37,84 @@ jobs:
 
   ERC:
     runs-on: ubuntu-latest
-    container: ghcr.io/inti-cmnb/kicad9_auto:latest
+    container: ghcr.io/inti-cmnb/kicad10_auto:1.9.0-5_k10.0.4_d13.2@sha256:46b44e62b483aba94085ba53f3efd15f9b2625c191ac2f6931ba34058bec1bfb
     steps:
       - uses: actions/checkout@v4
         with: { submodules: true }
+
+      # Without this, KMLib_* nicknames do not resolve inside the container and
+      # KiCad emits a lib_footprint_issues warning per part — ~100 lines of noise
+      # that buried a real schematic/PCB mismatch for months.
+      - uses: actions/checkout@v4
+        with:
+          repository: feastorg/KiCad-Master-Lib
+          ref: ${{ inputs.master_lib_ref }}
+          path: ${{ env.MASTER_LIB }}
+
+      - uses: actions/checkout@v4
+        with:
+          repository: feastorg/bread-infra
+          ref: ${{ inputs.infra_ref }}
+          path: _bread-infra
+
+      - name: Resolve libraries
+        run: |
+          python3 _bread-infra/scripts/write_project_lib_tables.py hardware \
+            --master-lib "$MASTER_LIB"
+
       - name: Run ERC
         run: make -C hardware/ erc
 
   DRC:
     runs-on: ubuntu-latest
-    container: ghcr.io/inti-cmnb/kicad9_auto:latest
+    container: ghcr.io/inti-cmnb/kicad10_auto:1.9.0-5_k10.0.4_d13.2@sha256:46b44e62b483aba94085ba53f3efd15f9b2625c191ac2f6931ba34058bec1bfb
     steps:
       - uses: actions/checkout@v4
         with: { submodules: true }
+
+      - uses: actions/checkout@v4
+        with:
+          repository: feastorg/KiCad-Master-Lib
+          ref: ${{ inputs.master_lib_ref }}
+          path: ${{ env.MASTER_LIB }}
+
+      - uses: actions/checkout@v4
+        with:
+          repository: feastorg/bread-infra
+          ref: ${{ inputs.infra_ref }}
+          path: _bread-infra
+
+      - name: Resolve libraries
+        run: |
+          python3 _bread-infra/scripts/write_project_lib_tables.py hardware \
+            --master-lib "$MASTER_LIB"
+
       - name: Run DRC
         run: make -C hardware/ drc
 
   Fab:
     runs-on: ubuntu-latest
-    container: ghcr.io/inti-cmnb/kicad9_auto_full:latest
+    container: ghcr.io/inti-cmnb/kicad10_auto_full:1.9.0-5_k10.0.4_d13.2_b4.2.4LTS@sha256:efa7a5d38324a4bc6d887909df45b70164d44686713be702d3d1f1ca7ac00827
     steps:
       - uses: actions/checkout@v4
         with: { submodules: true }
+
+      - uses: actions/checkout@v4
+        with:
+          repository: feastorg/KiCad-Master-Lib
+          ref: ${{ inputs.master_lib_ref }}
+          path: ${{ env.MASTER_LIB }}
+
+      - uses: actions/checkout@v4
+        with:
+          repository: feastorg/bread-infra
+          ref: ${{ inputs.infra_ref }}
+          path: _bread-infra
+
+      - name: Resolve libraries
+        run: |
+          python3 _bread-infra/scripts/write_project_lib_tables.py hardware \
+            --master-lib "$MASTER_LIB"
 
       - name: Ensure cache dir exists
         run: mkdir -p ~/cache_3d
@@ -59,14 +128,18 @@ jobs:
           restore-keys: |
             cache_3d-
 
+      # KMLIB_LOCAL resolves the ${KMLIB_LOCAL} 3D-model paths inside KMLib
+      # footprints. Unlike ERC/DRC, Fab actually opens the models.
       - name: Generate SCH files
         run: |
           export KIBOT_3D_MODELS="$HOME/cache_3d"
+          export KMLIB_LOCAL="$GITHUB_WORKSPACE/$MASTER_LIB/kmlib-local"
           make -C hardware/ sch_fab
 
       - name: Generate PCB Fab Files (with retry)
         run: |
           export KIBOT_3D_MODELS="$HOME/cache_3d"
+          export KMLIB_LOCAL="$GITHUB_WORKSPACE/$MASTER_LIB/kmlib-local"
           for i in 1 2 3; do
             if make -C hardware/ pcb_fab; then
               echo "Success on attempt $i"
