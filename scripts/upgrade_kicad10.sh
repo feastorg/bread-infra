@@ -70,5 +70,7 @@ for target in "$@"; do
         fi
     done < <(find "$hw" -maxdepth 1 -name '*.kicad_pcb' -print0)
 
-    [ "$changed" -eq 0 ] && echo "  already on KiCad 10"
+    if [ "$changed" -eq 0 ]; then
+        echo "  already on KiCad 10"
+    fi
 done
