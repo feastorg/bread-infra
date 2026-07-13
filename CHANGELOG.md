@@ -8,6 +8,23 @@ For schema-specific changes, see [SCHEMA_CHANGELOG.md](SCHEMA_CHANGELOG.md).
 
 ---
 
+## [Unreleased]
+
+### Added
+- `templates/config.kibot.2layer.yaml` and `templates/config.kibot.4layer.yaml` —
+  canonical KiBot configs. Boards had drifted into five variants; three differed
+  only in trailing comments, and the two real variants are 2-layer vs 4-layer.
+- `validate_board.py`: fail a board whose KiBot config does not plot every copper
+  layer the board has.
+
+  A 4-layer board on a 2-layer config emits a gerber set with **no In1.Cu or
+  In2.Cu**. KiBot plots what it is asked for and reports nothing, so the fab
+  builds a board with no internal copper. Three boards are currently in this
+  state: `Slice_AOEM`, `Slice_STPC`, and `Slice_TEMP_PICO_L4L-r1` (a *released*
+  template, so every 4-layer PICO Slice cloned from it inherits the fault).
+
+---
+
 ## v1.1.0 — 2026-07-12
 
 ### Added

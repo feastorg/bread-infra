@@ -34,7 +34,12 @@ from inside KiCad and silently passes CI:
      KiCad's history repo, not the board repo -- which still sees an embedded
      repository. Committing it adds a broken gitlink.
 
-  6. Every schematic actually LOADS, and its symbol sub-units are well-formed.
+  6. KiBot plots every copper layer the board has.
+     A 4-layer board on a 2-layer config emits gerbers with no In1.Cu/In2.Cu.
+     KiBot plots what it is asked for and says nothing; the fab then builds a
+     board with no internal copper.
+
+  7. Every schematic actually LOADS, and its symbol sub-units are well-formed.
      `kicad-cli` prints "Failed to load schematic" and still EXITS 0, so a
      completely unloadable schematic reads as "zero ERC violations" to any script
      that trusts the exit code. A board can therefore look perfectly clean while
@@ -213,6 +218,33 @@ def check_libraries(hw: Path, fp: dict, sym: dict, problems: list[str]) -> None:
             problems.append(f"unresolvable {kind}: {ref} — '{item}' not in library '{lib}'")
 
 
+def check_kibot_layers(hw: Path, problems: list[str]) -> None:
+    """KiBot must plot every copper layer the board actually has.
+
+    A 4-layer board on a 2-layer config produces a gerber set with no In1.Cu or
+    In2.Cu. KiBot does not complain -- it plots what it was asked for. The fab
+    then builds a board with no internal copper, and nothing upstream said a word.
+    """
+    cfg = hw / "config.kibot.yaml"
+    if not cfg.is_file():
+        problems.append("hardware/config.kibot.yaml: missing")
+        return
+
+    text = cfg.read_text()
+    for pcb in hw.glob("*.kicad_pcb"):
+        copper = len(
+            re.findall(r'\(\d+ "(?:F|B|In\d+)\.Cu" signal\)', pcb.read_text(errors="ignore"))
+        )
+        if copper <= 2:
+            continue
+        for n in range(1, copper - 1):
+            if not re.search(rf"^\s+- layer: In{n}\.Cu", text, re.M):
+                problems.append(
+                    f"config.kibot.yaml: {pcb.name} has {copper} copper layers, but In{n}.Cu "
+                    "is not plotted — the gerbers would omit an internal copper layer"
+                )
+
+
 def check_gitignore(repo: Path, problems: list[str]) -> None:
     """.history/ must be ignored.
 
@@ -276,6 +308,7 @@ def main() -> int:
     check_drc_severity(hw, problems)
     check_libraries(hw, fp, sym, problems)
     check_makefile(hw, problems)
+    check_kibot_layers(hw, problems)
     check_gitignore(args.repo, problems)
 
     name = args.repo.resolve().name
