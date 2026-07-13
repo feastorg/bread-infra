@@ -11,6 +11,17 @@ For schema-specific changes, see [SCHEMA_CHANGELOG.md](SCHEMA_CHANGELOG.md).
 ## [Unreleased]
 
 ### Added
+- **Loaf tier.** `schemas/loaf.schema.json`, `templates/loaf.yaml.template`, and
+  `spec/loaf/loaf-manifest-spec.md`. The Loaf tier was specified conceptually but
+  had no schema, no manifest template, and no manifests -- Grain, with zero repos,
+  had more infrastructure than Loaf, which has two real boards.
+
+  A `role` field distinguishes the two kinds: `backplane` (provides Slice
+  attachment), `controller` (provides the controller interface and chains onto a
+  backplane, with no Slice slots of its own), and `hybrid`. The required
+  `interconnect` section -- `slice_slots` and `bus` -- is what makes a board a Loaf
+  rather than a carrier.
+- `validate_manifest.py` resolves `loaf.yaml` to the Loaf schema.
 - `templates/config.kibot.2layer.yaml` and `templates/config.kibot.4layer.yaml` —
   canonical KiBot configs. Boards had drifted into five variants; three differed
   only in trailing comments, and the two real variants are 2-layer vs 4-layer.
