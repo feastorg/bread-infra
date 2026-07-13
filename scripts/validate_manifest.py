@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate a BREAD manifest (slice.yaml or grain.yaml) against its schema.
+"""Validate a BREAD manifest (slice.yaml, loaf.yaml or grain.yaml) against its schema.
 
 Usage:
     python validate_manifest.py <path-to-manifest> [--schema <path-to-schema>]
@@ -7,6 +7,7 @@ Usage:
 The schema is auto-detected from the manifest filename:
     slice.yaml  →  schemas/slice.schema.json
     grain.yaml  →  schemas/grain.schema.json
+    loaf.yaml   →  schemas/loaf.schema.json
 
 Requires: pip install jsonschema pyyaml
 """
@@ -31,6 +32,7 @@ except ImportError:
 SCHEMA_MAP = {
     "slice.yaml": "slice.schema.json",
     "grain.yaml": "grain.schema.json",
+    "loaf.yaml": "loaf.schema.json",
 }
 
 

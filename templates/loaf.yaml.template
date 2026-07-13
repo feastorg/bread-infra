@@ -1,0 +1,171 @@
+schema_version: "1.0"
+
+# ── Identity ──────────────────────────────────────────────────────────────────
+id: "loaf-xxxx" # loaf-<short-name>
+name: "Loaf Name"
+status: "concept" # concept | prototype | validated | released | deprecated
+
+# What this Loaf does in the BREAD.
+#   backplane  — provides Slice attachment
+#   controller — provides the controller interface and chains onto a backplane,
+#                with no Slice slots of its own
+#   hybrid     — both
+role: "backplane"
+
+summary: "One-line description."
+description: null
+
+# ── Versioning ────────────────────────────────────────────────────────────────
+version:
+  hardware: "0.1.0"
+  firmware: null
+  manifest: "0.1.0"
+
+# ── Compatibility ─────────────────────────────────────────────────────────────
+compatibility:
+  loaf_spec: ">=0.1.0 <0.2.0"
+  slice_spec: ">=0.1.0 <0.2.0" # Slice spec versions this Loaf accepts
+  crumbs_protocol: null
+
+# ── Hardware ──────────────────────────────────────────────────────────────────
+hardware:
+  controller: null # null for a passive backplane
+  # controller:
+  #   type: "dev-board-socket"    # dev-board-socket | embedded | external
+  #   form_factor: "thing-plus"
+  #   primary: "ESP32-WROOM-32E"
+  #   supported:
+  #     - "ESP32-WROOM-32E"
+  primary_ic: null
+  # primary_ic:
+  #   manufacturer: "Manufacturer"
+  #   part_number: "PARTNO"
+  hw_gen_current: 1
+  hw_gen_supported: [1]
+  pcb:
+    layers: 2
+    thickness: "1.6mm"
+    copper_weight: "1oz"
+    dimensions: "000mm x 000mm"
+  connectors:
+    - ref: "J1"
+      type: "slice-bus-10pin"
+      purpose: "power-and-i2c"
+  mounting:
+    pattern: "loaf-standard-v0"
+    hole_size: "M3"
+    inset: "5mm"
+  pcb_color_prototype: "blue"
+  pcb_color_production: "green"
+  enclosure:
+    supported: false
+    path: null
+
+# ── Electrical ────────────────────────────────────────────────────────────────
+electrical:
+  input_voltage: "12V"
+  logic_voltage: "5V"
+  max_current: null
+  rails: # power rails distributed to Slices
+    - name: "+12V"
+      voltage: "12V"
+      max_current: null
+      source: "barrel jack"
+  protection:
+    reverse_polarity: false
+    input_esd: false
+    fuse: false
+
+# ── Interconnect ──────────────────────────────────────────────────────────────
+# How Slices attach and how the controller reaches them. This is what makes a
+# board a Loaf rather than just a carrier.
+interconnect:
+  slice_slots: 4 # 0 for a controller Loaf that chains onto a backplane
+  bus:
+    type: "i2c"
+    connector: "slice-bus-10pin"
+    signals:
+      - "+12V"
+      - "GND"
+      - "SDA"
+      - "SCL"
+  chaining:
+    supported: true
+    connector: "1x10-2.54mm"
+
+# ── Firmware ──────────────────────────────────────────────────────────────────
+firmware: null # null for a passive backplane
+# firmware:
+#   required: true
+#   path: "firmware/"
+#   language: "c++"
+#   framework: "arduino"
+#   targets: []
+#   lib_deps: []
+
+# ── Artifacts ─────────────────────────────────────────────────────────────────
+artifacts:
+  schematic: "hardware/BREAD_Loaf.kicad_sch"
+  pcb: "hardware/BREAD_Loaf.kicad_pcb"
+  firmware: null
+  docs: "docs/"
+  bom: null
+  gerbers: null
+  pick_and_place: null
+  datasheets: []
+
+# ── Manufacturing ─────────────────────────────────────────────────────────────
+manufacturing:
+  assembly_type: "manual"
+  preferred_fab: null
+  dnp_parts: []
+  critical_parts: []
+  substitutions_allowed: true
+
+# ── Validation ────────────────────────────────────────────────────────────────
+validation:
+  status: "not_validated"
+  tested_revisions: []
+  tests:
+    electrical: false
+    firmware: false
+    integration: false
+  known_issues: []
+
+# ── Safety ────────────────────────────────────────────────────────────────────
+safety:
+  hazards: []
+  max_safe_voltage: "12V"
+  intended_environment: "lab"
+  not_for:
+    - "human safety critical systems"
+
+# ── Relations ─────────────────────────────────────────────────────────────────
+related:
+  supersedes: null
+  superseded_by: null
+  variants: []
+  compatible_loaves: []
+  compatible_slices: []
+
+# ── Maintainers ───────────────────────────────────────────────────────────────
+maintainers:
+  - name: "Cameron Brooks"
+    role: "owner"
+
+# ── License ───────────────────────────────────────────────────────────────────
+license:
+  hardware: "CERN-OHL-S-2.0"
+  firmware: "GPL-3.0-or-later"
+  software: "GPL-3.0-or-later"
+  docs: "CC-BY-4.0"
+
+# ── Repository ────────────────────────────────────────────────────────────────
+repository:
+  url: "https://github.com/feastorg/Loaf_XXXX"
+
+# ── Metadata ──────────────────────────────────────────────────────────────────
+metadata:
+  created: "2026-01-01"
+  updated: "2026-01-01"
+  tags: []
