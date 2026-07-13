@@ -1,0 +1,325 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/feastorg/bread-infra/main/schemas/loaf.schema.json",
+  "title": "BREADS Loaf Manifest",
+  "description": "Manifest for a Loaf (Local Operations Attachment Frame): the attachment and interconnect layer that lets Slices operate together as one BREAD.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "id",
+    "name",
+    "status",
+    "role",
+    "summary",
+    "version",
+    "compatibility",
+    "hardware",
+    "electrical",
+    "interconnect",
+    "artifacts",
+    "license",
+    "repository",
+    "metadata"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "pattern": "^\\d+\\.\\d+$" },
+    "id": { "type": "string", "pattern": "^loaf-[a-z0-9-]+$" },
+    "name": { "type": "string" },
+    "status": {
+      "type": "string",
+      "enum": ["concept", "prototype", "validated", "released", "deprecated"]
+    },
+    "role": {
+      "type": "string",
+      "description": "backplane: provides Slice attachment. controller: provides the controller interface and chains onto a backplane, with no Slice slots of its own. hybrid: both.",
+      "enum": ["backplane", "controller", "hybrid"]
+    },
+    "summary": { "type": "string" },
+    "description": { "type": ["string", "null"] },
+
+    "version": {
+      "type": "object",
+      "required": ["hardware", "manifest"],
+      "additionalProperties": false,
+      "properties": {
+        "hardware": { "type": "string" },
+        "firmware": { "type": ["string", "null"] },
+        "manifest": { "type": "string" }
+      }
+    },
+
+    "compatibility": {
+      "type": "object",
+      "required": ["loaf_spec"],
+      "additionalProperties": false,
+      "properties": {
+        "loaf_spec": { "type": "string" },
+        "slice_spec": {
+          "type": ["string", "null"],
+          "description": "Range of Slice spec versions this Loaf accepts."
+        },
+        "crumbs_protocol": { "type": ["string", "null"] }
+      }
+    },
+
+    "hardware": {
+      "type": "object",
+      "required": ["hw_gen_current", "hw_gen_supported", "pcb", "mounting"],
+      "additionalProperties": false,
+      "properties": {
+        "controller": {
+          "type": ["object", "null"],
+          "description": "null when the Loaf hosts no controller (a passive backplane).",
+          "additionalProperties": false,
+          "properties": {
+            "type": { "type": "string", "description": "dev-board-socket | embedded | external" },
+            "form_factor": { "type": ["string", "null"] },
+            "primary": { "type": ["string", "null"] },
+            "supported": { "type": "array", "items": { "type": "string" } }
+          }
+        },
+        "primary_ic": {
+          "type": ["object", "null"],
+          "additionalProperties": false,
+          "properties": {
+            "manufacturer": { "type": "string" },
+            "part_number": { "type": "string" }
+          }
+        },
+        "hw_gen_current": { "type": "integer" },
+        "hw_gen_supported": { "type": "array", "items": { "type": "integer" } },
+        "pcb": {
+          "type": "object",
+          "required": ["layers", "dimensions"],
+          "additionalProperties": false,
+          "properties": {
+            "layers": { "type": "integer" },
+            "thickness": { "type": ["string", "null"] },
+            "copper_weight": { "type": ["string", "null"] },
+            "dimensions": { "type": "string" }
+          }
+        },
+        "connectors": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["ref", "type", "purpose"],
+            "additionalProperties": false,
+            "properties": {
+              "ref": { "type": "string" },
+              "type": { "type": "string" },
+              "purpose": { "type": "string" }
+            }
+          }
+        },
+        "mounting": {
+          "type": "object",
+          "required": ["pattern"],
+          "additionalProperties": false,
+          "properties": {
+            "pattern": { "type": "string" },
+            "hole_size": { "type": ["string", "null"] },
+            "inset": { "type": ["string", "null"] }
+          }
+        },
+        "pcb_color_prototype": { "type": ["string", "null"] },
+        "pcb_color_production": { "type": ["string", "null"] },
+        "enclosure": {
+          "type": ["object", "null"],
+          "additionalProperties": false,
+          "properties": {
+            "supported": { "type": "boolean" },
+            "path": { "type": ["string", "null"] }
+          }
+        }
+      }
+    },
+
+    "electrical": {
+      "type": "object",
+      "required": ["input_voltage"],
+      "additionalProperties": false,
+      "properties": {
+        "input_voltage": { "type": "string" },
+        "logic_voltage": { "type": ["string", "null"] },
+        "max_current": { "type": ["string", "null"] },
+        "rails": {
+          "type": "array",
+          "description": "Power rails the Loaf distributes to Slices.",
+          "items": {
+            "type": "object",
+            "required": ["name", "voltage"],
+            "additionalProperties": false,
+            "properties": {
+              "name": { "type": "string" },
+              "voltage": { "type": "string" },
+              "max_current": { "type": ["string", "null"] },
+              "source": { "type": ["string", "null"] }
+            }
+          }
+        },
+        "protection": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "reverse_polarity": { "type": "boolean" },
+            "input_esd": { "type": "boolean" },
+            "fuse": { "type": "boolean" }
+          }
+        }
+      }
+    },
+
+    "interconnect": {
+      "type": "object",
+      "description": "How Slices attach and how the controller reaches them. This is what makes a board a Loaf.",
+      "required": ["slice_slots", "bus"],
+      "additionalProperties": false,
+      "properties": {
+        "slice_slots": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of Slice attachment positions. 0 for a controller Loaf that chains onto a backplane."
+        },
+        "bus": {
+          "type": "object",
+          "required": ["type", "connector"],
+          "additionalProperties": false,
+          "properties": {
+            "type": { "type": "string", "description": "e.g. i2c" },
+            "connector": { "type": "string", "description": "e.g. slice-bus-10pin" },
+            "signals": { "type": "array", "items": { "type": "string" } }
+          }
+        },
+        "chaining": {
+          "type": ["object", "null"],
+          "description": "How this Loaf connects to another Loaf, if at all.",
+          "additionalProperties": false,
+          "properties": {
+            "supported": { "type": "boolean" },
+            "connector": { "type": ["string", "null"] }
+          }
+        }
+      }
+    },
+
+    "firmware": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "properties": {
+        "required": { "type": "boolean" },
+        "path": { "type": ["string", "null"] },
+        "language": { "type": ["string", "null"] },
+        "framework": { "type": ["string", "null"] },
+        "targets": { "type": "array", "items": { "type": "string" } },
+        "lib_deps": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+
+    "artifacts": {
+      "type": "object",
+      "required": ["schematic", "pcb"],
+      "additionalProperties": false,
+      "properties": {
+        "schematic": { "type": "string" },
+        "pcb": { "type": "string" },
+        "firmware": { "type": ["string", "null"] },
+        "docs": { "type": ["string", "null"] },
+        "bom": { "type": ["string", "null"] },
+        "gerbers": { "type": ["string", "null"] },
+        "pick_and_place": { "type": ["string", "null"] },
+        "datasheets": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+
+    "manufacturing": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "assembly_type": { "type": ["string", "null"] },
+        "preferred_fab": { "type": ["string", "null"] },
+        "dnp_parts": { "type": "array", "items": { "type": "string" } },
+        "critical_parts": { "type": "array", "items": { "type": "string" } },
+        "substitutions_allowed": { "type": "boolean" }
+      }
+    },
+
+    "validation": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "status": { "type": "string" },
+        "tested_revisions": { "type": "array", "items": { "type": "string" } },
+        "tests": { "type": "object" },
+        "known_issues": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+
+    "safety": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "hazards": { "type": "array", "items": { "type": "string" } },
+        "max_safe_voltage": { "type": ["string", "null"] },
+        "intended_environment": { "type": ["string", "null"] },
+        "not_for": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+
+    "related": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "supersedes": { "type": ["string", "null"] },
+        "superseded_by": { "type": ["string", "null"] },
+        "variants": { "type": "array", "items": { "type": "string" } },
+        "compatible_loaves": { "type": "array", "items": { "type": "string" } },
+        "compatible_slices": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+
+    "maintainers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name"],
+        "additionalProperties": false,
+        "properties": {
+          "name": { "type": "string" },
+          "role": { "type": ["string", "null"] }
+        }
+      }
+    },
+
+    "license": {
+      "type": "object",
+      "required": ["hardware"],
+      "additionalProperties": false,
+      "properties": {
+        "hardware": { "type": "string" },
+        "firmware": { "type": ["string", "null"] },
+        "software": { "type": ["string", "null"] },
+        "docs": { "type": ["string", "null"] }
+      }
+    },
+
+    "repository": {
+      "type": "object",
+      "required": ["url"],
+      "additionalProperties": false,
+      "properties": { "url": { "type": "string", "format": "uri" } }
+    },
+
+    "metadata": {
+      "type": "object",
+      "required": ["created", "updated"],
+      "additionalProperties": false,
+      "properties": {
+        "created": { "type": "string", "format": "date" },
+        "updated": { "type": "string", "format": "date" },
+        "tags": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  }
+}
