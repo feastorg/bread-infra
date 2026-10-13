@@ -11,6 +11,9 @@ For schema-specific changes, see [SCHEMA_CHANGELOG.md](SCHEMA_CHANGELOG.md).
 ## [Unreleased]
 
 ### Added
+- `CITATION.md` — how to cite BREAD (Oberloier et al., HardwareX 2023), the
+  related papers and thesis, the master OSF project, and which OSF page each
+  Slice and Loaf came from.
 - **Loaf tier.** `schemas/loaf.schema.json`, `templates/loaf.yaml.template`, and
   `spec/loaf/loaf-manifest-spec.md`. The Loaf tier was specified conceptually but
   had no schema, no manifest template, and no manifests -- Grain, with zero repos,
