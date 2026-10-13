@@ -81,3 +81,6 @@ they are not listed here.
 The master project and most of the pages above carry the GNU General Public
 License 3.0 on OSF. SLC_PUMP, SLC_HEAT and SLC_BUCK have no licence set on
 their OSF pages. The HardwareX paper is open access under CC BY 4.0.
+
+The hardware designs in the feastorg repositories are licensed CERN-OHL-S-2.0,
+with the agreement of the original authors.
