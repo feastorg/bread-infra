@@ -12,6 +12,10 @@ infrastructure for BREADS-compatible hardware repos.
 Start with [`spec/terminology.md`](spec/terminology.md) for the active
 definitions of BREAD, BREADS, Slices, Loaves, and Grains.
 
+BREAD started as an open-source hardware project on OSF. See
+[`CITATION.md`](CITATION.md) for how to cite it, the papers and thesis behind
+it, and which OSF page each Slice came from.
+
 See [Slice_TEMP_NANO_S2L-r2](https://github.com/feastorg/Slice_TEMP_NANO_S2L-r2) for an example of the required auxiliary and template files.
 
 ## Usage
