@@ -11,6 +11,9 @@ For schema-specific changes, see [SCHEMA_CHANGELOG.md](SCHEMA_CHANGELOG.md).
 ## [Unreleased]
 
 ### Added
+- `docs/fleet-remediation.md` — the detailed critical path for the Slice fleet
+  remediation: tier breakdown, suggested sequence, and the measurement method.
+  Live status and the per-board checklist are tracked in the epic (#16).
 - `CITATION.md` — how to cite BREAD (Oberloier et al., HardwareX 2023), the
   related papers and thesis, the master OSF project, and which OSF page each
   Slice and Loaf came from.
