@@ -8,16 +8,18 @@ Live status, the per-board checklist, and the open remediation PRs are tracked i
 the epic, **#16**. This document holds the detailed tier breakdown and the
 measurement method — the analysis that is too long for the epic body.
 
-> **Last measured 2026-07-13** with KiCad 10's own ERC and DRC at `error`
-> severity plus `validate_board.py` (bread-infra v1.2.0), each board on its
-> `chore/mechanical-remediation` branch. The counts below are that measurement,
-> not current state. Re-measure (see [Measuring](#measuring)) before relying on
-> any number here.
+> **Re-measured 2026-10-19** with KiCad 10 ERC and DRC at `error` severity plus
+> `validate_board.py` (bread-infra tip), each board on its
+> `chore/mechanical-remediation` branch. This reproduced the 2026-07-13
+> measurement: the same 14 green boards, 39 ERC errors, and DRC within two of the
+> earlier count. Nothing has merged since July. The one change is `Slice_SOLR`,
+> whose BQ24650 redesign dropped it from 17 DRC to 4.
 
-At that measurement, **14 of 42 boards were green**. Mechanical remediation —
-KiCad 10 format, DRC parity gate, Makefile targets, `.gitignore`, symbol
-sub-units, KiBot layer coverage — was complete on all 42. Everything left is a
-board defect.
+**14 of 42 boards are green.** Mechanical remediation — KiCad 10 format, DRC
+parity gate, Makefile targets, `.gitignore`, symbol sub-units, KiBot layer
+coverage — is complete on all 42; no board fails a structural check for those
+any more. Everything left is a board defect: unresolved library references, ERC,
+or DRC.
 
 Green: `Loaf_ESPT`, `Loaf_x004`, `Slice_DCMT`, `Slice_IOAC`,
 `Slice_PRTO_CONN_S2L`, `Slice_PRTO_THTA_S2L`, `Slice_PRTO_THT_S2L`,
@@ -34,19 +36,29 @@ The only items here that can ruin a fabrication run: shorts, mask bridges across
 pads, clearance violations, drills out of range. They sat in boards whose CI
 reported green for months.
 
-| Board | Copper defects | Total DRC |
+DRC errors (violations + unconnected + parity), measured 2026-10-19. The right
+column flags the six boards the 2026-07-13 pass identified as holding real copper
+defects — the fab-fatal subset.
+
+| Board | DRC | July copper defects |
 | --- | --- | --- |
-| `Slice_SOLR` | 14 | 17 |
-| `Slice_IOCT` | 12 | 20 |
+| `Slice_IOCT` | 20 | 12 |
+| `Slice_STEP` | 11 | — |
+| `Slice_LOAD` | 7 | — |
+| `Slice_GDHB` | 6 | — |
+| `Slice_AOEM` | 5 | — |
+| `Slice_AQPH` | 4 | — |
 | `Slice_FPSG` | 4 | 4 |
+| `Slice_IAQM` | 4 | — |
+| `Slice_SOLR` | 4 | was 14, pre-redesign |
 | `Slice_STPC` | 3 | 3 |
 | `Slice_LEPD` | 2 | 2 |
 | `Slice_PRTO_SMT_S2L` | 1 | 1 |
 
-Types across the fleet: `solder_mask_bridge` x12, `clearance` x11,
-`shorting_items` x8, `drill_out_of_range` x4, `courtyards_overlap` x1. Start with
-`Slice_SOLR` and `Slice_IOCT` — they hold 26 of the 73 DRC errors between them.
-`Slice_SOLR` has since become a BQ24650 charger redesign.
+71 DRC errors across 12 boards. `Slice_IOCT` holds the most by a wide margin —
+start there. `Slice_SOLR` was the worst (14 copper defects) until its BQ24650
+redesign dropped it to 4. These counts are totals; run the DRC command below to
+separate real copper defects from unconnected-item and parity noise per board.
 
 ### Tier 1 — schematic/PCB parity (11 errors)
 
