@@ -11,6 +11,14 @@ For schema-specific changes, see [SCHEMA_CHANGELOG.md](SCHEMA_CHANGELOG.md).
 ## [Unreleased]
 
 ### Added
+- `spec/firmware-layering.md` — the layers of Slice firmware (Slice, the
+  shared `bread-slice-core` library, contracts, CRUMBS, device libraries, this
+  standard), what each may depend on, what may enter the core library, and how
+  code moves into it.
+- `spec/slice/firmware.md` — what every Slice's firmware does the same way:
+  status LED states, e-stop sampling and boot, the command-watchdog latch, and
+  serial console rules. E-stop polarity, fault colours and output levels from
+  reset are marked open.
 - `docs/fleet-remediation.md` — the detailed critical path for the Slice fleet
   remediation: tier breakdown, suggested sequence, and the measurement method.
   Live status and the per-board checklist are tracked in the epic (#16).
