@@ -5,9 +5,8 @@ was run, on what, and what happened. Each Slice keeps its records in
 `docs/bench/`, one file per session, with a table of them in
 `docs/bench/README.md`.
 
-A good record lets someone who wasn't there tell what was tested, on what
-hardware and firmware, and how far to trust the result. That is the whole
-standard. Everything below serves it.
+A record should let someone who wasn't there tell what was tested, on what
+hardware and firmware, and how far to trust the result.
 
 Start from [`templates/bench-record.md`](../../templates/bench-record.md).
 
@@ -24,23 +23,20 @@ Start from [`templates/bench-record.md`](../../templates/bench-record.md).
 - **What you did.** The steps or commands, in order. If you followed a plan
   written elsewhere, link it and note where you departed from it.
 - **What happened, per step.** Pass, fail or skipped, with what you actually
-  saw: the reading, the reply, the motor's behaviour. "Works" on its own tells
-  the next reader nothing.
+  saw: the reading, the reply, the motor's behaviour.
 - **Raw output.** Paste it in a fenced block, or attach the log under
-  `docs/bench/assets/<record>/`. The summary is your reading of it, and a
-  later reader may need to check that reading.
+  `docs/bench/assets/<record>/`.
 - **What wasn't checked.** Steps you skipped, things you couldn't observe, and
   anything a passing result here does not show.
 
 ## Keeping Records Useful
 
-- **Failures and skips belong in the record.** A record that lists only the
-  passes reads as complete when it may not be.
+- **Record failures and skips**, not only passes.
 - **A number comes with its source:** the command, instrument or log line that
   produced it. Label an estimate as one.
 - **Don't rewrite a past record's results.** If something turns out to be
   wrong, add a dated note at the end of that record, or write a new record and
-  link back. Records are a lab notebook, not a wiki page.
+  link back.
 - **One session, one record.** Testing several boards in one sitting is still
   one session. Testing the same board on another day is a new record.
 
