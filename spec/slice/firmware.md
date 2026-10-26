@@ -29,7 +29,8 @@ on its own, and is cleared at the console or by the controller
 The LED is written only from the main loop, and only when its colour changes.
 
 **Not yet met:** `bread-slice-core` 0.1 has no amber state, so a trip or a
-fault shows green today.
+fault shows green today
+([feastorg/bread-slice-core#3](https://github.com/feastorg/bread-slice-core/issues/3)).
 
 ## E-stop Input
 
@@ -69,7 +70,9 @@ pin 6. To meet the rule:
 | Slice_DCMT, Slice_RLHT | bus pin 6 goes straight to the Nano's D2; the firmware enables the internal pull-up |
 
 So the line idles HIGH and stops only when driven LOW; an open chain reads as
-released on every Slice.
+released on every Slice
+([#20](https://github.com/feastorg/bread-infra/issues/20); the Slice side is
+[feastorg/bread-slice-core#3](https://github.com/feastorg/bread-slice-core/issues/3)).
 
 ## Boot
 
@@ -85,7 +88,8 @@ high-impedance.
 Slice_RLHT meets this: each relay output drives an optocoupler LED (TCMT1100)
 through 180 Ohm, and an undriven pin lights nothing. Slice_DCMT does not yet:
 the PWM, DIRECTION and BRAKE inputs of both LMD18200 drivers connect only to
-Nano pins, with no resistor, so they float until the firmware drives them.
+Nano pins, with no resistor, so they float until the firmware drives them
+([feastorg/Slice_DCMT#83](https://github.com/feastorg/Slice_DCMT/issues/83)).
 
 ## Command Watchdog
 
