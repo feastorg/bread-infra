@@ -23,6 +23,10 @@ it, and which OSF page each Slice came from.
 
 See [Slice_TEMP_NANO_S2L-r2](https://github.com/feastorg/Slice_TEMP_NANO_S2L-r2) for an example of the required auxiliary and template files.
 
+Results of testing a Slice on real hardware go in that Slice's `docs/bench/`:
+see [`spec/slice/bench-records.md`](spec/slice/bench-records.md) and
+[`templates/bench-record.md`](templates/bench-record.md).
+
 ## Usage
 
 This repo contains reusable workflows, specifications, and scripts for

@@ -17,8 +17,13 @@ For schema-specific changes, see [SCHEMA_CHANGELOG.md](SCHEMA_CHANGELOG.md).
   code moves into it.
 - `spec/slice/firmware.md` — what every Slice's firmware does the same way:
   status LED states, e-stop sampling and boot, the command-watchdog latch, and
-  serial console rules. E-stop polarity, fault colours and output levels from
-  reset are marked open.
+  serial console rules, with the e-stop polarity, the hold colours and the
+  reset levels each Slice and Loaf has to meet, and the boards that do not
+  meet them yet.
+- `spec/slice/bench-records.md` and `templates/bench-record.md` — how to
+  record a session of testing a Slice on real hardware: one file per session
+  in the Slice's `docs/bench/`, with what was tested, on what, the raw output,
+  and what wasn't checked, indexed in `docs/bench/README.md`.
 - `docs/fleet-remediation.md` — the detailed critical path for the Slice fleet
   remediation: tier breakdown, suggested sequence, and the measurement method.
   Live status and the per-board checklist are tracked in the epic (#16).
