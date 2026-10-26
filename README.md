@@ -12,6 +12,11 @@ infrastructure for BREADS-compatible hardware repos.
 Start with [`spec/terminology.md`](spec/terminology.md) for the active
 definitions of BREAD, BREADS, Slices, Loaves, and Grains.
 
+For Slice firmware, [`spec/slice/firmware.md`](spec/slice/firmware.md) defines
+what every Slice's firmware does the same way, and
+[`spec/firmware-layering.md`](spec/firmware-layering.md) sets out where shared
+firmware code lives and what may depend on what.
+
 BREAD started as an open-source hardware project on OSF. See
 [`CITATION.md`](CITATION.md) for how to cite it, the papers and thesis behind
 it, and which OSF page each Slice came from.

@@ -11,6 +11,15 @@ For schema-specific changes, see [SCHEMA_CHANGELOG.md](SCHEMA_CHANGELOG.md).
 ## [Unreleased]
 
 ### Added
+- `spec/firmware-layering.md` — the layers of Slice firmware (Slice, the
+  shared `bread-slice-core` library, contracts, CRUMBS, device libraries, this
+  standard), what each may depend on, what may enter the core library, and how
+  code moves into it.
+- `spec/slice/firmware.md` — what every Slice's firmware does the same way:
+  status LED states, e-stop sampling and boot, the command-watchdog latch, and
+  serial console rules, with the e-stop polarity, the hold colours and the
+  reset levels each Slice and Loaf has to meet, and the boards that do not
+  meet them yet.
 - `spec/slice/bench-records.md` and `templates/bench-record.md` — how to
   record a session of testing a Slice on real hardware: one file per session
   in the Slice's `docs/bench/`, with what was tested, on what, the raw output,
