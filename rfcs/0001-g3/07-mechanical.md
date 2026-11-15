@@ -30,12 +30,17 @@ private to the slice and outside the standard.
 
 ## Zones
 
+Both maps are proposals, drawn over the existing fleet's layouts.
+
 ![Proposed zone map for the S format, 70 × 100 mm, bus edge on the left: the 2×12 bus connector J1 centred 50 mm up, the BIB on the back side beside it, the power zone below it, the Nano-format MCU socket with USB at the bottom edge, the front I/O zone along the right edge (the only place mains may appear), the function area filling the rest, and the LED and ID blocks along the bottom.](figures/zones-s.svg)
 
-**MEC-8** A slice SHOULD follow the zone map: bus and BIB at the bus edge,
-power below the bus, the MCU socket with its USB at the bottom edge, field
-terminals in the front I/O zone, and the function in between. The L format
-keeps every zone at the same distance from the bottom edge.
+![Proposed zone map for the L format, 100 × 145 mm: the same zones as S, each at the same distance from the bottom edge, with the bus centred 50 mm up, the front I/O zone along the full right edge, and a taller function area.](figures/zones-l.svg)
+
+**MEC-8** A slice SHOULD follow the zone map for its format: bus and BIB at the
+bus edge, power below the bus, the MCU socket with its USB at the bottom edge,
+field terminals in the front I/O zone, and the function in between. In S and L,
+every zone below the function area keeps the same distance from the bottom
+edge, so the bus, power and MCU line up across formats in a loaf.
 
 ## Manufacturing
 
