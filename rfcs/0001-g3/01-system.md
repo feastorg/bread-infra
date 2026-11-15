@@ -82,7 +82,9 @@ outputs rule in [05](05-stop.md#outputs).
 **SYS-4** A stack has at most four loafs and 16 slices. Four position lines
 give four loafs; a fifth loaf needs a new addressing scheme.
 
-The bus runs at 50 kHz. CRUMBS measured a Pi 4 losing replies across clock
-stretch at 66 and 79 kHz and none at 49.7 kHz. Electrically it would reach
-about 100 kHz (*estimate*: 0.38 µs 30–70 % rise with a Pi's 1.8 k and about
-250 pF; 0.47 µs with the head's 2.2 k).
+The bus runs at 50 kHz, provisionally. What limits it is not signal margin
+but how the controller handles each target's clock stretch, together with how
+long each target's firmware masks interrupts; the measurements are in
+[03](03-bus.md#bus-integrity). Electrically the bus would reach about 100 kHz
+(*estimate*: 0.38 µs 30–70 % rise with a Pi's 1.8 k and about 250 pF; 0.47 µs
+with the head's 2.2 k).

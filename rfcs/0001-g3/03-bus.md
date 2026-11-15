@@ -42,7 +42,8 @@ flowchart LR
     SID --- PU --- ADC
 ```
 
-**BUS-1** The bus is I²C at 3.3 V on VIO, run at 50 kHz.
+**BUS-1** The bus is I²C at 3.3 V on VIO, run at 50 kHz. The rate is
+provisional until BUS-12 and BUS-13 are met on the bench ([09](09-bench-plan.md)).
 
 **BUS-2** Every slice MUST connect to SCL and SDA only through an LTC4313-3
 (MSOP-8 or DFN-8) with no rise-time accelerator, as ADI's own bussed example
@@ -79,6 +80,52 @@ unplugged chain resets and triggers nothing.
 BOM: 5 V for the Nano Every, classic and R4; 3.3 V for Nucleo, Pico and a
 3.3 V Nano-site variant. There is no user jumper.
 
+## Bus integrity
+
+A target answers a read inside a clock stretch, and replies get lost or
+corrupted around that stretch when the target's firmware masks interrupts. The
+buffer passes the stretch through, so it doesn't change this. On the existing
+fleet at 50 kHz, with a Raspberry Pi 4 controller (`i2c-bcm2835`,
+`core_freq_min=500`) and the binding's retries off:
+
+| Target and state | Bad replies | Source |
+| --- | --- | --- |
+| Two ATmega328P, near-idle firmware | 0 / 300 each | [CRUMBS `docs/protocol.md`](https://github.com/feastorg/CRUMBS/blob/main/docs/protocol.md) |
+| The same, masking interrupts 10–30 µs per loop | 8–28 / 300 | the same |
+| Slice_RLHT, ATmega328P, normal loop | 90 / 2553 and 48 / 2553 | [Slice_RLHT#81](https://github.com/feastorg/Slice_RLHT/issues/81) |
+| Slice_DCMT, Nano Every, idle | 0 / 2554 | the same |
+| Slice_DCMT, Nano Every, holding position, braked | 44 / 1533 (2.9 %) | [Slice_DCMT#119](https://github.com/feastorg/Slice_DCMT/issues/119) |
+| Slice_DCMT, one motor at 120 RPM | 144 / 1533 (9.4 %), 322 / 2225 (14.5 %) | the same |
+| Slice_DCMT, both motors at 120 RPM | 330 / 1510 (22 %) | the same |
+
+The rate follows the target's interrupt load, not motor noise: the braked hold
+fails with nothing turning, and a quiet loop is clean. On the ATmega328P a bad
+reply is cut short with a 0xFF tail; on the ATmega4809 it is a full frame with
+one top bit wrong. Whether the lost clock edge is in the Pi's controller or in
+the target's TWI is not established. A cut-short reply passes CRUMBS' CRC-8
+about one time in 256 ([CRUMBS#130](https://github.com/feastorg/CRUMBS/issues/130)): 9 of 5106 polls of
+Slice_RLHT did, and one from Slice_DCMT read all brakes on while both motors
+ran.
+
+**BUS-12** The bus protocol MUST detect a corrupted or truncated reply with a
+check that a 0xFF-tailed truncation can't pass, such as a CRC-16 or a length
+and sequence check ([CRUMBS#130](https://github.com/feastorg/CRUMBS/issues/130)). A controller MUST NOT act
+on a reply that fails it.
+
+**BUS-13** The controller MUST tolerate every target's clock stretch at the bus
+rate. A controller qualifies by passing T1 and T2 with real slice firmware
+under load ([09](09-bench-plan.md)); the Pi 4's hardware controller at 50 kHz
+has not yet. The bench compares it with a controller whose stretch handling is
+done in software, such as the Linux `i2c-gpio` driver.
+
+**BUS-14** Slice firmware SHOULD keep interrupts masked for as short a time as
+it can. The bad-reply rate scales with how often and how long it masks them
+across all 16 targets.
+
+The buffer does help with a related failure: a target whose firmware holds SCL
+low ([Slice_DCMT#101](https://github.com/feastorg/Slice_DCMT/issues/101)). Its 35–55 ms stuck-bus cut-off
+disconnects that slice, and the rest of the bus keeps answering.
+
 ## MCU site
 
 **MCU-1** The Nano-format socket and the Pico variant MUST use this map:
@@ -93,7 +140,7 @@ BOM: 5 V for the Nano Every, classic and R4; 3.3 V for Nucleo, Pico and a
 | SLOT_ID | A3 | GP28 / ADC2 | A native ADC pin everywhere. |
 | D4 / D5 | never connected | — | They short to I²C on a stock Nucleo. |
 | RESET | D-side RST | RUN | The analog-side reset position is BOOT1 on some boards. |
-| V_ACT sense | any spare ADC | any spare ADC | Optional: V_ACT through a divider tells firmware the stack is stopped. |
+| V_ACT sense | any spare ADC | any spare ADC | Required on actuator slices (OUT-7): V_ACT through a divider tells firmware the stack is stopped. |
 
 **MCU-2** A board MUST be powered through the entry this table gives it:
 
@@ -114,7 +161,17 @@ Pins left on the Nano site: of 22 (D0–D13, A0–A7), G3 takes A4/A5, D4/D5, D2
 D9 and A3, plus D3 and D6 if SYNC and INT_N are fitted. That leaves 13, or 15
 without SYNC and INT_N. On the Every and R4, D0/D1 are Serial1, separate from
 USB serial; on the Nano classic they are its USB serial, so it has two fewer
-(*verify* on the Nucleo). A6/A7 are analog-only on the Every and classic.
+(*verify* on the Nucleo). A6/A7 are analog-only on the Every and classic. An
+actuator slice spends one analog pin on V_ACT sense.
+
+PWM is tighter than the pin count. On the Every the PWM pins are D3, D5, D6, D9
+and D10; G3 takes D3 and D6 when SYNC and INT_N are fitted, takes D9, and bars
+D5, which leaves D10. A slice that needs two PWM outputs on an Every MUST leave
+out SYNC or INT_N to free D3 or D6.
+
+**MCU-3** Firmware MUST read SLOT_ID and V_ACT sense against the same rail the
+SLOT_ID pull-up goes to, so the reading is ratiometric. On megaAVR boards,
+check the analog reference the core selects (T7 runs on an Every first).
 
 ## Sensor-carrier pattern
 

@@ -56,9 +56,11 @@ load current local, so one net is simpler and safer.
 
 One loaf can power up while another's bus is live, so a slice has to join a
 busy bus cleanly. The LTC4313-3 connects only at bus idle, translates 3.3↔5 V,
-goes high-impedance unpowered, and cuts a stuck slice off after 35–55 ms. Its
-cost is a few dollars per slice and a single source, which is listed as open
-work.
+goes high-impedance unpowered, and cuts a stuck slice off after 35–55 ms. It
+doesn't help with clock-stretch losses, which it passes through, but its
+cut-off isolates a slice whose firmware holds SCL low, which has happened on
+the bench. Its cost is a few dollars per slice and a single source, which is
+listed as open work.
 
 ## Automatic addressing
 
@@ -74,11 +76,28 @@ Common actuators come in 12 V and 24 V versions. One loaf design with two BOMs
 keeps a single layout, and the voltage key keeps 12 V-only slices off 24 V
 loafs.
 
-## 50 kHz
+## 50 kHz, provisionally, with an integrity check
 
-CRUMBS measured a Pi 4 losing replies across clock stretch at 66 and 79 kHz
-and none at 49.7 kHz. The bus would reach about 100 kHz electrically, but the
-controller is the limit.
+A Pi 4 lost replies across clock stretch at 66 and 79 kHz and none at
+49.7 kHz, but only with near-idle targets: masking interrupts brought the
+failures back at 49.7 kHz, and the fleet's real firmware fails 3–22 % of
+replies at 50 kHz under load ([03](03-bus.md#bus-integrity)). Lowering the
+rate doesn't fix that, and neither does the buffer. G3 therefore asks for two
+things: a reply check that a truncated frame can't pass, so a bad reply is
+never acted on, and a controller shown on the bench to tolerate the
+stretching, so bad replies are rare. The bench runs real firmware because the
+synthetic sketch passes where the fleet fails.
+
+## Slices that know V_ACT is gone
+
+Dropping the stop receiver freed D2 for the buffer enable, but it also left a
+closed-loop slice blind to the stop: its loop winds up, it latches false
+stalls, and START sends it to a stale setpoint. Sensing V_ACT costs an analog
+pin and a divider, and booting disarmed with an explicit arm also covers a
+slice that resets on its own and gets its last command re-sent. The stop
+stays category 0, a cut rather than a controlled ramp-down, so holding loads
+need their own brake; a category 1 option would need a timed cut on the head
+and more to test.
 
 ## Two plain reserved pins
 

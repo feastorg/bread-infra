@@ -71,6 +71,13 @@ differential.
 plugged in, so to flash a slice in a powered stack the controller and every
 supply MUST float. Otherwise flash with the stack unpowered.
 
+This is a cost against G1/G2, where a slice came off the backplane to be
+flashed: under G3 each reflash powers its loaf off, stopping the loaf's other
+slices, or needs every supply floating. A slice MAY offer a bus bootloader,
+flashed through the controller over I²C, which needs neither. A programming
+header (UPDI or SWD) in the front I/O zone avoids the earth loop only with an
+isolated programmer.
+
 ## Regenerated energy
 
 Motors can push energy back onto V_ACT and, through the closed RUN relay, onto

@@ -5,7 +5,7 @@
 | Status | **Draft** |
 | Created | 2026-11-15 |
 | Replaces | the 1×10 slice bus of G1/G2 ([design constraints](../../spec/slice/design-constraints.md)) |
-| Acceptance | the bench tests in [09 Bench plan](09-bench-plan.md) pass, or this RFC changes to match what they measure |
+| Acceptance | the bench tests in [09 Bench plan](09-bench-plan.md) pass, including runs of real slice firmware under load, or this RFC changes to match what they measure |
 
 G3 is the third generation of the interface between a BREADS Slice and the
 Loaf it plugs into. It defines:
@@ -74,10 +74,11 @@ Nothing in this RFC has been measured on a bench yet.
 | --- | --- | --- |
 | C1 | Keyed 2×12 slot connector at 2.54 mm; a card guide on the loaf at every slot; row keys, a voltage key, 2 reserved pins | [02](02-connectors.md) |
 | C2 | Chain: a shrouded, polarised 2×12 box header and ribbon carrying the bus, VIO, INT_N, SYNC, RESET, four position lines, the stop loop out and back, RUN_FEED and ground; no supply rail; keyed OUT to IN | [02](02-connectors.md#chain-connector) |
-| E1 | Bus at 3.3 V on VIO, 50 kHz; an LTC4313-3 on every slice | [03](03-bus.md) |
+| E1 | Bus at 3.3 V on VIO, 50 kHz provisional; an LTC4313-3 on every slice; replies carry an integrity check a truncated frame can't pass; the controller must tolerate clock stretching, shown on the bench with real slice firmware | [03](03-bus.md) |
 | E2 | One 2.2 k pull-up pair per bus, on the head, removed when the controller has its own | [03](03-bus.md) |
 | E3 | Stop: relay start/stop circuit with two force-guided relays and a capacitor start; the loop runs through a window-held relay on every loaf; RUN_FEED from the loop drives a relay per loaf that cuts V_ACT | [05](05-stop.md) |
 | E4 | SLOT_ID carries slot and loaf; SYNC and INT_N optional per slice; RESET shared | [03](03-bus.md), [04](04-addressing.md) |
+| E5 | Every actuator slice senses V_ACT, goes safe and stays disarmed when it drops, and boots disarmed; back-drivable loads need a brake | [05](05-stop.md#outputs) |
 | P1 | 12 V or 24 V per loaf, with a voltage key; V_LOGIC 9–30 V, 0.5 A per slot; V_ACT 3 A per slot through a 4 A fuse | [06](06-power.md) |
 | P2 | One ground net; one floating-output supply per loaf, feeding only that loaf; at most one earth reference per stack | [06](06-power.md#ground) |
 | U1 | Nano-format socket plus a Pico variant, with a fixed pin map and a per-board power-entry table | [03](03-bus.md#mcu-site) |

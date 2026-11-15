@@ -48,12 +48,21 @@ flowchart LR
 - **Simulated bus load.** Capacitors switched onto the backplane SDA/SCL stand
   in for 16 slices, about 250 pF in all.
 - **Firmware.** One test sketch for all four MCUs: a CRUMBS target whose reply
-  delay is settable (1–70 ms), which drives BUS_EN after boot, reads SLOT_ID 8×
-  over 50 ms, reports V_ACT sense and SLOT_ID in its state reply, keeps its
-  output off after boot until commanded, and toggles a pin on a SYNC edge.
-- **Controller script.** N transactions per slice, counting CRC failures,
-  NAKs, timeouts and duplicate addresses; optionally drives SYNC, RESET and the
-  stop contact from GPIO; writes a CSV for the bench record.
+  delay is settable (1–70 ms), with a jitter mode that masks interrupts for
+  random windows of 10–300 µs at its loop rate, which drives BUS_EN after boot,
+  reads SLOT_ID 8× over 50 ms, reports V_ACT sense and SLOT_ID in its state
+  reply, keeps its output off after boot until armed, and toggles a pin on a
+  SYNC edge. Every bus failure so far came from real firmware under load, so
+  the bench also runs the Slice_DCMT and Slice_RLHT firmware ported to the BIB,
+  with motors and heaters working.
+- **Controllers.** The Pi 4's hardware I²C controller, and a controller whose
+  stretch handling is done in software, such as the Linux `i2c-gpio` driver
+  (BUS-13). Every bus test runs on both.
+- **Controller script.** N transactions per slice with retries off, logging
+  every raw reply and classifying each failure by signature (cut short with a
+  0xFF tail, a single bit wrong, or other), and counting NAKs, timeouts and
+  duplicate addresses; optionally drives SYNC, RESET and the stop contact from
+  GPIO; writes a CSV for the bench record.
 
 ## T1 Mixed MCUs through the buffer
 
@@ -72,9 +81,15 @@ time with 16 slices' worth of capacitance is ≤1 µs.
 5. Move the slice bus to a Pi I²C controller with no on-board pull-ups (i2c6
    on GPIO22/23), fit the head's 2.2 k pair, and repeat the rise-time
    measurement with the bank (0.47 µs expected, *estimate*).
+6. Replace two test slices with the ported Slice_DCMT (both motors at 120 RPM,
+   then holding braked) and Slice_RLHT (heaters cycling). 10 000 transactions
+   each at 50 kHz, retries off, on each controller.
 
-**Pass:** 0 failures at 50 kHz. Rise ≤1 µs with the bank, with either pull-up.
-Card-side low below 0.8 V.
+**Pass:** 0 failures at 50 kHz with the test sketch. With real firmware, a raw
+bad-reply rate of at most 0.1 % (a target), and no reply that fails BUS-12's
+check yet decodes as valid. Rise ≤1 µs with the bank, with either pull-up.
+Card-side low below 0.8 V. A controller that fails the real-firmware line does
+not meet BUS-13.
 
 ## T2 Clock stretching and the stuck-bus cut-off
 
@@ -86,12 +101,19 @@ after 35–55 ms; the firmware contract is under 30 ms per transfer (BUS-4).
 2. Set it to 40 and 60 ms. Scope SCL on both sides: when does the buffer
    disconnect, what does the controller read, and does the slice rejoin on its
    own?
-3. Nano R4 alone: confirm its I²C target mode works with stretching (Arduino
+3. Turn on the jitter mode (masked windows of 10–300 µs) and repeat step 1 on
+   each MCU and each controller.
+4. Make one slice hold SCL low from its firmware, as in
+   [Slice_DCMT#101](https://github.com/feastorg/Slice_DCMT/issues/101). The
+   buffer must cut it off within 35–55 ms, and the other slices must keep
+   answering.
+5. Nano R4 alone: confirm its I²C target mode works with stretching (Arduino
    core issue #382).
 
-**Pass:** 0 failures at ≤30 ms on all four MCUs. The disconnect lands inside
-35–55 ms, and the slice recovers without a power cycle. If the R4 fails, it
-stays a candidate.
+**Pass:** 0 failures at ≤30 ms on all four MCUs. With jitter, at most 0.1 %
+bad replies (a target). The disconnect lands inside 35–55 ms, the slice
+recovers without a power cycle, and a slice holding SCL low never stops the
+others answering. If the R4 fails, it stays a candidate.
 
 ## T3 Joining a busy bus
 
@@ -150,6 +172,13 @@ restart.
     coil voltage with both loaf relays pulled in.
 13. Measure the time from the e-stop opening to each RUN relay contact
     opening, and to V_ACT falling below 1 V with a 3 A load.
+14. With the ported Slice_DCMT moving, then holding position, open the e-stop.
+    It must report disarmed, refuse actuating commands, latch no stall, and
+    hold its integrators at zero. Press START: no motion until the controller
+    arms it.
+15. Running, reset the DCMT from its watchdog while the controller keeps
+    re-sending its last command. It must boot disarmed, report the reset
+    cause, and refuse the command until armed.
 
 **Pass:** every fault stops the stack and it stays stopped; only START
 restarts it; a simulated weld on any one K0 or K1 contact neither keeps V_ACT
@@ -160,7 +189,8 @@ relay's rated range from both head supplies; each RUN relay contact opens
 within 20 ms of the loop opening; every START press latches; a held START
 starts nothing; a failed detector stops the stack, and a step out of window
 drops the relay within 10 ms; the keyed chain refuses OUT to OUT and a
-terminator on IN.
+terminator on IN; a slice never moves after a stop or its own reset until the
+controller arms it.
 
 ## T5 V_ACT path at 24 V
 
@@ -202,15 +232,19 @@ reference is harmless, and two make a loop.
 1. Motor at 3 A on loaf 2. Measure the current in the chain ground (a shunt in
    the ribbon's ground) and the ground offset between the two loafs.
 2. Scope SDA/SCL with a logic analyzer decoding, during motor start, reversal
-   and stall, while the 10 000-transaction loop runs.
+   and stall, while the 10 000-transaction loop runs. Use the ported Slice_DCMT
+   and classify each failure by signature, so firmware latency isn't blamed on
+   ground noise or the reverse: a braked hold with nothing turning separates
+   the two.
 3. Plug a USB cable from an earthed PC into the motor slice's MCU and repeat.
    Then add an earthed supply on the other loaf, to record the loop GND-2
    forbids.
 
 **Pass:** chain ground current ≤50 mA beyond the stop circuit's coil current
-(measured with the motor off and subtracted), and 0 I²C failures during motor
-events with one earth reference. If failures appear, the record says what the
-scope showed.
+(measured with the motor off and subtracted), and with one earth reference no
+more bad replies during motor events than in a braked hold at the same
+firmware load. If failures appear, the record says their signatures and what
+the scope showed.
 
 ## T7 SLOT_ID and loaf position
 
@@ -267,9 +301,11 @@ assumed.
 
 1. **T9** first: the guides are a print and some headers, and the result
    changes the slot geometry before any copper exists.
-2. **T1–T3** next, on one loaf. If the LTC4313-3 fails, the RFC changes before
-   anything else gets built.
-3. **T8** alongside, on the same test slices.
+2. **T1–T3** next, on one loaf, with the test sketch first and then the ported
+   firmware. If the LTC4313-3 fails, or no controller meets BUS-13, the RFC
+   changes before anything else gets built.
+3. **T8**, and **T7 on an Every**, alongside, on the same test slices; T7
+   checks the megaAVR analog reference early (MCU-3).
 4. **T4 and T5**: the stop circuit and V_ACT; these need the second loaf and
    supply.
 5. **T6 and T7** last: two loafs, motor current, and the ladder.

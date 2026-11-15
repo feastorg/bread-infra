@@ -18,12 +18,28 @@ When this RFC is accepted, each of these becomes a tracked issue:
   and `hw_gen` and `address_default` get G3 meanings.
 - The six `Slice_TEMP_*` templates and `slice.yaml.template`.
 - Slice_DCMT and Slice_RLHT firmware: `LED_PIN 5`. DCMT also uses A3 and D9 for
-  its encoder and motor, which G3 takes, and it needs 14 free pins: on an Every
-  it fits by leaving out SYNC or INT_N; otherwise it moves to the Pico variant
-  or adds an I/O expander on its private bus.
-- CRUMBS: discovery from SLOT_ID, the 50 kHz bus, and the 30 ms clock-stretch
-  contract.
-- Slice_DCMT's docs: rename its "G1–G3" generations to revisions r1–r3.
+  its encoder and motor, which G3 takes. It needs 14 free pins and two PWM
+  pins: on an Every that means leaving out SYNC or INT_N to free D3 or D6
+  ([03](03-bus.md#mcu-site)); otherwise it moves to the Pico variant or adds an I/O
+  expander on its private bus.
+- CRUMBS: discovery from SLOT_ID, the 50 kHz bus, the 30 ms clock-stretch
+  contract, and a reply integrity check a truncated frame can't pass (BUS-12,
+  [CRUMBS#130](https://github.com/feastorg/CRUMBS/issues/130)).
+- The shared slice firmware and the wire contracts: V_ACT sense, the safe
+  state on V_ACT loss, booting disarmed with the reset cause reported, and an
+  explicit arm (OUT-7 to OUT-9).
+- Slice_DCMT and Slice_RLHT firmware ported to the BIB, so the bench can run
+  them (T1, T6).
+- Slice_DCMT: rename its "G1–G3" generations to revisions r1–r3. That is a
+  firmware change as well as docs: `DCMT_HW_GEN`, the `gen1_`/`gen2_`
+  PlatformIO environments and CI.
+
+## Open work that gates the bus rate
+
+- [CRUMBS#130](https://github.com/feastorg/CRUMBS/issues/130): a reply cut
+  short with a 0xFF tail passes the CRC-8 about one time in 256 (BUS-12).
+- [Slice_DCMT#119](https://github.com/feastorg/Slice_DCMT/issues/119): 3–22 %
+  of replies fail while the motor loop runs (BUS-13, BUS-14).
 
 ## Spec work still to do
 
@@ -48,3 +64,4 @@ When this RFC is accepted, each of these becomes a tracked issue:
 - The Nano R4's 5V-pin entry and its I²C target mode (MCU-2).
 - The Nucleo-32 G431KB's +5V range (MCU-2).
 - D0/D1 on the Nucleo-32 (MCU-2).
+- The analog reference the megaAVR core selects for SLOT_ID (MCU-3).

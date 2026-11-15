@@ -5,7 +5,9 @@
 
 The G3 stop is a **non-safety-rated interlock**. It is a relay start/stop
 circuit: it powers up stopped, any open in its loop stops it, and only a
-person pressing START restarts it. It is not certified to any functional-safety
+person pressing START closes its relays again. START restores V_ACT; it does
+not restart motion. Actuator slices stay disarmed until the controller arms
+them again (OUT-8). It is not certified to any functional-safety
 standard. A certified safety relay can replace K0 and K1 later for a rated
 stop, and a laser slice adds its own IEC 60825-1 interlock.
 
@@ -68,7 +70,7 @@ K0/K1 coil node and RUN_FEED MUST also be guarded from each other.
 ```mermaid
 stateDiagram-v2
     [*] --> Stopped: power up
-    Stopped --> Running: START pressed, loop closed,<br/>both monitor contacts closed
+    Stopped --> Running: START pressed, loop closed,<br/>both monitor contacts closed<br/>(slices stay disarmed until armed)
     Running --> Stopped: any open in the loop<br/>(e-stop, chain, terminator,<br/>loaf power or window, stop contact)
     Stopped --> Stopped: loop closes again<br/>(nothing restarts)
     Running --> Locked: loop opens with a K0<br/>or K1 contact welded
@@ -83,6 +85,8 @@ stateDiagram-v2
 | A loaf losing power, or its input leaving its window | Its supply-held contact opens; the stack stops. |
 | Controller crash or reboot, or RESET asserted | The stop contact opens; the stack stops. |
 | START stuck or jumpered closed | Starts nothing: the capacitor can't recharge while START is held. |
+| START pressed after a stop | V_ACT returns; actuator slices stay disarmed and refuse actuating commands until the controller arms them (OUT-8). |
+| A slice resets on its own (watchdog, a V_LOGIC PTC trip) | It boots disarmed and refuses a re-sent command until armed (OUT-9). |
 | One K0 or K1 normally-open contact welded | The other relay drops on any open in the loop and breaks both series paths, so closing the loop restarts nothing. The welded relay's monitor contact is held open, so START can't restart the stack until that relay is replaced. |
 
 Software can stop the stack but never restart it. The head reports no trip
@@ -95,9 +99,11 @@ These follow from a non-safety-rated interlock:
 - A wiring bridge on the head from LOOP_RET to the coil node or to RUN_FEED
   bypasses K0 and K1; STOP-7 guards those nets.
 - A welded loaf RUN relay is not detected.
-- A slice that resets on its own (its watchdog, a V_LOGIC PTC trip) reboots
-  with V_ACT live, and a controller that re-sends its last command restarts
-  that output.
+- Re-arming is the controller's decision. A controller that arms slices
+  automatically after a stop or a slice reset defeats OUT-8 and OUT-9.
+- The stop is category 0: V_ACT is cut, not ramped down. A motor driver loses
+  holding torque and any electrical braking that needs its supply, so a load
+  that can back-drive moves (OUT-10).
 
 ## Outputs
 
@@ -112,8 +118,26 @@ active-high enable, a pull-up on a P-FET gate or an active-low enable.
 
 **OUT-4** Slice firmware MUST boot with its outputs off.
 
-Slices no longer carry a stop receiver; firmware MAY read V_ACT through a
-divider to know the stack is stopped ([03](03-bus.md#mcu-site)).
+Slices carry no stop receiver; they learn of a stop from V_ACT itself. A
+closed-loop slice that doesn't know V_ACT has gone keeps integrating against a
+motor that can't move, latches a false stall, and drives to its last setpoint,
+possibly stale, the moment START restores V_ACT.
+
+**OUT-7** Every slice with an actuator output MUST sense V_ACT through a divider
+on an ADC pin ([03](03-bus.md#mcu-site)).
+
+**OUT-8** When V_ACT drops, the slice MUST go to its safe state: outputs off,
+setpoints dropped, control integrators and stall timers reset, and actuating
+commands refused. It MUST stay disarmed after V_ACT returns until the
+controller explicitly arms it.
+
+**OUT-9** A slice MUST boot disarmed, report its reset cause in its state
+reply, and refuse actuating commands until the controller arms it. The arm
+belongs with the command watchdog and lease in the shared slice firmware.
+
+**OUT-10** A slice that drives a load able to back-drive when unpowered, such
+as a syringe or a vertical axis, MUST provide a mechanical or otherwise
+fail-safe brake; the stop removes the driver's supply.
 
 ## Relay contacts
 
