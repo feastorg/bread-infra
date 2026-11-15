@@ -6,20 +6,24 @@
 \begin{tikzpicture}
   \def\W{16}            % cm for full scale
   \pgfmathsetmacro\b{\W/18} % cm per bin
-  \tikzset{bin/.style={draw, minimum height=0.8cm, minimum width=\b cm, inner sep=0pt,
-                       anchor=south west, font=\ttfamily\scriptsize}}
+  \tikzset{bin/.style={draw, minimum height=1.0cm, minimum width=\b cm, inner sep=0pt,
+                       anchor=south west}}
+  \tikzset{lbl/.style={anchor=north, inner sep=1pt, font=\ttfamily\scriptsize}}
   \colorlet{bad}{black!30}
-  \node[bin, fill=bad] at (0, 0) {short};
-  \node[bin, fill=bad] at (17*\b, 0) {open};
+  \node[bin, fill=bad] at (0, 0) {};
+  \node[lbl] at (0.5*\b, 0.97) {short};
+  \node[bin, fill=bad] at (17*\b, 0) {};
+  \node[lbl] at (17.5*\b, 0.97) {open};
   \foreach \n in {0,...,15} {
     \pgfmathtruncatemacro\lo{\n/4}
     \pgfmathsetmacro\shade{\lo==0 ? 20 : (\lo==1 ? 35 : (\lo==2 ? 20 : 35))}
-    \node[bin, fill=g3Bus!\shade!white] at ({(\n+1)*\b}, 0) {\n};
+    \node[bin, fill=g3Bus!\shade!white] at ({(\n+1)*\b}, 0) {};
+    \node[lbl] at ({(\n+1.5)*\b}, 0.97) {\n};
   }
   % nominal readings (ratio R_n / (12.7 k + R_n))
   \foreach \r in {0.0830,0.1390,0.1957,0.2494,0.3068,0.3602,0.4172,0.4708,
                   0.5296,0.5836,0.6402,0.6932,0.7510,0.8046,0.8611,0.9168}
-    \draw[thick, g3Stop] (\r*\W, -0.15) -- (\r*\W, 0.95);
+    \draw[very thick, g3Stop] (\r*\W, 0.05) -- (\r*\W, 0.5);
 
   % scale
   \foreach \f/\t in {0/0, 0.25/0.25, 0.5/0.5, 0.75/0.75, 1/1}
@@ -28,12 +32,12 @@
 
   % loaf braces
   \foreach \l/\a in {0/0x10--0x13, 1/0x14--0x17, 2/0x18--0x1B, 3/0x1C--0x1F}
-    \draw[brace] ({(4*\l+1)*\b}, 0.95) -- ({(4*\l+5)*\b}, 0.95)
+    \draw[brace] ({(4*\l+1)*\b}, 1.15) -- ({(4*\l+5)*\b}, 1.15)
       node[midway, above=4pt, note] {loaf \l: \texttt{\a}};
 
   \node[note, anchor=north west, align=left, text width=\W cm] at (0, -1.4)
     {Code \emph{n} = 4 $\times$ loaf + slot reads in bin \emph{n}+1; address 0x10 + \emph{n}.
-     Red marks are the nominal readings of the E96 values with a 12.7\,k pull-up.
+     Red marks, in the lower half of each bin, are the nominal readings of the E96 values with a 12.7\,k pull-up.
      The worst case with 1\,\% parts and 0--10\,$\Omega$ of switch resistance stays
      2.08\,\% of full scale inside its bin, before ADC error (estimate).};
 \end{tikzpicture}
