@@ -3,18 +3,19 @@
 [RFC 0001](README.md) · next: [02 Connectors](02-connectors.md)
 
 ```mermaid
+%%{init: {"flowchart": {"wrappingWidth": 320}}}%%
 flowchart LR
-    CTRL["Controller<br/>Pi · ESP32 · USB-I²C<br/>3.3 V"]
+    CTRL["Controller<br/>Pi, ESP32 or USB-I²C<br/>3.3 V"]
     QW["Qwiic modules"]
-    HEAD["Head<br/>own 12/24 V input<br/>2.2 k pull-ups · VIO<br/>stop circuit: K0 + K1 · START<br/>SYNC · RESET drive<br/>ESD protection"]
-    L1["Loaf 1<br/>12 or 24 V in<br/>card guide per slot<br/>V_ACT: RUN relay + 4 A fuse per slot<br/>PTC on V_LOGIC per slot<br/>SLOT_ID = slot + loaf"]
-    L2["Loaf 2…4"]
+    HEAD["Head<br/>own 12/24 V input<br/>2.2 k pull-ups · VIO<br/>stop circuit: K0, K1, START<br/>SYNC and RESET drive<br/>ESD protection"]
+    L1["Loaf 1<br/>12 or 24 V in<br/>card guide per slot<br/>RUN relay on V_ACT<br/>4 A fuse per slot<br/>PTC on V_LOGIC per slot<br/>SLOT_ID: slot + loaf"]
+    L2["Loafs 2–4"]
     T["Terminator plug"]
-    S1["Slices<br/>(up to 4)"]
-    S2["Slices<br/>(up to 4 each)"]
+    S1["Slices (up to 4)"]
+    S2["Slices (up to 4 each)"]
     PSU1["Supply 1"] --> L1
-    PSU2["Supply 2…4"] --> L2
-    CTRL -- "keyed cable<br/>slice bus" --> HEAD
+    PSU2["Supplies 2–4"] --> L2
+    CTRL -- "keyed cable:<br/>slice bus" --> HEAD
     CTRL -- "second I²C bus" --> QW
     HEAD -- "chain" --> L1
     L1 -- "chain" --> L2

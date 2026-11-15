@@ -12,7 +12,7 @@
   \draw (0,0) to[fuse, l=$F_1$\\${\le}1$\,A] (2,0)
               to[ncs, l=e-stop] (4,0)
               to[nos, l=stop\\contact] (6,0)
-              -- (7,0) node[below] {LOOP\_OUT};
+              -- (7,0) node[below left=1pt and -4pt] {LOOP\_OUT};
   % through each loaf's supply-held contact to the terminator
   \draw (7,0) -- (7.6,0) to[nos, l=$SH_1$] (9.2,0);
   \draw[dotted, thick] (9.2,0) -- (10.2,0);
@@ -23,7 +23,7 @@
   \node[note, anchor=west] at (12.7,-0.7) {terminator\\plug};
 
   % LOOP_RET back to the head
-  \draw (12.6,-1.4) -- (5,-1.4) node[pos=0.45, below] {LOOP\_RET};
+  \draw (12.6,-1.4) -- (5,-1.4) node[pos=0.62, below] {LOOP\_RET};
 
   % seal-in path: K0a, K1a in series to the coil node X
   \draw (5,-1.4) to[nos, l_=$K0_a$] (5,-3.1) to[nos, l_=$K1_a$] (5,-4.8) node[circ] (X) {};

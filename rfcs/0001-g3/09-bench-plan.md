@@ -15,14 +15,15 @@ the result against the pass line.
 ## Rig
 
 ```mermaid
+%%{init: {"flowchart": {"wrappingWidth": 320}}}%%
 flowchart LR
-    PSU1["Supply A · 12 V"] --> L1
-    L1 -. "tap through loaf 1's<br/>input connector" .-> HEAD
-    PSU2["Supply B · 24 V"] --> L2
     PI["Pi 4<br/>slice bus + Qwiic bus"] -- "keyed cable" --> HEAD["Head prototype<br/>pull-ups · VIO · stop supply<br/>e-stop · START · K0, K1"]
-    HEAD -- "chain" --> L1["Loaf prototype 1 (12 V BOM)<br/>2 slots"]
-    L1 -- "chain" --> L2["Loaf prototype 2 (24 V BOM)<br/>2 slots"]
-    L2 --> TERM["Terminator plug"]
+    HEAD -- "chain" --> L1["Loaf prototype 1<br/>12 V BOM · 2 slots"]
+    L1 -- "chain" --> L2["Loaf prototype 2<br/>24 V BOM · 2 slots"]
+    L2 -- "chain" --> TERM["Terminator plug"]
+    PSU1["Supply A · 12 V"] --> L1
+    PSU1 -. "tapped at loaf 1's<br/>input connector" .-> HEAD
+    PSU2["Supply B · 24 V"] --> L2
     L1 --- S1["Test slice: Nano Every"]
     L1 --- S2["Test slice: Nano R4"]
     L2 --- S3["Test slice: Pico 2"]
