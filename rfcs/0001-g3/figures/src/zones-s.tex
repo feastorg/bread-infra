@@ -1,0 +1,50 @@
+% Proposed G3 zone map, S format 70 x 100 mm (rfcs/0001-g3/07-mechanical.md).
+% Millimetres, KiCad top view: bus edge on the left, y down from the top edge.
+\documentclass[border=6pt]{standalone}
+\usepackage{g3-fig}
+\begin{document}
+\begin{tikzpicture}[x=0.1cm, y=-0.1cm]
+  \newcommand\zone[5]{\draw[zone, fill=#5] (#1,#2) rectangle (#3,#4);}
+  % board outline, R5 corners
+  \draw[very thick, rounded corners=0.5cm] (0,0) rectangle (70,100);
+
+  \zone{8}{8}{58}{52}{g3Func}
+  \fill[g3Func] (38,51.6) rectangle (58,91); \draw (8,52) -- (38,52) -- (38,91) -- (58,91);
+  \node[zone, draw=none, font=\small\bfseries] at (33,27) {FUNCTION};
+  \node[note] at (33,32) {your circuit goes here};
+
+  \zone{58}{10}{70}{90}{g3Act!40}
+  \node[note, rotate=90] at (64.3,50) {FRONT I/O $\cdot$ field terminals; mains only here};
+
+  \draw[dashed] (0,32.1) rectangle (9,67.9);
+  \zone{-7}{34.76}{7.9}{65.24}{g3Bus}
+  \node[note, rotate=90] at (-1.6,50) {BUS $\cdot$ 2$\times$12 keyed (J1)};
+
+  \draw[zone, dashed, fill=g3Ctl!50] (9.6,36) rectangle (17.4,64);
+  \node[note, rotate=90] at (13.5,50) {BIB $\cdot$ back side};
+
+  \zone{18.5}{54}{36.8}{102.4}{g3Mcu}
+  \node[note, font=\scriptsize] at (27.6,73) {\textbf{MCU}\\Nano-format\\socket\\USB at the\\bottom edge};
+
+  \zone{2.5}{70}{16}{89}{g3Pwr}
+  \node[note] at (9.2,79.5) {\textbf{POWER}\\9--30\,V in\\fuse + buck};
+
+  \zone{46.9}{93.1}{54.1}{98.7}{g3Key}  \node[note] at (50.5,90.6) {LED};
+  \zone{38}{91.6}{45.5}{99}{white}      \node[note] at (41.8,95.3) {ID};
+
+  % corner holes with their keep-outs
+  \foreach \x/\y in {5/5, 65/5, 5/95, 65/95} {
+    \draw[dotted] (\x,\y) circle (5);
+    \draw (\x,\y) circle (2.5);
+  }
+
+  % dimensions
+  \draw[|-|] (0,-4) -- (70,-4) node[midway, above, note] {70};
+  \draw[|-|] (74,0) -- (74,100) node[midway, right, note] {100};
+  \draw[|-|] (-10,100) -- (-10,50) node[midway, left, note, align=right] {bus centre\\50.0 up};
+  \node[note, anchor=north west, align=left, text width=9cm] at (-10,106)
+    {Bus pin row 3.6\,mm from the edge. Holes \O 5.0 NPTH, 5\,mm in from each corner.
+     The L format (100$\times$145) keeps every zone at the same distance from the
+     bottom edge.};
+\end{tikzpicture}
+\end{document}
