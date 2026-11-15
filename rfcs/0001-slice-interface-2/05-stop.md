@@ -3,7 +3,7 @@
 [RFC 0001](README.md) · previous: [04 Addressing](04-addressing.md) · next:
 [06 Power and ground](06-power.md)
 
-The G3 stop is a **non-safety-rated interlock**. It is a relay start/stop
+The SI2 stop is a **non-safety-rated interlock**. It is a relay start/stop
 circuit: it powers up stopped, any open in its loop stops it, and only a
 person pressing START closes its relays again. START restores V_ACT; it does
 not restart motion. Actuator slices stay disarmed until the controller arms

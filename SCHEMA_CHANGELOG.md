@@ -6,6 +6,17 @@ Format: [Keep a Changelog](https://keepachangelog.com/)
 
 ---
 
+## [Unreleased]
+
+### Changed
+
+- `hw_gen_current` and `hw_gen_supported` in the slice and loaf schemas are
+  defined as the fleet-wide board generation (G1, G2, G3…), not a per-board
+  design counter. The types are unchanged; the values in existing manifests
+  are updated separately. Definitions in `spec/terminology.md`.
+
+---
+
 ## grain-v1.0 — 2026-06-12
 
 Initial GRAIN manifest schema.

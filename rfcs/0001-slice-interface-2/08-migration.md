@@ -3,7 +3,7 @@
 [RFC 0001](README.md) · previous: [07 Mechanical](07-mechanical.md) · next:
 [09 Bench plan](09-bench-plan.md)
 
-## What G3 changes elsewhere
+## What SI2 changes elsewhere
 
 When this RFC is accepted, each of these becomes a tracked issue:
 
@@ -14,11 +14,14 @@ When this RFC is accepted, each of these becomes a tracked issue:
   fab-first replaces "manufacturable on commonly available circuit milling
   machines", the through-hole preference and the 0805 minimum; the 2×12
   replaces the "Standard 10-pin female header".
-- The manifest schema and all 40 `slice.yaml` files: `type: "slice-bus-10pin"`,
-  and `hw_gen` and `address_default` get G3 meanings.
+- The manifest schema and the `slice.yaml` of each board ported to SI2: a new
+  bus connector `type` for SI2 in place of `slice-bus-10pin` (proposed:
+  `slice-bus-2x12`), and `address_default` gives way to SLOT_ID. `hw_gen` keeps
+  its meaning, the board generation ([terminology](../../spec/terminology.md#generations-revisions-and-interfaces)): the first SI2
+  boards are G4.
 - The six `Slice_TEMP_*` templates and `slice.yaml.template`.
 - Slice_DCMT and Slice_RLHT firmware: `LED_PIN 5`. DCMT also uses A3 and D9 for
-  its encoder and motor, which G3 takes. It needs 14 free pins and two PWM
+  its encoder and motor, which SI2 takes. It needs 14 free pins and two PWM
   pins: on an Every that means leaving out SYNC or INT_N to free D3 or D6
   ([03](03-bus.md#mcu-site)); otherwise it moves to the Pico variant or adds an I/O
   expander on its private bus.
@@ -30,9 +33,6 @@ When this RFC is accepted, each of these becomes a tracked issue:
   explicit arm (OUT-7 to OUT-9).
 - Slice_DCMT and Slice_RLHT firmware ported to the BIB, so the bench can run
   them (T1, T6).
-- Slice_DCMT: rename its "G1–G3" generations to revisions r1–r3. That is a
-  firmware change as well as docs: `DCMT_HW_GEN`, the `gen1_`/`gen2_`
-  PlatformIO environments and CI.
 
 ## Open work that gates the bus rate
 

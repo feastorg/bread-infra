@@ -6,7 +6,7 @@ tests that have to pass before it is accepted.
 
 | RFC | Title | Status |
 | --- | --- | --- |
-| [0001](0001-g3/README.md) | G3 slice and backplane standard | Draft |
+| [0001](0001-slice-interface-2/README.md) | Slice Interface 2: the slice and backplane standard | Draft |
 
 ## Status
 
@@ -29,7 +29,7 @@ or TikZ and CircuiTikZ sources in `figures/src/`, built to the SVGs in
 
 ```sh
 scripts/build_figures.sh                          # every figure in every RFC
-scripts/build_figures.sh rfcs/0001-g3 stop-circuit # one figure
+scripts/build_figures.sh rfcs/0001-slice-interface-2 stop-circuit # one figure
 ```
 
 It needs a TeX Live with TikZ and CircuiTikZ, and `pdftocairo` from

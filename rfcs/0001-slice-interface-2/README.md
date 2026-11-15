@@ -1,14 +1,17 @@
-# RFC 0001: G3 Slice and Backplane Standard
+# RFC 0001: Slice Interface 2
 
 | | |
 | --- | --- |
 | Status | **Draft** |
 | Created | 2026-11-15 |
-| Replaces | the 1×10 slice bus of G1/G2 ([design constraints](../../spec/slice/design-constraints.md)) |
+| Replaces | Slice Interface 1, the 1×10 bus of every G1–G3 board ([design constraints](../../spec/slice/design-constraints.md)) |
 | Acceptance | the bench tests in [09 Bench plan](09-bench-plan.md) pass, including runs of real slice firmware under load, or this RFC changes to match what they measure |
 
-G3 is the third generation of the interface between a BREADS Slice and the
-Loaf it plugs into. It defines:
+Slice Interface 2 (SI2) is the second interface between a BREADS Slice and the
+Loaf it plugs into. Every board so far, G1 to G3, uses Slice Interface 1, the
+1×10 bus. The first boards built to SI2 are generation G4. Generations,
+revisions and interfaces are separate labels; [terminology](../../spec/terminology.md#generations-revisions-and-interfaces) defines
+them. SI2 defines:
 
 - **Connector:** a keyed 2×12 at 2.54 mm, with a card guide on the loaf at
   every slot.
@@ -24,7 +27,8 @@ Loaf it plugs into. It defines:
   a Pico variant.
 - **Manufacturing:** fab-first.
 
-G3 is not backward compatible with G1/G2 boards.
+SI2 is not backward compatible with Slice Interface 1: G1–G3 boards don't
+plug into an SI2 loaf.
 
 ## Documents
 
@@ -36,8 +40,8 @@ G3 is not backward compatible with G1/G2 boards.
 | [04 Addressing](04-addressing.md) | addresses, the SLOT_ID network and its table, reserved addresses |
 | [05 Stop and interlock](05-stop.md) | the stop circuit, its fault behaviour and known limits, the outputs rule |
 | [06 Power and ground](06-power.md) | rails, loaf input protection, the supply window, ground and earth, mains and isolation |
-| [07 Mechanical](07-mechanical.md) | formats, datums, zones, envelope; naming and versions |
-| [08 Migration and open work](08-migration.md) | what G3 changes elsewhere; spec work still to do |
+| [07 Mechanical](07-mechanical.md) | formats, datums, zones, envelope; generations and versions |
+| [08 Migration and open work](08-migration.md) | what SI2 changes elsewhere; spec work still to do |
 | [09 Bench plan](09-bench-plan.md) | the tests that gate acceptance, and the parts they need |
 | [10 Rationale](10-rationale.md) | why each main choice was made, and what was considered instead |
 

@@ -5,7 +5,7 @@
 
 ## Slot connector
 
-![The G3 slot connector, 2×12 at 2.54 mm, rows A (next to the board) and B, positions 1 to 12 from the top. Row A: GND, V_ACT, KEY_A, V_LOGIC, GND, GND, GND, INT_N, VKEY, SCL, SDA, RSV1. Row B: GND, V_ACT, GND, GND, KEY_B, GND, RESET, SYNC, SLOT_ID, GND, VIO, RSV2.](figures/slot-pinmap.svg)
+![The SI2 slot connector, 2×12 at 2.54 mm, rows A (next to the board) and B, positions 1 to 12 from the top. Row A: GND, V_ACT, KEY_A, V_LOGIC, GND, GND, GND, INT_N, VKEY, SCL, SDA, RSV1. Row B: GND, V_ACT, GND, GND, KEY_B, GND, RESET, SYNC, SLOT_ID, GND, VIO, RSV2.](figures/slot-pinmap.svg)
 
 **CON-1** The slot connector MUST be a 2×12 at 2.54 mm with the map above:
 vertical male on the loaf, right-angle female on the slice. The slice's bus
@@ -33,7 +33,7 @@ row shift that leaves a key hanging off the end of the header seats, and some
 of those put V_ACT, V_LOGIC or VIO on the wrong pin. No key placement fixes
 that, so the guide is part of the loaf.
 
-**CON-2** Every G3 slot MUST carry a card guide on the loaf: a U-guide closed
+**CON-2** Every SI2 slot MUST carry a card guide on the loaf: a U-guide closed
 on both sides (the bread-mechanical backplane part's U-guides become part of
 the loaf standard). The guide MUST engage before the pins touch. A printed
 bench guide does the same for bare-board work.
@@ -55,10 +55,10 @@ and 1B, and the slice's other ground pins share it if one opens.
 **CON-5** Slices and loafs MUST leave RSV1 and RSV2 (12A, 12B) unconnected. A
 later standard that uses them, for example for CAN, defines their routing, and
 it MUST keep fault voltages off SDA and VIO beside them, which the buffer can't
-take above 6 V. CAN on a G3 slice today goes on the slice's own connector, for
+take above 6 V. CAN on an SI2 slice goes on the slice's own connector, for
 example an MCP2515 over SPI as
 [can-nano-shield](https://github.com/feastorg/can-nano-shield) does, never
-through the G3 bus.
+through the SI2 bus.
 
 **CON-6** Insertion and removal happen with the loaf powered off.
 

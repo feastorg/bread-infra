@@ -50,7 +50,7 @@ and RUN_FEED, never a supply rail.
 
 ## Loaf
 
-**SYS-2** A G3 loaf MUST carry:
+**SYS-2** An SI2 loaf MUST carry:
 
 - a card guide per slot ([02](02-connectors.md#card-guide-and-keys));
 - an input connector, wiring and fuse for its full load: up to 4 × 3 A of

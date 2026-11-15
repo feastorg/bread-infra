@@ -11,7 +11,11 @@ For schema-specific changes, see [SCHEMA_CHANGELOG.md](SCHEMA_CHANGELOG.md).
 ## [Unreleased]
 
 ### Added
-- `rfcs/` and RFC 0001, a Draft of the G3 Slice and backplane standard: the
+- `spec/terminology.md` — board generation (G1, G2, G3…), revision (r1, r2…)
+  and Slice interface (Slice Interface 1, 2…) as three separate labels, with
+  the generations so far.
+- `rfcs/` and RFC 0001, a Draft of Slice Interface 2, the Slice and backplane
+  standard that G4 boards are built to: the
   2×12 slot and chain connectors, the bus interface block, automatic
   addressing from SLOT_ID, the relay stop circuit, power and ground, the
   mechanical datums, the migration list, and the bench tests that gate its

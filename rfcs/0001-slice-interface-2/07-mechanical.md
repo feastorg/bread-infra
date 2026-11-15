@@ -5,7 +5,7 @@
 
 ## Formats and datums
 
-Formats and datums are unchanged from G1/G2. Of the 40 existing slices, 37
+Formats and datums are unchanged from Slice Interface 1. Of the 40 existing slices, 37
 already share the bus datum.
 
 **MEC-1** A slice is S (70 × 100 mm) or L (100 × 145 mm), with R5 corners.
@@ -44,15 +44,19 @@ edge, so the bus, power and MCU line up across formats in a loaf.
 
 ## Manufacturing
 
-**MEC-9** G3 boards are designed fab-first: for a PCB house and PCBA, not for
+**MEC-9** SI2 boards are designed fab-first: for a PCB house and PCBA, not for
 milling. Each board repo produces PCBA outputs in CI, and each IOREF variant is
 its own BOM.
 
-## Naming and versions
+## Generations and versions
 
-Slice_DCMT's docs already use "G3" for a board revision with a 1×10 connector.
-Its generations get renamed to revisions (r1–r3), so "G3" means only this
-standard.
+Slice Interface 2 is an interface, not a board generation. Generations (G1,
+G2, G3…) count rounds of BREADS hardware and revisions (r1, r2…) count respins
+within one;
+[terminology](../../spec/terminology.md#generations-revisions-and-interfaces)
+defines all three labels. Every board from G1 to G3 uses Slice Interface 1.
+The first boards built to SI2 are G4.
 
-**VER-1** The standard carries a version. A change that keeps every G3 board
-working bumps the minor number (G3.1); a pin-map change is G4.
+**VER-1** The interface carries its own version. A change that keeps every SI2
+board working bumps the minor number (SI2.1); a change that breaks one, such
+as a pin-map change, is Slice Interface 3.

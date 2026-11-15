@@ -71,8 +71,8 @@ differential.
 plugged in, so to flash a slice in a powered stack the controller and every
 supply MUST float. Otherwise flash with the stack unpowered.
 
-This is a cost against G1/G2, where a slice came off the backplane to be
-flashed: under G3 each reflash powers its loaf off, stopping the loaf's other
+This is a cost against Slice Interface 1, where a slice came off the
+backplane to be flashed: under SI2 each reflash powers its loaf off, stopping the loaf's other
 slices, or needs every supply floating. A slice MAY offer a bus bootloader,
 flashed through the controller over I²C, which needs neither. A programming
 header (UPDI or SWD) in the front I/O zone avoids the earth loop only with an
@@ -98,4 +98,4 @@ specified.
 with mains.
 
 **ISO-3** An isolated slice (ACAR, AOEM) MUST put its barrier between the BIB
-and the isolated side; G3 ground connects only to the bus side.
+and the isolated side; SI2 ground connects only to the bus side.

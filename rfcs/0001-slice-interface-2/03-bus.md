@@ -5,7 +5,7 @@
 
 ## Bus interface block
 
-Every G3 slice carries the bus interface block (BIB) between the backplane and
+Every SI2 slice carries the bus interface block (BIB) between the backplane and
 its MCU, on the back of the board under the 3.2 mm envelope. It costs roughly
 $3–6 in parts (*estimate*; the LTC4313-3 is listed at $1.58 and $4.70 by two
 distributors).
@@ -28,16 +28,16 @@ flowchart LR
     end
     subgraph MCU["MCU side (IOREF 3.3 or 5 V)"]
         I2C["MCU I²C<br/>(or sensors, by jumper)"]
-        G1["GPIO out"]
-        G2["GPIO in"]
+        GOUT["GPIO out"]
+        GIN["GPIO in"]
         NR["MCU reset"]
         ADC["ADC (A3)"]
         EN["BUS_EN (D2)"]
     end
     SDA --- BUF --- I2C
     EN -- "ENABLE" --> BUF
-    G1 --> FET1 --> INT
-    SYN --> LV --> G2
+    GOUT --> FET1 --> INT
+    SYN --> LV --> GIN
     RST --> FET2 --> NR
     SID --- PU --- ADC
 ```
@@ -150,14 +150,14 @@ disconnects that slice, and the rest of the bus keeps answering.
 | Nucleo-32 L432KC | 3.3 V reference | +5V pin | The fleet's current board. |
 | Pico 2 (RP2350, A4 stepping or later) | Pico reference | VSYS through a diode | Avoid A2 stock. Never rely on an internal pull-down (erratum E9). |
 | Nano R4 (RA4M1, 5 V) | candidate | 5V pin (*verify*) | VIN needs 6 V or more. Becomes a reference once its I²C target mode (Arduino core issue #382) passes the bench. |
-| Nucleo-32 G431KB | candidate | +5V pin (4.75–5.25 V, *verify* against UM1956) | CAN FD, unused in G3. |
+| Nucleo-32 G431KB | candidate | +5V pin (4.75–5.25 V, *verify* against UM1956) | CAN FD, unused in SI2. |
 | Nano classic (ATmega328P) | allowed | 5V pin | 2 KB of RAM. |
 | Nano 33 BLE Rev2 / IoT | allowed, 3.3 V BOM only | VIN (4.5 V min) | Not 5 V tolerant, so only on a 3.3 V IOREF variant. The original Nano 33 BLE is end-of-life. |
 | Nano ESP32 | excluded | — | VIN needs 6–21 V and it has no 5V input. |
 | Nano RP2040 Connect | excluded | — | End-of-life. Its on-board chips sit on A4/A5; A6/A7 are read through the Wi-Fi module. |
 | Nano Matter | excluded | — | I²C target mode is broken in its core. |
 
-Pins left on the Nano site: of 22 (D0–D13, A0–A7), G3 takes A4/A5, D4/D5, D2,
+Pins left on the Nano site: of 22 (D0–D13, A0–A7), SI2 takes A4/A5, D4/D5, D2,
 D9 and A3, plus D3 and D6 if SYNC and INT_N are fitted. That leaves 13, or 15
 without SYNC and INT_N. On the Every and R4, D0/D1 are Serial1, separate from
 USB serial; on the Nano classic they are its USB serial, so it has two fewer
@@ -165,7 +165,7 @@ USB serial; on the Nano classic they are its USB serial, so it has two fewer
 actuator slice spends one analog pin on V_ACT sense.
 
 PWM is tighter than the pin count. On the Every the PWM pins are D3, D5, D6, D9
-and D10; G3 takes D3 and D6 when SYNC and INT_N are fitted, takes D9, and bars
+and D10; SI2 takes D3 and D6 when SYNC and INT_N are fitted, takes D9, and bars
 D5, which leaves D10. A slice that needs two PWM outputs on an Every MUST leave
 out SYNC or INT_N to free D3 or D6.
 

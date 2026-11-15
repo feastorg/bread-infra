@@ -1,4 +1,4 @@
-% The G3 zone map for a board \W x \H mm (rfcs/0001-g3/07-mechanical.md).
+% The SI2 zone map for a board \W x \H mm (rfcs/0001-slice-interface-2/07-mechanical.md).
 % \input by zones-s.tex and zones-l.tex after they set \W and \H.
 % Millimetres, KiCad top view: bus edge on the left, y down from the top edge.
 % Every zone below the function area keeps its distance from the bottom edge.

@@ -6,7 +6,7 @@ Why each main choice was made, and what was considered instead.
 
 ## A 2×12 connector with a guide on the loaf
 
-G1/G2's 1×10 has no room for separate actuator and logic rails, the position
+Slice Interface 1's 1×10 has no room for separate actuator and logic rails, the position
 and interrupt lines, or grounds between the hazards. A 2×10 was too small once
 each supply pin needed ground around it. Keys alone can't make an unshrouded
 header safe: some offset and row-shifted insertions seat with a key hanging off
@@ -82,7 +82,7 @@ A Pi 4 lost replies across clock stretch at 66 and 79 kHz and none at
 49.7 kHz, but only with near-idle targets: masking interrupts brought the
 failures back at 49.7 kHz, and the fleet's real firmware fails 3–22 % of
 replies at 50 kHz under load ([03](03-bus.md#bus-integrity)). Lowering the
-rate doesn't fix that, and neither does the buffer. G3 therefore asks for two
+rate doesn't fix that, and neither does the buffer. SI2 therefore asks for two
 things: a reply check that a truncated frame can't pass, so a bad reply is
 never acted on, and a controller shown on the bench to tolerate the
 stretching, so bad replies are rare. The bench runs real firmware because the
@@ -102,7 +102,7 @@ and more to test.
 ## Two plain reserved pins
 
 An earlier draft routed a matched differential pair through loafs and chain.
-Nothing in G3 uses it, so the standard that does can define the routing.
+Nothing in SI2 uses it, so the standard that does can define the routing.
 
 ## Reference boards
 

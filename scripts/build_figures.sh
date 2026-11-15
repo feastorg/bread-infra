@@ -4,7 +4,7 @@
 # and poppler-utils. Build intermediates go to a temporary directory.
 #
 #   scripts/build_figures.sh                       build every figure
-#   scripts/build_figures.sh rfcs/0001-g3 stop-circuit   build one figure
+#   scripts/build_figures.sh rfcs/0001-slice-interface-2 stop-circuit   build one figure
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
