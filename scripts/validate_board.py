@@ -18,11 +18,14 @@ from inside KiCad and silently passes CI:
      errors. So `schematic_parity: true` runs the check and can never fail it.
      Until this is `error`, the parity gate is decorative.
 
-  3. Every symbol and footprint reference resolves against KiCad-Master-Lib.
+  3. Every symbol and footprint reference resolves against KiCad-Master-Lib, or,
+     for a stock library, against KiCad's installed stock libraries.
      KiCad embeds footprint geometry in the .kicad_pcb, so a board renders and
      fabricates perfectly long after its library reference has rotted. The rot
      only surfaces on update-from-library -- or when a generator tries to resolve
-     a nickname.
+     a nickname. A stock name can rot too: KiCad renames symbols between
+     versions (KiCad 10 has no Connector:Conn_01x10_Female), and KiCad reports
+     the missing symbol only as an ERC warning.
 
   4. hardware/Makefile does not have its ERC and DRC targets swapped.
      KiBot's `-s`/`--skip-pre` SKIPS the named preflight, so `drc: kibot -s drc`
@@ -73,6 +76,27 @@ STOCK = re.compile(
 )
 
 LIB_RE = re.compile(r'\(name "([^"]+)"\)\(type "KiCad"\)\(uri "([^"]+)"\)')
+
+# Where KiCad's stock libraries are installed: the Debian/Ubuntu packages (and
+# the KiBot CI image), and the Flatpak library runtimes.
+STOCK_SYM_DIRS = [
+    "/usr/share/kicad/symbols",
+    "/var/lib/flatpak/runtime/org.kicad.KiCad.Library.Symbols/*/stable/active/files/symbols",
+]
+STOCK_FP_DIRS = [
+    "/usr/share/kicad/footprints",
+    "/var/lib/flatpak/runtime/org.kicad.KiCad.Library.Footprints/*/stable/active/files/footprints",
+]
+
+
+def find_stock_dir(env: str, candidates: list[str]) -> Path | None:
+    if os.environ.get(env):
+        return Path(os.environ[env])
+    for pattern in candidates:
+        for d in sorted(Path("/").glob(pattern.lstrip("/"))):
+            if d.is_dir():
+                return d
+    return None
 
 
 def load_tables(master_lib: Path) -> tuple[dict, dict]:
@@ -190,7 +214,29 @@ def check_schematics_load(hw: Path, problems: list[str]) -> None:
                 problems.append(f"{sch.name}: KiCad cannot load this schematic")
 
 
-def check_libraries(hw: Path, fp: dict, sym: dict, problems: list[str]) -> None:
+def stock_found(kind: str, lib: str, item: str, stock_sym: Path, stock_fp: Path) -> str | None:
+    """Why a stock reference does not resolve, or None if it does."""
+    if kind == "fp":
+        pretty = stock_fp / f"{lib}.pretty"
+        if not pretty.is_dir():
+            return f"no such stock library '{lib}'"
+        return None if (pretty / f"{item}.kicad_mod").is_file() else f"'{item}' not in stock library '{lib}'"
+    path = stock_sym / f"{lib}.kicad_sym"
+    if not path.is_file():
+        return f"no such stock library '{lib}'"
+    top_level = re.compile(rf'^\t\(symbol "{re.escape(item)}"', re.M)
+    found = top_level.search(path.read_text(errors="ignore")) is not None
+    return None if found else f"'{item}' not in stock library '{lib}'"
+
+
+def check_libraries(
+    hw: Path,
+    fp: dict,
+    sym: dict,
+    problems: list[str],
+    stock_sym: Path | None = None,
+    stock_fp: Path | None = None,
+) -> None:
     refs: set[tuple[str, str]] = set()
     for f in hw.glob("*.kicad_pcb"):
         refs |= {
@@ -202,7 +248,13 @@ def check_libraries(hw: Path, fp: dict, sym: dict, problems: list[str]) -> None:
 
     for ref, kind in sorted(refs):
         lib, _, item = ref.partition(":")
-        if not lib or STOCK.match(lib):
+        if not lib:
+            continue
+        if STOCK.match(lib):
+            if stock_sym and stock_fp:
+                why = stock_found(kind, lib, item, stock_sym, stock_fp)
+                if why:
+                    problems.append(f"unresolvable {kind}: {ref} — {why}")
             continue
         table = fp if kind == "fp" else sym
         if lib not in table:
@@ -301,12 +353,19 @@ def main() -> int:
         return 0
 
     fp, sym = load_tables(master_lib)
+    stock_sym = find_stock_dir("KICAD10_SYMBOL_DIR", STOCK_SYM_DIRS)
+    stock_fp = find_stock_dir("KICAD10_FOOTPRINT_DIR", STOCK_FP_DIRS)
+    if not (stock_sym and stock_fp):
+        print(
+            "  note: KiCad's stock libraries not found (set KICAD10_SYMBOL_DIR and "
+            "KICAD10_FOOTPRINT_DIR) — stock library references are not checked"
+        )
     problems: list[str] = []
     check_versions(hw, problems)
     check_symbol_units(hw, problems)
     check_schematics_load(hw, problems)
     check_drc_severity(hw, problems)
-    check_libraries(hw, fp, sym, problems)
+    check_libraries(hw, fp, sym, problems, stock_sym, stock_fp)
     check_makefile(hw, problems)
     check_kibot_layers(hw, problems)
     check_gitignore(args.repo, problems)
