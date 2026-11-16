@@ -16,15 +16,16 @@ When this RFC is accepted, each of these becomes a tracked issue:
   replaces the "Standard 10-pin female header".
 - The manifest schema and the `slice.yaml` of each board ported to SI2: a new
   bus connector `type` for SI2 in place of `slice-bus-10pin` (proposed:
-  `slice-bus-2x12`), and `address_default` gives way to SLOT_ID. `hw_gen` keeps
-  its meaning, the board generation ([terminology](../../spec/terminology.md#generations-revisions-and-interfaces)): the first SI2
-  boards are G4.
+  `slice-bus-2x12`), and `address_default` gives way to SLOT_ID. `hw_gen`
+  keeps its meaning, the board generation
+  ([terminology](../../spec/terminology.md#generations-revisions-and-interfaces)):
+  the first SI2 boards are G4.
 - The six `Slice_TEMP_*` templates and `slice.yaml.template`.
 - Slice_DCMT and Slice_RLHT firmware: `LED_PIN 5`. DCMT also uses A3 and D9 for
   its encoder and motor, which SI2 takes. It needs 14 free pins and two PWM
   pins: on an Every that means leaving out SYNC or INT_N to free D3 or D6
-  ([03](03-bus.md#mcu-site)); otherwise it moves to the Pico variant or adds an I/O
-  expander on its private bus.
+  ([03](03-bus.md#mcu-site)); otherwise it moves to the Pico variant or adds
+  an I/O expander on its private bus.
 - CRUMBS: discovery from SLOT_ID, the 50 kHz bus, the 30 ms clock-stretch
   contract, and a reply integrity check a truncated frame can't pass (BUS-12,
   [CRUMBS#130](https://github.com/feastorg/CRUMBS/issues/130)).

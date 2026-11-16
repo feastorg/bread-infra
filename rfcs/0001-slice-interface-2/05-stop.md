@@ -118,6 +118,19 @@ active-high enable, a pull-up on a P-FET gate or an active-low enable.
 
 **OUT-4** Slice firmware MUST boot with its outputs off.
 
+## Relay contacts
+
+**OUT-5** The loaf RUN relay MUST carry and break the loaf's fused input
+current, 20 A DC at 28 V into motor loads, because a slot short can trip the
+stop before its slot fuse clears. The requirement is a DC inductive rating at
+28 V, not an automotive 14 V rating.
+
+**OUT-6** A slice MUST put at most 10 µF directly on V_ACT; anything larger
+sits behind a soft-start on the slice, so the relay contacts don't close into a
+capacitive surge.
+
+## V_ACT awareness
+
 Slices carry no stop receiver; they learn of a stop from V_ACT itself. A
 closed-loop slice that doesn't know V_ACT has gone keeps integrating against a
 motor that can't move, latches a false stall, and drives to its last setpoint,
@@ -138,14 +151,3 @@ belongs with the command watchdog and lease in the shared slice firmware.
 **OUT-10** A slice that drives a load able to back-drive when unpowered, such
 as a syringe or a vertical axis, MUST provide a mechanical or otherwise
 fail-safe brake; the stop removes the driver's supply.
-
-## Relay contacts
-
-**OUT-5** The loaf RUN relay MUST carry and break the loaf's fused input
-current, 20 A DC at 28 V into motor loads, because a slot short can trip the
-stop before its slot fuse clears. The requirement is a DC inductive rating at
-28 V, not an automotive 14 V rating.
-
-**OUT-6** A slice MUST put at most 10 µF directly on V_ACT; anything larger
-sits behind a soft-start on the slice, so the relay contacts don't close into a
-capacitive surge.

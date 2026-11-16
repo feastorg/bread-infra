@@ -46,8 +46,9 @@ wrong supply then opens the stop loop, so V_ACT stays off.
 
 **PWR-6** The detector MUST run from a regulator rated for 50 V or more at its
 input, and the relay MUST be held only by an actively driven output, so an
-unpowered or failed detector, or an open output, drops it. The relay's driver FET MUST be
-rated for 60 V or more, and its coil MUST have a diode plus a zener across it.
+unpowered or failed detector, or an open output, drops it. The relay's driver
+FET MUST be rated for 60 V or more, and its coil MUST have a diode plus a
+zener across it.
 
 **PWR-7** An SMBJ28A-class TVS (28 V standoff, 31.1 V minimum breakdown,
 45.4 V clamp) MUST sit on the loaf input and on the V_ACT rail, in both voltage
@@ -72,11 +73,11 @@ plugged in, so to flash a slice in a powered stack the controller and every
 supply MUST float. Otherwise flash with the stack unpowered.
 
 This is a cost against Slice Interface 1, where a slice came off the
-backplane to be flashed: under SI2 each reflash powers its loaf off, stopping the loaf's other
-slices, or needs every supply floating. A slice MAY offer a bus bootloader,
-flashed through the controller over I²C, which needs neither. A programming
-header (UPDI or SWD) in the front I/O zone avoids the earth loop only with an
-isolated programmer.
+backplane to be flashed: under SI2 each reflash powers its loaf off, stopping
+the loaf's other slices, or needs every supply floating. A slice MAY offer a
+bus bootloader, flashed through the controller over I²C, which needs neither.
+A programming header (UPDI or SWD) in the front I/O zone avoids the earth loop
+only with an isolated programmer.
 
 ## Regenerated energy
 

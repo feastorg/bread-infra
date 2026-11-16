@@ -75,7 +75,7 @@ board. It MAY be built if it carries everything SYS-1 lists for a head.
 
 A slice carries the bus interface block ([03](03-bus.md)), an MCU site, its
 own V_LOGIC regulation, and its function. Its actuator outputs follow the
-outputs rule in [05](05-stop.md#outputs).
+outputs and V_ACT rules in [05](05-stop.md#outputs).
 
 ## Capacity
 

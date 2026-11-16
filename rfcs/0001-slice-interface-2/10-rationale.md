@@ -6,11 +6,12 @@ Why each main choice was made, and what was considered instead.
 
 ## A 2×12 connector with a guide on the loaf
 
-Slice Interface 1's 1×10 has no room for separate actuator and logic rails, the position
-and interrupt lines, or grounds between the hazards. A 2×10 was too small once
-each supply pin needed ground around it. Keys alone can't make an unshrouded
-header safe: some offset and row-shifted insertions seat with a key hanging off
-the end, and an exhaustive search found no key placement that blocks them all.
+Slice Interface 1's 1×10 has no room for separate actuator and logic rails,
+the position and interrupt lines, or grounds between the hazards. A 2×10 was
+too small once each supply pin needed ground around it. Keys alone can't make
+an unshrouded header safe: some offset and row-shifted insertions seat with a
+key hanging off the end, and an exhaustive search found no key placement that
+blocks them all.
 The guide fixes position and row, and the keys then only have to block a
 reversed board.
 

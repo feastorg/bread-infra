@@ -10,14 +10,16 @@
 Slice Interface 2 (SI2) is the second interface between a BREADS Slice and the
 Loaf it plugs into. Every board so far, G1 to G3, uses Slice Interface 1, the
 1×10 bus. The first boards built to SI2 are generation G4. Generations,
-revisions and interfaces are separate labels; [terminology](../../spec/terminology.md#generations-revisions-and-interfaces) defines
-them. SI2 defines:
+revisions and interfaces are separate labels;
+[terminology](../../spec/terminology.md#generations-revisions-and-interfaces)
+defines them. SI2 defines:
 
 - **Connector:** a keyed 2×12 at 2.54 mm, with a card guide on the loaf at
   every slot.
 - **Power:** 12 V or 24 V per loaf, with a voltage key, and one ground net.
 - **Bus:** an idle-connect bus interface block (BIB) on every slice, between
-  its MCU and a 3.3 V I²C bus at 50 kHz.
+  its MCU and a 3.3 V I²C bus at 50 kHz (provisional), with an integrity
+  check on every reply.
 - **Stop:** a relay start/stop circuit at the head, whose loop runs out and
   back through every loaf; a relay on each loaf cuts actuator power. It is a
   **non-safety-rated interlock**.
@@ -55,7 +57,9 @@ appear in all capitals.
 Requirements carry an ID (such as **STOP-3**) so a conformance checklist can
 cite them. A figure marked *estimate* is a calculation, not a measurement. An
 item marked *verify* has not yet been checked against a datasheet or a bench.
-Nothing in this RFC has been measured on a bench yet.
+Nothing this RFC designs has been built or measured yet. The bus-integrity
+figures in [03](03-bus.md#bus-integrity) are measurements of the existing
+fleet, cited to their source.
 
 ## Terms
 
@@ -82,7 +86,7 @@ Nothing in this RFC has been measured on a bench yet.
 | E2 | One 2.2 k pull-up pair per bus, on the head, removed when the controller has its own | [03](03-bus.md) |
 | E3 | Stop: relay start/stop circuit with two force-guided relays and a capacitor start; the loop runs through a window-held relay on every loaf; RUN_FEED from the loop drives a relay per loaf that cuts V_ACT | [05](05-stop.md) |
 | E4 | SLOT_ID carries slot and loaf; SYNC and INT_N optional per slice; RESET shared | [03](03-bus.md), [04](04-addressing.md) |
-| E5 | Every actuator slice senses V_ACT, goes safe and stays disarmed when it drops, and boots disarmed; back-drivable loads need a brake | [05](05-stop.md#outputs) |
+| E5 | Every actuator slice senses V_ACT, goes safe and stays disarmed when it drops, and boots disarmed; back-drivable loads need a brake | [05](05-stop.md#v_act-awareness) |
 | P1 | 12 V or 24 V per loaf, with a voltage key; V_LOGIC 9–30 V, 0.5 A per slot; V_ACT 3 A per slot through a 4 A fuse | [06](06-power.md) |
 | P2 | One ground net; one floating-output supply per loaf, feeding only that loaf; at most one earth reference per stack | [06](06-power.md#ground) |
 | U1 | Nano-format socket plus a Pico variant, with a fixed pin map and a per-board power-entry table | [03](03-bus.md#mcu-site) |
@@ -101,7 +105,8 @@ Nothing in this RFC has been measured on a bench yet.
   measurements in its `docs/protocol.md`; the
   [Slice_DCMT](https://github.com/feastorg/Slice_DCMT) and
   [Slice_RLHT](https://github.com/feastorg/Slice_RLHT) firmware and docs.
-- The BREAD HardwareX paper (2023), Table 2; see [CITATION.md](../../CITATION.md).
+- The BREAD HardwareX paper (2023), Table 2; see
+  [CITATION.md](../../CITATION.md).
 - Datasheets: ADI LTC4313 (Rev F), ATmega4809, STM32L432KC, Arduino Nano R4
   (ABX00142) and Nano ESP32 (ABX00083), and the Arduino Nano family.
 - Adafruit's I²C address list.

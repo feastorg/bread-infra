@@ -43,7 +43,8 @@ flowchart LR
 ```
 
 **BUS-1** The bus is I²C at 3.3 V on VIO, run at 50 kHz. The rate is
-provisional until BUS-12 and BUS-13 are met on the bench ([09](09-bench-plan.md)).
+provisional until BUS-12 and BUS-13 are met on the bench
+([09](09-bench-plan.md)).
 
 **BUS-2** Every slice MUST connect to SCL and SDA only through an LTC4313-3
 (MSOP-8 or DFN-8) with no rise-time accelerator, as ADI's own bussed example
@@ -103,14 +104,16 @@ fails with nothing turning, and a quiet loop is clean. On the ATmega328P a bad
 reply is cut short with a 0xFF tail; on the ATmega4809 it is a full frame with
 one top bit wrong. Whether the lost clock edge is in the Pi's controller or in
 the target's TWI is not established. A cut-short reply passes CRUMBS' CRC-8
-about one time in 256 ([CRUMBS#130](https://github.com/feastorg/CRUMBS/issues/130)): 9 of 5106 polls of
-Slice_RLHT did, and one from Slice_DCMT read all brakes on while both motors
-ran.
+about one time in 256
+([CRUMBS#130](https://github.com/feastorg/CRUMBS/issues/130)): 9 of 5106
+polls of Slice_RLHT did, and one from Slice_DCMT read all brakes on while
+both motors ran.
 
 **BUS-12** The bus protocol MUST detect a corrupted or truncated reply with a
 check that a 0xFF-tailed truncation can't pass, such as a CRC-16 or a length
-and sequence check ([CRUMBS#130](https://github.com/feastorg/CRUMBS/issues/130)). A controller MUST NOT act
-on a reply that fails it.
+and sequence check
+([CRUMBS#130](https://github.com/feastorg/CRUMBS/issues/130)). A controller
+MUST NOT act on a reply that fails it.
 
 **BUS-13** The controller MUST tolerate every target's clock stretch at the bus
 rate. A controller qualifies by passing T1 and T2 with real slice firmware
@@ -123,8 +126,9 @@ it can. The bad-reply rate scales with how often and how long it masks them
 across all 16 targets.
 
 The buffer does help with a related failure: a target whose firmware holds SCL
-low ([Slice_DCMT#101](https://github.com/feastorg/Slice_DCMT/issues/101)). Its 35–55 ms stuck-bus cut-off
-disconnects that slice, and the rest of the bus keeps answering.
+low ([Slice_DCMT#101](https://github.com/feastorg/Slice_DCMT/issues/101)).
+Its 35–55 ms stuck-bus cut-off disconnects that slice, and the rest of the bus
+keeps answering.
 
 ## MCU site
 

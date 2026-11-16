@@ -60,12 +60,13 @@ example an MCP2515 over SPI as
 [can-nano-shield](https://github.com/feastorg/can-nano-shield) does, never
 through the SI2 bus.
 
-**CON-6** Insertion and removal happen with the loaf powered off.
+**CON-6** Slices MUST be inserted and removed with the loaf powered off.
 
 ### Mechanical checks still open
 
 - The 2×12 body is ±15.24 mm. The case window grows to about ±17.9 mm,
-  leaving about 0.45 mm to the loaf's locating holes. Slot interface v2
+  leaving about 0.45 mm to the loaf's locating holes. The next version of
+  bread-mechanical's slot interface (`slot-interface-v1.1.json` today)
   confirms that or moves the holes.
 - The second row moves the fin out 2.54 mm.
 - The guide's lead-in length is set against the header post height.

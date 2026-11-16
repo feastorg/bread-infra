@@ -5,8 +5,8 @@
 
 ## Formats and datums
 
-Formats and datums are unchanged from Slice Interface 1. Of the 40 existing slices, 37
-already share the bus datum.
+Formats and datums are unchanged from Slice Interface 1. Of the 40 existing
+slices, 37 already share the bus datum.
 
 **MEC-1** A slice is S (70 × 100 mm) or L (100 × 145 mm), with R5 corners.
 FPSG is 100 × 100 today; it moves to L, or the standard gains a third format.

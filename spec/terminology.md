@@ -149,7 +149,7 @@ for another.
 | Label | Answers | Form | Recorded in |
 | --- | --- | --- | --- |
 | Generation | which round of BREADS hardware the board belongs to | G1, G2, G3… | `hw_gen_current` in the manifest; `hw_gen_supported` lists the generations the firmware supports |
-| Revision | which respin of the board within its generation | r1, r2… | the board's title block and release tag; a template repo's name suffix (`-r2`) |
+| Revision | which respin of the board within its generation | r1, r2… | a template repo's name suffix (`-r2`); no other board records one yet |
 | Interface | what the board must do to plug into a Loaf | Slice Interface 1, 2… | the bus connector's `type` in the manifest (`slice-bus-10pin` is Slice Interface 1) |
 
 The generations so far:
