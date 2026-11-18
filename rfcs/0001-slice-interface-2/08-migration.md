@@ -44,8 +44,10 @@ When this RFC is accepted, each of these becomes a tracked issue:
 
 ## Spec work still to do
 
-- Connector part numbers, including a socket with a real hole-blocking option,
-  for the slot and for the chain ribbon.
+- Connector part numbers, including a slot socket with a real hole-blocking
+  option. The chain has candidates, a stock IDC socket with a keying plug
+  fitted by hand ([09](09-bench-plan.md#parts)), still to be checked on the
+  bench (T9).
 - The head schematic: the stop circuit, the stop supply and VIO.
 - The controller cable's connector and pin map (CON-10).
 - Part requirements and candidates for K0 and K1 (force-guided), the loaf RUN

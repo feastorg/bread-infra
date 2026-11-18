@@ -338,7 +338,8 @@ test slices, with spares.
 | TVS | loaf input and V_ACT: 28 V standoff, clamp below 50 V; stop lines: bidirectional, standoff above the coil zener | SMBJ28A; SMBJ18CA with 15 V coil zeners (*verify*) | 6 + 4 |
 | PTC | V_LOGIC per slot: 0.75 A hold, 60 V-class | a 60 V 0.75 A part, 1812 or radial (*verify*) | 4 |
 | Slot connectors | 2×12, 2.54 mm: vertical male on the loaf, right-angle female on the slice | generic, or Samtec TSW/SSW (*verify* the row pitch of the right-angle socket) | 4 + 6 |
-| Chain | shrouded, polarised 2×12 box header and IDC ribbon; IN and OUT keyed (CON-8) | 2×12 box headers, IDC sockets, 10 cm ribbon | 4 + 4 |
+| Chain | shrouded, polarised 2×12 box header and IDC ribbon; IN and OUT keyed (CON-8) | 2×12 box headers with the key pin clipped; 3M 89124-0001 IDC sockets; 10 cm ribbon | 4 + 4 |
+| Chain keys | blocks one contact hole of the chain IDC socket, and stays in when the plug is pulled (T9) | 3M 3435-0 keying plug, listed for the 89124-0001 (*verify* how it numbers the holes, and that it clears the header shroud) | 10 |
 | Adapters | MSOP-8 and SOT-23 to DIP | generic breakout boards | 20 |
 | Passives | 1 % E96 for the SLOT_ID ladder (12.7 k and the 16 table values), E24 otherwise; 10 µF 50 V ceramics; 470 µF 50 V electrolytic; 100 nF; 15 V zeners; 1000 µF 25 V and 1.5 k for the capacitor start | a resistor kit plus capacitors | kit |
 | Loads | 3 A at 12 V and at 24 V | 4 Ω and 8 Ω 50 W resistors, or a DC motor | 2 |
