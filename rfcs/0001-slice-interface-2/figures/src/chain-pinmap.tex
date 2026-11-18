@@ -43,7 +43,11 @@
                           5.3/g3Ctl/control and position, 9.0/g3Bus/I\textsuperscript{2}C and VIO}
       { \node[key, fill=\c, anchor=west] at (\x, 0) {};
         \node[note, anchor=west] at (\x+0.4, 0) {\t}; }
-    \node[note, anchor=north west, align=left, text width=15.5cm] at (0, -0.45)
+    \node[key, very thick, dashed, anchor=west] at (0, -0.5) {};
+    \node[note, anchor=west] at (0.4, -0.5) {IN key: no post on an IN header};
+    \node[key, very thick, dotted, anchor=west] at (5.3, -0.5) {};
+    \node[note, anchor=west] at (5.7, -0.5) {OUT key: no post on an OUT header};
+    \node[note, anchor=north west, align=left, text width=15.5cm] at (0, -0.95)
       {Pin \emph{n} faces \emph{n}$\pm$1 across the rows and \emph{n}$\pm$2 along its row,
        so each 12\,V pin (1, 12, 24) has ground on every neighbour.
        A ribbon blocks hole 21 at its upstream end and hole 16 at its downstream end,

@@ -46,8 +46,8 @@ When this RFC is accepted, each of these becomes a tracked issue:
 
 - Connector part numbers, including a socket with a real hole-blocking option,
   for the slot and for the chain ribbon.
-- The head schematic: the stop circuit, the stop supply, VIO, and the chain
-  pin map.
+- The head schematic: the stop circuit, the stop supply and VIO.
+- The controller cable's connector and pin map (CON-10).
 - Part requirements and candidates for K0 and K1 (force-guided), the loaf RUN
   and supply-held relays, the loaf window detector, and the 20 A loaf input
   connector.

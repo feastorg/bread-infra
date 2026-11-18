@@ -37,7 +37,7 @@ plug into an SI2 loaf.
 | | Covers |
 | --- | --- |
 | [01 System](01-system.md) | controller, head, loafs, slices; what each one carries; capacity |
-| [02 Connectors](02-connectors.md) | the slot connector, card guide and keys; the chain connector |
+| [02 Connectors](02-connectors.md) | the slot connector, card guide and keys; the chain connector; the controller cable; what each signal is |
 | [03 Bus and MCU site](03-bus.md) | the bus interface block, bus signals, the MCU pin and board tables, the sensor-carrier pattern |
 | [04 Addressing](04-addressing.md) | addresses, the SLOT_ID network and its table, reserved addresses |
 | [05 Stop and interlock](05-stop.md) | the stop circuit, its fault behaviour and known limits, the outputs rule |

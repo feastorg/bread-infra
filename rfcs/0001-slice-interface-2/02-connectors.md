@@ -26,6 +26,8 @@ connector is J1.
 | 11 | SDA | VIO |
 | 12 | RSV1 | RSV2 |
 
+What each signal is and who drives it: [Signals](#signals).
+
 ### Card guide and keys
 
 An unshrouded header can't locate the board it mates with. Every offset and
@@ -44,7 +46,8 @@ block the one misinsertion left, a reversed board.
 
 **CON-4** Voltage key: a 24 V loaf fits a post at 9A (VKEY) and a 12 V loaf
 leaves it out. A slice whose V_ACT loads are 12 V only MUST block hole 9A, so
-it seats only on a 12 V loaf; every other slice MUST leave 9A open.
+it seats only on a 12 V loaf; every other slice MUST leave 9A open. VKEY is a
+key, not a net: the loaf and the slice MUST leave 9A unconnected.
 
 ### Contacts
 
@@ -94,6 +97,8 @@ IDC ribbon, with this map in ribbon order:
 | 11 | GND | 23 | GND |
 | 12 | LOOP_OUT (12 V) | 24 | LOOP_RET (12 V) |
 
+What each signal is and who drives it: [Signals](#signals).
+
 On the header, pin *n* faces *n*±1 across the rows and *n*±2 along its row.
 Each 12 V pin (1, 12, 24) has ground on every one of those, so no single bridge
 joins two 12 V lines or puts 12 V on a signal. The bus sits away from all
@@ -105,7 +110,8 @@ The chain carries no supply rail: VIO, the stop loop and RUN_FEED, with their
 ground returns, are its only currents.
 
 **CON-8** Each loaf MUST have a CHAIN IN header, toward the head, and a CHAIN
-OUT header, both marked on the silkscreen. The chain MUST only go OUT to IN:
+OUT header, both marked on the silkscreen. The head MUST have one CHAIN OUT
+header. The chain MUST only go OUT to IN:
 
 - an OUT header leaves out the post at pin 21, and an IN header the post at
   pin 16;
@@ -116,13 +122,23 @@ OUT header, both marked on the silkscreen. The chain MUST only go OUT to IN:
 
 Pins 16 and 21 are grounds that guard no 12 V pin.
 
+The keys stop a loaf being chained backwards, which nothing else catches.
+Every pin meets its own signal across a ribbon, so a reversed loaf with the
+terminator on its IN header closes the stop loop through its supply-held
+contact and gets RUN_FEED. With the position lines wired as in CON-9, a
+reversed loaf after the first sees at its IN header the line the loaf before
+it sees and takes that loaf's addresses. Two slices then answer at each of
+them, and a write meant for one reaches both.
+
 ### Position lines
 
-**CON-9** The head grounds POS1. Each loaf passes the line it receives as POS*n*
-out as POS*n*+1, so loaf *k* (*k* = 1–4 along the chain) sees ground on line
-*k*. Lines that aren't grounded sit at VIO through a 100 k pull-up on each
-loaf. A loaf that sees no grounded line leaves its SLOT_ID network open, so its
-slices don't join ([04](04-addressing.md)).
+**CON-9** The head grounds POS1 on its CHAIN OUT header. Each loaf senses the
+position lines at its CHAIN IN header and wires IN POS*n* to OUT POS*n*+1 for
+*n* = 1–3, so loaf *k* (*k* = 1–4 along the chain) sees ground on line *k*. IN
+POS4 goes no further, and the loaf leaves OUT POS1 unconnected. Lines that
+aren't grounded sit at VIO through a 100 k pull-up on each loaf. A loaf that
+sees no grounded line leaves its SLOT_ID network open, so its slices don't join
+([04](04-addressing.md)).
 
 ```mermaid
 flowchart LR
@@ -132,3 +148,30 @@ flowchart LR
     C -- "POS3 → POS4" --> D["Loaf 4<br/>sees POS4"]
     D --> T["Terminator"]
 ```
+
+## Controller cable
+
+**CON-10** The head's controller header MUST carry SCL, SDA, INT_N, the SYNC
+and RESET drive inputs, the stop contact's enable (STOP-6) and ground, all at
+3.3 V. It carries no supply. Its connector and pin map are still open
+([08](08-migration.md#spec-work-still-to-do)).
+
+## Signals
+
+| Signal | Pins | Driven by | What it is | See |
+| --- | --- | --- | --- | --- |
+| GND | slot 1A, 1B, 3B, 4B, 5A, 6A, 6B, 7A, 10B; chain 2, 3, 10, 11, 13, 14, 16, 18, 21, 22, 23 | — | The stack's one ground net. | GND-1 |
+| V_LOGIC | slot 4A | loaf | The always-on logic supply, 12 or 24 V, 0.5 A per slot through a PTC. | PWR-1, PWR-3 |
+| V_ACT | slot 2A, 2B | loaf | The actuator rail, 12 or 24 V, 3 A per slot through a 4 A fuse. The loaf's RUN relay cuts it when the stack stops. | PWR-3, OUT-1, OUT-7 |
+| VIO | slot 11B; chain 20 | head | The 3.3 V bus rail. The bus, INT_N and SYNC levels, the position-line pull-ups and the SLOT_ID network run from it. | BUS-1, ADR-3 |
+| SCL, SDA | slot 10A, 11A; chain 17, 19 | controller; slices answer and stretch SCL | I²C at 3.3 V, 50 kHz provisional, with one 2.2 k pull-up pair on the head. A slice connects only through its LTC4313-3. | BUS-1 to BUS-5 |
+| INT_N | slot 8A; chain 15 | slices | Open-drain, active low, 10 k to VIO on the head. Optional per slice. | BUS-6, BUS-10 |
+| SYNC | slot 8B; chain 9 | head | Push-pull at VIO; a rising edge means sample, high for at least 10 µs. Optional per slice; 100 k pull-down on the slice. | BUS-7, BUS-9 |
+| RESET | slot 7B; chain 8 | head | Push-pull, active high, for at least 10 ms. Resets every slice and opens the stop contact. 100 k pull-down on the slice. | BUS-8, BUS-9, STOP-6 |
+| SLOT_ID | slot 9B | loaf (resistor to ground) and slice (12.7 k pull-up) | One analog level giving the slice's loaf and slot. | ADR-2 to ADR-4 |
+| POS1–POS4 | chain 4–7 | head grounds POS1; each loaf shifts it one line | Open or grounded, 100 k to VIO on each loaf. Tells each loaf its position. | CON-9 |
+| RUN_FEED | chain 1 | head | 12 V from the stop loop through K0 and K1. Drives each loaf's RUN relay coil. | STOP-3 |
+| LOOP_OUT, LOOP_RET | chain 12, 24 | head | The 12 V stop loop, out through each loaf's supply-held contact to the terminator and back. | STOP-1 |
+| KEY_A, KEY_B | slot 3A, 5B | — | Row keys: no post on the loaf, a blocked hole on the slice. | CON-3 |
+| VKEY | slot 9A | — | Voltage key: a post on a 24 V loaf, a blocked hole on a 12 V-only slice. No net. | CON-4 |
+| RSV1, RSV2 | slot 12A, 12B | — | Reserved, unconnected. | CON-5 |

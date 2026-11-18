@@ -34,7 +34,8 @@ and RUN_FEED, never a supply rail.
 
 - its own 12 V or 24 V power input, or a tap through loaf 1's input
   connector, never a second lead from loaf 1's supply;
-- the keyed cable header to the controller, and one or two Qwiic jacks on a
+- the keyed cable header to the controller
+  ([02](02-connectors.md#controller-cable)), and one or two Qwiic jacks on a
   second controller I²C bus;
 - the slice bus's single removable 2.2 k pull-up pair, and the VIO regulator
   (3.3 V ±5 %, up to 160 mA for 16 buffers, *estimate*);
