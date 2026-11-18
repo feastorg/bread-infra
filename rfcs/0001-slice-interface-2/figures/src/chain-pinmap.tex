@@ -1,0 +1,57 @@
+% The chain connector: a shrouded 2x12 box header, IDC ribbon numbering
+% (rfcs/0001-slice-interface-2/02-connectors.md#chain-connector).
+\documentclass[border=6pt]{standalone}
+\usepackage{rfc-fig}
+\begin{document}
+\begin{tikzpicture}
+  \tikzset{cp/.style={draw, minimum width=1.25cm, minimum height=1.05cm, inner sep=1pt,
+                      align=center, font=\ttfamily\scriptsize}}
+  % \c{n}{kind colour}{name}: odd pins on the top row, even pins below
+  \newcommand\cpin[3]{%
+    \pgfmathtruncatemacro\col{(#1-1)/2}
+    \pgfmathsetmacro\row{mod(#1,2)==1 ? 0 : -1.15}
+    \node[cp, fill=#2] (p#1) at (\col*1.35, \row) {#1\\#3};}
+
+  \cpin{1}{g3Stop}{RUN\_\\FEED}  \cpin{2}{g3Gnd}{GND}
+  \cpin{3}{g3Gnd}{GND}           \cpin{4}{g3Ctl}{POS1}
+  \cpin{5}{g3Ctl}{POS2}          \cpin{6}{g3Ctl}{POS3}
+  \cpin{7}{g3Ctl}{POS4}          \cpin{8}{g3Ctl}{RESET}
+  \cpin{9}{g3Ctl}{SYNC}          \cpin{10}{g3Gnd}{GND}
+  \cpin{11}{g3Gnd}{GND}          \cpin{12}{g3Stop}{LOOP\_\\OUT}
+  \cpin{13}{g3Gnd}{GND}          \cpin{14}{g3Gnd}{GND}
+  \cpin{15}{g3Ctl}{INT\_N}       \cpin{16}{g3Gnd}{GND}
+  \cpin{17}{g3Bus}{SCL}          \cpin{18}{g3Gnd}{GND}
+  \cpin{19}{g3Bus}{SDA}          \cpin{20}{g3Bus}{VIO}
+  \cpin{21}{g3Gnd}{GND}          \cpin{22}{g3Gnd}{GND}
+  \cpin{23}{g3Gnd}{GND}          \cpin{24}{g3Stop}{LOOP\_\\RET}
+
+  % the two key positions
+  \draw[very thick, dashed] (p16.south west) rectangle (p16.north east);
+  \draw[very thick, dotted] (p21.south west) rectangle (p21.north east);
+  \node[note, anchor=north, align=center] at (p16.south) {IN: no post};
+  \node[note, anchor=south, align=center] at (p21.north) {OUT: no post};
+
+  % shroud with its polarising notch on the odd-pin side
+  \draw[thick] ($(p1.north west)+(-0.25,0.65)$) rectangle ($(p24.south east)+(0.25,-0.55)$);
+  \fill[white] ($(p11.north west)+(0,0.66)$) rectangle ($(p13.north east)+(0,0.62)$);
+  \draw[thick] ($(p11.north west)+(0,0.65)$) -- ++(0,-0.25) -| ($(p13.north east)+(0,0.65)$);
+  \node[note, anchor=south] at ($(p11.north)!0.5!(p13.north)+(0,0.7)$) {polarising notch};
+
+  % key
+  \begin{scope}[shift={(0, -3.1)}]
+    \foreach \x/\c/\t in {0/g3Stop/12\,V stop circuit, 3.1/g3Gnd/ground,
+                          5.3/g3Ctl/control and position, 9.0/g3Bus/I\textsuperscript{2}C and VIO}
+      { \node[key, fill=\c, anchor=west] at (\x, 0) {};
+        \node[note, anchor=west] at (\x+0.4, 0) {\t}; }
+    \node[key, very thick, dashed, anchor=west] at (0, -0.5) {};
+    \node[note, anchor=west] at (0.4, -0.5) {IN key: no post on an IN header};
+    \node[key, very thick, dotted, anchor=west] at (5.3, -0.5) {};
+    \node[note, anchor=west] at (5.7, -0.5) {OUT key: no post on an OUT header};
+    \node[note, anchor=north west, align=left, text width=15.5cm] at (0, -0.95)
+      {Pin \emph{n} faces \emph{n}$\pm$1 across the rows and \emph{n}$\pm$2 along its row,
+       so each 12\,V pin (1, 12, 24) has ground on every neighbour.
+       A ribbon blocks hole 21 at its upstream end and hole 16 at its downstream end,
+       so it mates only OUT to IN; the terminator blocks hole 21 and fits only an OUT.};
+  \end{scope}
+\end{tikzpicture}
+\end{document}

@@ -138,12 +138,12 @@
         "hw_gen_current": {
           "type": "integer",
           "minimum": 1,
-          "description": "Current hardware generation."
+          "description": "Generation (G number) of the board in hardware/, fleet-wide; see spec/terminology.md."
         },
         "hw_gen_supported": {
           "type": "array",
           "items": { "type": "integer", "minimum": 1 },
-          "description": "All hardware generations this firmware supports."
+          "description": "Generations (G numbers) this firmware supports."
         },
         "pcb": {
           "type": "object",

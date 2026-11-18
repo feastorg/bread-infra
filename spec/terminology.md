@@ -141,6 +141,37 @@ Examples include:
 Use `Grain` for reusable adjacent hardware that should be indexed and validated
 with `grain.yaml`.
 
+## Generations, Revisions And Interfaces
+
+Three labels describe a board. Each answers one question, and none stands in
+for another.
+
+| Label | Answers | Form | Recorded in |
+| --- | --- | --- | --- |
+| Generation | which round of BREADS hardware the board belongs to | G1, G2, G3… | `hw_gen_current` in the manifest; `hw_gen_supported` lists the generations the firmware supports |
+| Revision | which respin of the board within its generation | r1, r2… | a template repo's name suffix (`-r2`); no other board records one yet |
+| Interface | what the board must do to plug into a Loaf | Slice Interface 1, 2… | the bus connector's `type` in the manifest (`slice-bus-10pin` is Slice Interface 1) |
+
+The generations so far:
+
+| Generation | Boards | Interface |
+| --- | --- | --- |
+| G1 | 2021–2023 boards from the original OSF project | Slice Interface 1 |
+| G2 | 2024 boards | Slice Interface 1 |
+| G3 | the current designs in each repo's `hardware/` | Slice Interface 1 |
+| G4 | the first boards built to Slice Interface 2 | Slice Interface 2, proposed in [RFC 0001](../rfcs/0001-slice-interface-2/README.md) |
+
+- A generation number is fleet-wide. A Slice whose first design is in today's
+  `hardware/` is G3, not G1; it simply has no G1 or G2 board.
+- Generations are whole numbers. `hw_gen` is an integer, so there is no G2.5.
+- A new generation can keep its interface. Boards built to a new interface
+  start a new generation.
+- An interface is versioned on its own: a change that keeps every board on it
+  working is a minor version (Slice Interface 2.1); a change that breaks one,
+  such as a pin-map change, is the next interface.
+- Say "a G3 board", "DCMT G3 r2", "a Slice Interface 2 Loaf". Do not use a
+  generation to name an interface, or an interface to name a board generation.
+
 ## Usage Notes
 
 - Say `BREAD`, not `BREADS device`.

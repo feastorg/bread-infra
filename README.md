@@ -4,6 +4,7 @@ BREADS definitions, specifications, schemas, templates, and reusable CI
 infrastructure for BREADS-compatible hardware repos.
 
 - **`spec/`** — Human-readable specifications and BREADS terminology
+- **`rfcs/`** — Proposed changes to the standards, reviewed before they land in `spec/`
 - **`schemas/`** — JSON Schemas for manifest validation (machine-readable)
 - **`templates/`** — Copy-paste manifest templates for new repos
 - **`.github/workflows/`** — Reusable CI workflows (KiBot, docs deployment, manifest validation)

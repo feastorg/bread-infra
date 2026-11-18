@@ -1,0 +1,51 @@
+% The SI2 zone map for a board \W x \H mm (rfcs/0001-slice-interface-2/07-mechanical.md).
+% \input by zones-s.tex and zones-l.tex after they set \W and \H.
+% Millimetres, KiCad top view: bus edge on the left, y down from the top edge.
+% Every zone below the function area keeps its distance from the bottom edge.
+\pgfmathsetmacro\dy{\H-100}   % shift for the zones tied to the bottom edge
+\pgfmathsetmacro\fx{\W-12}    % left edge of the front I/O zone
+\begin{tikzpicture}[x=0.1cm, y=-0.1cm]
+  \newcommand\zone[5]{\draw[zone, fill=#5] (#1,#2) rectangle (#3,#4);}
+  % board outline, R5 corners
+  \draw[very thick, rounded corners=0.5cm] (0,0) rectangle (\W,\H);
+
+  % one L-shaped outline: full width above the MCU, right of it below
+  \draw[zone, fill=g3Func] (9,8) -- (\fx,8) -- (\fx,91+\dy) -- (38,91+\dy)
+        -- (38,52+\dy) -- (9,52+\dy) -- cycle;
+  \node[zone, draw=none, font=\small\bfseries] at ({(9+\fx)/2},{(8+52+\dy)/2}) {FUNCTION};
+  \node[note] at ({(9+\fx)/2},{(8+52+\dy)/2+5}) {your circuit goes here};
+
+  \zone{\fx}{10}{\W}{\H-10}{g3Act!40}
+  \node[note, rotate=90] at (\fx+6.3,\H/2) {FRONT I/O $\cdot$ field terminals; mains only here};
+
+  \draw[dashed] (0,32.1+\dy) rectangle (9,67.9+\dy);
+  \zone{-7}{34.76+\dy}{7.9}{65.24+\dy}{g3Bus}
+  \node[note, rotate=90] at (0.45,50+\dy) {BUS (J1)\\2$\times$12 keyed};
+
+  \draw[zone, dashed, fill=g3Ctl!50] (9.6,36+\dy) rectangle (17.4,64+\dy);
+  \node[note, rotate=90] at (13.5,50+\dy) {BIB $\cdot$ back side};
+
+  \zone{18.5}{54+\dy}{36.8}{102.4+\dy}{g3Mcu}
+  \node[note, font=\scriptsize] at (27.6,73+\dy) {\textbf{MCU}\\Nano-format\\socket\\USB runs\\2.4\,mm past\\the bottom\\edge};
+
+  \zone{2.5}{70+\dy}{16}{89+\dy}{g3Pwr}
+  \node[note, font=\scriptsize] at (9.25,79.5+\dy) {\textbf{POWER}\\9--30\,V in\\fuse and\\buck};
+
+  \zone{46.9}{93.1+\dy}{54.1}{98.7+\dy}{g3Key}  \node[note, font=\scriptsize] at (50.5,95.9+\dy) {LED};
+  \zone{38}{91.6+\dy}{45.5}{99+\dy}{white}      \node[note, font=\scriptsize] at (41.75,95.3+\dy) {ID};
+
+  % corner holes with their keep-outs
+  \foreach \x/\y in {5/5, \W-5/5, 5/\H-5, \W-5/\H-5} {
+    \draw[dotted] (\x,\y) circle (5);
+    \draw (\x,\y) circle (2.5);
+  }
+
+  % dimensions
+  \draw[|-|] (0,-4) -- (\W,-4) node[midway, above, note] {\pgfmathprintnumber{\W}};
+  \draw[|-|] (\W+4,0) -- (\W+4,\H) node[midway, right, note] {\pgfmathprintnumber{\H}};
+  \draw[|-|] (-10,\H) -- (-10,\H-50) node[midway, left, note, align=right] {bus centre\\50.0 up};
+  \node[note, anchor=north west, align=left, text width=9cm] at (-10,\H+6)
+    {Bus pin row 3.6\,mm from the edge. Holes \O 5.0 NPTH, 5\,mm in from each corner.
+     Every zone below the function area keeps the same distance from the bottom
+     edge in S and L.};
+\end{tikzpicture}
