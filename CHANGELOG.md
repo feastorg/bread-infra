@@ -11,6 +11,14 @@ For schema-specific changes, see [SCHEMA_CHANGELOG.md](SCHEMA_CHANGELOG.md).
 ## [Unreleased]
 
 ### Added
+- `spec/slice/slice-interface-1.md` — Slice Interface 1, the 10-pin bus
+  every Slice and Loaf uses today: the slot pin map and who drives each
+  signal, power, logic levels and pull-ups as built, e-stop, addressing,
+  and the chain connector. Slice board formats (bus row, mounting holes,
+  outline) are recorded per generation, with the boards that differ. An
+  origins section traces the slot back to 2021.
+- `CITATION.md` lists Oberloier's 2021 dissertation, whose Chapter 3 is an
+  early version of the HardwareX paper.
 - `spec/firmware-layering.md` — the layers of Slice firmware (Slice, the
   shared `bread-slice-core` library, contracts, CRUMBS, device libraries, this
   standard), what each may depend on, what may enter the core library, and how
