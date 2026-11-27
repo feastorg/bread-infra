@@ -1,0 +1,57 @@
+% The stop circuit on the head, with the loop through every loaf
+% (rfcs/0001-slice-interface-2/05-stop.md).
+\documentclass[border=8pt]{standalone}
+\usepackage{rfc-fig}
+\usepackage[european]{circuitikz}
+\begin{document}
+\begin{circuitikz}[font=\footnotesize, every node/.append style={align=center}]
+  \ctikzset{bipoles/length=1.1cm}
+
+  % the loop: stop supply -> F1 -> e-stop -> stop contact -> LOOP_OUT
+  \node[anchor=east] at (0,0) {12\,V stop\\supply};
+  \draw (0,0) to[fuse, l=$F_1$\\${\le}1$\,A] (2,0)
+              to[ncs, l=e-stop] (4,0)
+              to[nos, l=stop\\contact] (6,0)
+              -- (7,0) node[below left=1pt and -4pt] {LOOP\_OUT};
+  % through each loaf's supply-held contact to the terminator
+  \draw (7,0) -- (7.6,0) to[nos, l=$SH_1$] (9.2,0);
+  \draw[dotted, thick] (9.2,0) -- (10.2,0);
+  \draw (10.2,0) to[nos, l=$SH_n$] (11.8,0) -- (12.6,0);
+  \draw (12.6,0) -- (12.6,-1.4);
+  \node[draw, dashed, fit={(7.5,0.85) (12.4,-0.35)}, inner sep=2pt] (loafs) {};
+  \node[note, anchor=south] at (loafs.north) {one supply-held contact per loaf, held by its window detector};
+  \node[note, anchor=west] at (12.7,-0.7) {terminator\\plug};
+
+  % LOOP_RET back to the head
+  \draw (12.6,-1.4) -- (5,-1.4) node[pos=0.62, below] {LOOP\_RET};
+
+  % seal-in path: K0a, K1a in series to the coil node X
+  \draw (5,-1.4) to[nos, l_=$K0_a$] (5,-3.1) to[nos, l_=$K1_a$] (5,-4.8) node[circ] (X) {};
+  \node[note, anchor=south west] at (5.1,-4.8) {coil node};
+
+  % start path: R, K0 NC, K1 NC charge C; START dumps C into the coils
+  \draw (5,-1.4) -- (2,-1.4) to[R, l_=$R_s$\\1.5\,k] (2,-2.6)
+        to[ncs, l_=$K0_{nc}$] (2,-3.7) to[ncs, l_=$K1_{nc}$] (2,-4.8) node[circ] (C) {};
+  \draw (C) to[C, l_=$C_s$\\1000\,\textmu F] (2,-6.6) node[ground] {};
+  \draw (C) to[push button, l=START] (X);
+
+  % the two head relay coils, each with a diode plus a zener
+  \draw (X) -- (8,-4.8);
+  \draw (6.5,-4.8) node[circ] {} to[generic, l_=K0\\coil] (6.5,-6.6) node[ground] {};
+  \draw (8,-4.8) to[generic, l_=K1\\coil] (8,-6.6) node[ground] {};
+
+  % RUN_FEED: K0b, K1b in series from LOOP_RET, then F2, out to every loaf's RUN relay
+  \draw (10.2,-1.4) node[circ] {} to[nos, l=$K0_b$] (10.2,-3.0)
+        to[nos, l=$K1_b$] (10.2,-4.6) to[fuse, l=$F_2$\\${\le}1$\,A] (10.2,-6.0)
+        -- (11.6,-6.0) node[above] {RUN\_FEED};
+  \draw (11.6,-6.0) -- (12.6,-6.0) to[generic, l_=RUN relay\\coil] (12.6,-7.6) node[ground] {};
+  \node[note, anchor=west] at (13.5,-6.8) {one per loaf;\\its contact\\cuts V\_ACT};
+
+  % notes
+  \node[note, anchor=north west, align=left, text width=13.5cm] at (0,-8.1)
+    {K0 and K1 are force-guided: a monitor contact ($K_{nc}$) cannot close while a
+     normally-open contact of the same relay is welded. Every coil here has a diode
+     plus a zener across it. The stop contact closes only while the controller drives
+     its enable and RESET is low. Relay contacts are drawn de-energised.};
+\end{circuitikz}
+\end{document}
