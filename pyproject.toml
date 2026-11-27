@@ -23,8 +23,9 @@ line-length = 120
 target-version = "py312"
 
 [tool.ruff.format]
-# Formatted in #26, which rewrites both; listed here so the two PRs do not conflict.
-exclude = ["scripts/validate_board.py", "tests/test_validate_board.py"]
+# Markdown: ruff would reformat the Python in specs' and RFCs' code blocks, which are laid out for reading.
+# The two scripts are formatted in #26, which rewrites both; listed here so the two PRs do not conflict.
+exclude = ["*.md", "scripts/validate_board.py", "tests/test_validate_board.py"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "SIM"]
