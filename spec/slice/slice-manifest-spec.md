@@ -12,6 +12,17 @@ Every other 1.0 field is removed. A field is added back when something reads
 it. The validator picks 2.0 for a manifest whose `schema_version` is `2.x`;
 CI picks it with `schema_ref: schema-v2.0`.
 
+To convert a 1.0 manifest, run from the board's repository:
+
+```sh
+python3 <bread-infra>/scripts/migrate_manifest_v2.py . --gen 3 --write
+```
+
+It takes `mounting.pattern` and `pcb.dimensions` from the board outline in
+`hardware/BREAD_Slice.kicad_pcb`. Pass `--no-format` for a board whose bus or
+holes do not meet its outline's format. A fabricated board's `status` is set
+to `built` by hand.
+
 ```yaml
 schema_version: "2.0"
 id: "slice-dcmt"
