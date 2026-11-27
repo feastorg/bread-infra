@@ -37,7 +37,7 @@ concept → prototype → validated → released
 
 | Field | Type | Notes |
 |---|---|---|
-| `hardware` | semver string | PCB revision |
+| `hardware` | semver string | Legacy; not the board's revision, which is its G and r label ([terminology](../terminology.md#generations-revisions-and-interfaces)) |
 | `firmware` | semver string \| null | Firmware version; null for hardware-only |
 | `manifest` | semver string | Version of this manifest file's content |
 

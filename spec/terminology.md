@@ -146,40 +146,50 @@ with `grain.yaml`.
 Three labels describe a board. Each answers one question, and none stands in
 for another.
 
-| Label | Answers | Form | Recorded in |
+| Label | Answers | Form | Where it is recorded |
 | --- | --- | --- | --- |
-| Generation | which release of BREADS hardware the board was built for | G1, G2, G3… | `hw_gen_current` in the manifest, the release tag, the silkscreen |
-| Revision | which respin of the board within its generation | r1, r2…, from r1 | the release tag, the silkscreen |
-| Interface | what the board must do to plug into a Loaf | Slice Interface 1, 2… | the bus connector's `type` in the manifest (`slice-bus-10pin` is Slice Interface 1) |
+| Generation | which release of BREADS-compatible hardware the board is built for | G1, G2, G3… | the manifest's `hw_gen_current`; on a released board, its release tag and silkscreen |
+| Revision | which respin of the board within its generation | r1, r2…, from r1 | on a released board, its release tag and silkscreen |
+| Interface | the slot a Slice plugs into and a Loaf provides | Slice Interface 1, 2… | today only by the manifest's bus connector type (`slice-bus-10pin` is Slice Interface 1) |
 
 The generations so far:
 
 | Generation | Boards | Interface |
 | --- | --- | --- |
-| G1 | the original OSF project's boards, 2021–2023 ("BREAD v1" in the papers) | [Slice Interface 1](slice/slice-interface-1.md) |
-| G2 | the 2024 boards ("BREAD v2" in the papers) | Slice Interface 1 |
-| G3 | the next release: the designs in each repo's `hardware/`, not yet built | Slice Interface 1 |
-| G4 | the first boards built to Slice Interface 2 | Slice Interface 2, proposed in RFC 0001 |
+| G1 | the boards built for BREAD v1, 2021–2023 | [Slice Interface 1](slice/slice-interface-1.md) |
+| G2 | the boards built for BREAD v2, 2024 | Slice Interface 1 |
+| G3 | the next release, not built yet; most repos' `hardware/` designs are heading for it | Slice Interface 1 |
+| G4 (proposed) | the first boards built to Slice Interface 2, proposed in RFC 0001 | Slice Interface 2 |
 
-- A generation is a release of BREADS hardware: the boards built for it. A
-  design in `hardware/` carries the generation it is heading for and is in
-  development until it is built and released. A design moved to a newer
-  KiCad without being redesigned and released keeps its generation.
+- A generation is a release of BREADS-compatible hardware: the boards built
+  for it. A design in `hardware/` carries the generation it is heading for
+  and is in development until it is built and released. A design changed
+  only by moving it to a newer KiCad, with no change to its circuit or
+  copper, keeps the generation it was built for. So does a board that is not
+  carried into the next release.
 - Generation numbers are fleet-wide whole numbers. A Slice whose first design
-  is in today's `hardware/` is G3; it has no G1 or G2 board. There is no G2.5.
-- A revision counts respins within one generation, starting at r1. A board is
-  named by both: "DCMT G3 r1". Its silkscreen reads, for example,
-  "SLC_DCMT G3 r1 2026". Older silkscreen labels such as "R0 2021" or
-  "rev.A" are quoted as they are, not renamed. The `-r1`/`-r2` suffix on the
-  template repo names predates this scheme.
-- A hardware release is a git tag on the board's repo, such as `g3-r1`, with
-  the fabrication outputs attached to a GitHub release built from that tag.
-  Earlier built designs stay on `main` under `archive/hw_archive/` and are
-  tagged the same way. No board has a release tag yet.
-- A new generation can keep its interface. A board built to a new interface
-  starts a new generation.
-- "BREAD v1" and "BREAD v2", as the papers say, are other names for G1 and
-  G2. Manifests, tags and silkscreen use the G number.
+  is in today's `hardware/` is heading for G3; it has no G1 or G2 board.
+- A revision counts respins within one generation, starting at r1. A board
+  is named by both: "DCMT G3 r1". A G3 board's silkscreen reads, for example,
+  "BREAD Slice / DC Motor Controller / SLC_DCMT / G3 r1 11-2026".
+- Earlier labels are quoted as they are, not renamed: silkscreen such as
+  "R0 2021" or "rev.A", the `-r1`/`-r2` suffix on the template repo names,
+  and the manifest's `version.hardware`. None of them is a revision in this
+  scheme. Each built historical board is mapped to its generation and
+  revision once, in a table (DCMT "R0 2021" is G1 r1).
+- A hardware release is a git tag on the board's repo, one per fabricated
+  revision, such as `g3-r1`, with the fabrication outputs attached to a
+  GitHub release built from that tag. A generation's release is a list in
+  bread-infra of the board tags that make it up. No board has a release tag
+  yet.
+- Built earlier designs are kept under `archive/hw_archive/` and tagged as
+  well. Today only Slice_DCMT and Slice_RLHT keep designs there; the other
+  G1 designs are on OSF ([CITATION.md](../CITATION.md)).
+- A new generation can keep its interface: G1 to G3 all use Slice
+  Interface 1. Slice Interface 2 is proposed to start at G4.
+- "BREAD v1" and "BREAD v2" are the papers' names for G1 and G2 (Hafting et
+  al., *Technologies* 2025, Table 2). Manifests, tags and silkscreen use the
+  G number.
 - Say "a G3 board", "DCMT G3 r1", "a Slice Interface 2 Loaf". Do not use a
   generation to name an interface, or an interface to name a generation.
 

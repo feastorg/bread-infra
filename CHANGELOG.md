@@ -12,11 +12,13 @@ For schema-specific changes, see [SCHEMA_CHANGELOG.md](SCHEMA_CHANGELOG.md).
 
 ### Added
 - `spec/terminology.md` — "Generations, Revisions And Interfaces": a
-  generation is a release of BREADS hardware (G1 = BREAD v1, 2021–2023;
-  G2 = BREAD v2, 2024; G3 = the designs now in `hardware/`), a revision
-  counts respins within one from r1 ("G3 r1"), a release is a tag such as
-  `g3-r1`, and the interface is named separately. The `hw_gen` fields in the
-  schemas and manifest specs follow it.
+  generation is a release of BREADS-compatible hardware (G1 = BREAD v1,
+  2021–2023; G2 = BREAD v2, 2024; G3 = the next release, which most
+  `hardware/` designs are heading for), a revision counts respins within one
+  from r1 ("G3 r1"), a release is a tag such as `g3-r1`, and the interface is
+  named separately. The `hw_gen` fields in the schemas and manifest specs,
+  `naming.md` (repo names no longer carry a revision), the bench-record guide
+  and the manifest templates (`hw_gen_current: 3`) follow it.
 - `spec/slice/slice-interface-1.md` — Slice Interface 1, the 10-pin bus
   every Slice and Loaf uses today: the slot pin map and who drives each
   signal, power, logic levels and pull-ups as built, e-stop, addressing,

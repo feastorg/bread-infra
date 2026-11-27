@@ -3,14 +3,13 @@
 Slice modules follow a structured naming format to remain compact yet descriptive:
 
 ```js
-Slice_<FUNCTION>_(<ID>)_[<REVISION>]
+Slice_<FUNCTION>_(<ID>)
 ```
 
 ## General Rules
 
 - `<FUNCTION>`: A short, uppercase code that identifies the slice’s primary role (e.g. `TEMP` for templates, `PRTO` for prototyping, `THRM` for thermocouple reading, `DCMT` for DC motor control).
 - `<ID>`: A concise identifier used **only when multiple versions** of a slice exist. This may reflect a specific sensor model (e.g. `31855`) for function cards or layout type (e.g. `S2L` for small 2-layer) and controller platform (e.g. `NUCL` for Nucleo) for template boards.
-- `<REVISION>`: An optional suffix (`-r2`, `-revB`, etc.) for tracking major hardware revisions or forks. Only used when divergence cannot be handled via standard versioning.
 
 Additional guidance:
 
@@ -57,28 +56,16 @@ Used for general-purpose template and prototyping slices that vary in size, comp
 
 - Always include **board dimensions** and **layer count** for hardware selection clarity.
 
-## 🔄 Revision Tracking
+## 🔄 Revisions
 
-For major design forks or internal revisions of the same variant:
+A repo name carries no revision. A board's generation and revision ("DCMT
+G3 r1") and its release tags (`g3-r1`) are defined in
+[Terminology](../terminology.md#generations-revisions-and-interfaces), and
+every revision of a design stays in the one repo.
 
-| Example                    | Meaning                                  |
-| -------------------------- | ---------------------------------------- |
-| `Slice_THRM_31856-r2`      | Second revision of the 31856-based slice |
-| `Slice_TEMP_NANO_S2L-r1`   | Initial rev of small Nano template       |
-| `Slice_TEMP_NANO_S2L-revB` | Parallel variant diverging from revA     |
+A design that becomes a different product, with a different function, IC or
+platform, gets its own `<ID>` and its own repository, as in the patterns
+above.
 
-➡️ Use suffixes like `-r2`, `-r3`, etc. for **serial revisions** of the same design.  
-➡️ Use suffixes like `-revB`, `-revC`, etc. for **parallel forks** that share a function but differ in layout, constraints, or development path.
-
-> The preferred convention is to use a **single Git repository** and **Semantic Versioning (SemVer)** via tags/releases for minor design iterations and bugfixes (e.g. `v1.0.0`, `v1.1.1`, etc.).
-
-However, if a design change:
-
-- Diverges significantly in layout, controller, or feature scope
-- Needs to be developed in parallel with an existing slice
-- Is intended to **phase out** or **replace** a legacy board gradually
-- Or cannot be meaningfully versioned within the same repo
-
-➡️ Then it should be assigned a unique suffix and placed in a **separate repository**.
-
-This approach supports long-term clarity, traceability, and modular development while allowing flexibility during hardware iteration and community contribution.
+The `-r1` and `-r2` suffixes on the template repos (`Slice_TEMP_NANO_S2L-r1`
+and the rest) predate this rule and are not revisions.
