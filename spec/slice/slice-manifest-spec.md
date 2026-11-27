@@ -37,7 +37,7 @@ concept → prototype → validated → released
 
 | Field | Type | Notes |
 |---|---|---|
-| `hardware` | semver string | PCB revision |
+| `hardware` | semver string | Legacy; not the board's revision, which is its G and r label ([terminology](../terminology.md#generations-revisions-and-interfaces)) |
 | `firmware` | semver string \| null | Firmware version; null for hardware-only |
 | `manifest` | semver string | Version of this manifest file's content |
 
@@ -104,8 +104,8 @@ Object or null. The main functional IC on the board (not the MCU).
 
 | Field | Type | Notes |
 |---|---|---|
-| `hw_gen_current` | integer | Current HW generation number |
-| `hw_gen_supported` | integer[] | All gens firmware supports |
+| `hw_gen_current` | integer | Generation (G number) the board in `hardware/` is built for, or heading for while in development; see [terminology](../terminology.md#generations-revisions-and-interfaces) |
+| `hw_gen_supported` | integer[] | Generations the firmware supports |
 | `pcb_color_prototype` | string \| null | Solder mask color for prototypes |
 | `pcb_color_production` | string \| null | Solder mask color for production |
 | `enclosure` | object \| null | `{supported: bool, path: string|null}` |
