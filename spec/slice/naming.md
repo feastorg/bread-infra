@@ -67,5 +67,5 @@ A design that becomes a different product, with a different function, IC or
 platform, gets its own `<ID>` and its own repository, as in the patterns
 above.
 
-The `-r1` and `-r2` suffixes on the template repos (`Slice_TEMP_NANO_S2L-r1`
-and the rest) predate this rule and are not revisions.
+The template repos carried `-r1` and `-r2` suffixes until 2026-11-27, when
+they were renamed to follow this rule.

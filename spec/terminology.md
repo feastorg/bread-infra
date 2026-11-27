@@ -173,7 +173,7 @@ The generations so far:
   is named by both: "DCMT G3 r1". A G3 board's silkscreen reads, for example,
   "BREAD Slice / DC Motor Controller / SLC_DCMT / G3 r1 11-2026".
 - Earlier labels are quoted as they are, not renamed: silkscreen such as
-  "R0 2021" or "rev.A", the `-r1`/`-r2` suffix on the template repo names,
+  "R0 2021" or "rev.A", the `-r1`/`-r2` suffix the template repo names had until 2026-11,
   and the manifest's `version.hardware`. None of them is a revision in this
   scheme. Each built historical board is mapped to its generation and
   revision once, in a table (DCMT "R0 2021" is G1 r1).
