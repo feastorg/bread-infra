@@ -68,6 +68,13 @@ For schema-specific changes, see [SCHEMA_CHANGELOG.md](SCHEMA_CHANGELOG.md).
   `Buffer`, `CPLD_*`, `CPU*`, `DSP_*`, `FPGA_*`, `Fiber_Optic`, `GPU`, `LED`
   and `Security`. The list now covers every library in KiCad 10's stock symbol
   set; `tests/test_validate_board.py` checks it.
+- `validate_board.py` checks that a reference into a stock KiCad library names
+  a symbol or footprint that exists, using the installed stock libraries
+  (`/usr/share/kicad`, the Flatpak runtimes, or `KICAD10_SYMBOL_DIR` /
+  `KICAD10_FOOTPRINT_DIR`). It used to pass any stock reference by library name
+  alone, so `Connector:Conn_01x10_Female`, which KiCad 10 no longer has, passed
+  on 26 boards. When no stock libraries are found it says so and skips the
+  check, as before. Tests in `tests/test_validate_board.py`.
 
 ---
 
