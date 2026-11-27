@@ -6,7 +6,7 @@ using either a YAML config or direct CLI input.
 
 import argparse
 import sys
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 import yaml
@@ -18,37 +18,21 @@ def load_config(config_file: Path) -> dict:
         return yaml.safe_load(f) or {}
 
 
-def render_template(
-    template: str, project: str, artifacts: list[str], timestamp: str
-) -> str:
+def render_template(template: str, project: str, artifacts: list[str], timestamp: str) -> str:
     """Render the Markdown index from the template and input data."""
     seen = set()
-    uniq = [
-        a.strip()
-        for a in artifacts
-        if a.strip() and (a.lower() not in seen and not seen.add(a.lower()))
-    ]
+    uniq = [a.strip() for a in artifacts if a.strip() and (a.lower() not in seen and not seen.add(a.lower()))]
     links_block = "\n".join(f"- [{a}](./{a})" for a in uniq)
-    return (
-        template.replace("$PROJECT_NAME", project)
-        .replace("$LINKS", links_block)
-        .replace("$DATE", timestamp)
-    )
+    return template.replace("$PROJECT_NAME", project).replace("$LINKS", links_block).replace("$DATE", timestamp)
 
 
 def main():
     """Main script logic for generating index.md."""
     parser = argparse.ArgumentParser(description="Generate index.md for KiBot outputs")
-    parser.add_argument(
-        "-c", "--config", type=Path, help="Path to config.kibot.site.yml"
-    )
+    parser.add_argument("-c", "--config", type=Path, help="Path to config.kibot.site.yml")
     parser.add_argument("--project", type=str, help="Override project name")
-    parser.add_argument(
-        "--artifacts", type=str, help="Comma-separated list of artifacts"
-    )
-    parser.add_argument(
-        "--template", type=Path, default=Path("docs/kibot/index_template.md")
-    )
+    parser.add_argument("--artifacts", type=str, help="Comma-separated list of artifacts")
+    parser.add_argument("--template", type=Path, default=Path("docs/kibot/index_template.md"))
     parser.add_argument("--out-md", type=Path, default=Path("docs/kibot/index.md"))
     args = parser.parse_args()
 
@@ -68,7 +52,7 @@ def main():
         )
         sys.exit(1)
 
-    timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%d at %H:%M:%S UTC")
+    timestamp = datetime.now(UTC).strftime("%Y-%m-%d at %H:%M:%S UTC")
     template_str = args.template.read_text(encoding="utf-8")
     index_md = render_template(template_str, project or "", artifacts, timestamp)
 

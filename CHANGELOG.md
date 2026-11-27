@@ -11,6 +11,12 @@ For schema-specific changes, see [SCHEMA_CHANGELOG.md](SCHEMA_CHANGELOG.md).
 ## [Unreleased]
 
 ### Added
+- `pyproject.toml` and `uv.lock` declare and lock the scripts' dependencies
+  (PyYAML, jsonschema; ruff and pyright for development). A `justfile` runs
+  `setup`, `check` and `test`, and `.github/workflows/ci.yml` runs them on
+  this repository's pull requests; nothing ran `tests/` before. The scripts
+  are formatted with ruff, except `validate_board.py` and its test, which
+  #26 rewrites.
 - `spec/slice/slice-interface-1.md` — Slice Interface 1, the 10-pin bus
   every Slice and Loaf uses today: the slot pin map and who drives each
   signal, power, logic levels and pull-ups as built, e-stop, addressing,

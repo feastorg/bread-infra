@@ -83,3 +83,17 @@ python3 scripts/validate_board.py <repo> --master-lib <KiCad-Master-Lib>
 ```
 
 A green **Validate Board** is the definition of "this board is done".
+
+## Development
+
+The scripts' dependencies are declared in `pyproject.toml` and locked in
+`uv.lock`. With [uv](https://docs.astral.sh/uv/) and
+[just](https://just.systems/):
+
+```sh
+just setup   # install the locked dependencies into .venv
+just check   # format check, lint, type check
+just test    # unit tests in tests/
+```
+
+`.github/workflows/ci.yml` runs the same three on every pull request here.
