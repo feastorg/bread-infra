@@ -11,6 +11,10 @@ For schema-specific changes, see [SCHEMA_CHANGELOG.md](SCHEMA_CHANGELOG.md).
 ## [Unreleased]
 
 ### Added
+- Manifest schema 2.0 for Slices and Loaves (`schemas/*.schema.v2.json`),
+  described in `slice-manifest-spec.md` and `loaf-manifest-spec.md`. The
+  validator picks it by `schema_version`; 1.0 manifests validate as before.
+  `tests/test_validate_manifest.py` covers both.
 - `spec/terminology.md` — "Generations, Revisions And Interfaces": a
   generation is a release of BREADS-compatible hardware (G1 = BREAD v1,
   2021–2023; G2 = BREAD v2, 2024; G3 = the next release, which most
