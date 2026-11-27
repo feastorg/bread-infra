@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/feastorg/bread-infra/main/schemas/loaf.schema.v2.json",
+  "title": "BREAD Loaf Manifest v2",
+  "description": "loaf.yaml, schema 2.x. Holds what a tool reads or a reader needs; a field is added when something reads it. Field paths are the v1 paths. See spec/loaf/loaf-manifest-spec.md.",
+  "type": "object",
+  "required": ["schema_version", "id", "name", "summary", "role", "status", "hardware", "interconnect"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "pattern": "^2\\.\\d+$",
+      "description": "Schema version this manifest conforms to."
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^loaf-[a-z0-9-]+$",
+      "description": "Repo name lowercased, underscores replaced with hyphens."
+    },
+    "name": { "type": "string", "minLength": 1 },
+    "summary": { "type": "string", "minLength": 1 },
+    "role": {
+      "type": "string",
+      "enum": ["backplane", "controller", "hybrid"],
+      "description": "backplane: provides Slice attachment. controller: provides the controller interface and chains onto a backplane, with no Slice slots of its own. hybrid: both."
+    },
+    "status": {
+      "type": "string",
+      "enum": ["concept", "development", "built", "released", "retired"],
+      "description": "Lifecycle of the board in hardware/: concept (not designed), development (designed, not fabricated), built (fabricated, under test), released (has a g<N>-r<n> tag), retired."
+    },
+    "hardware": {
+      "type": "object",
+      "required": ["hw_gen_current", "interface", "pcb"],
+      "additionalProperties": false,
+      "properties": {
+        "hw_gen_current": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Generation (G number) the board in hardware/ is built for, or heading for while in development; see spec/terminology.md."
+        },
+        "interface": {
+          "type": "string",
+          "enum": ["SI1"],
+          "description": "Slot interface the board's slots and chain meet: SI1 is spec/slice/slice-interface-1.md."
+        },
+        "pcb": {
+          "type": "object",
+          "required": ["layers"],
+          "additionalProperties": false,
+          "properties": {
+            "layers": { "type": "integer", "minimum": 1 }
+          }
+        }
+      }
+    },
+    "interconnect": {
+      "type": "object",
+      "required": ["slice_slots", "bus"],
+      "additionalProperties": false,
+      "properties": {
+        "slice_slots": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of Slice attachment positions. 0 for a controller Loaf that chains onto a backplane."
+        },
+        "bus": {
+          "type": "object",
+          "required": ["type"],
+          "additionalProperties": false,
+          "properties": {
+            "type": { "type": "string", "description": "e.g. i2c" }
+          }
+        }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tags": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    }
+  }
+}

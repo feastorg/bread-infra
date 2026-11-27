@@ -4,10 +4,11 @@
 Usage:
     python validate_manifest.py <path-to-manifest> [--schema <path-to-schema>]
 
-The schema is auto-detected from the manifest filename:
-    slice.yaml  →  schemas/slice.schema.json
+The schema is auto-detected from the manifest filename and, for slice.yaml
+and loaf.yaml, its schema_version:
+    slice.yaml  →  schemas/slice.schema.json     (schema_version 2.x: slice.schema.v2.json)
     grain.yaml  →  schemas/grain.schema.json
-    loaf.yaml   →  schemas/loaf.schema.json
+    loaf.yaml   →  schemas/loaf.schema.json      (schema_version 2.x: loaf.schema.v2.json)
 
 Requires: pip install jsonschema pyyaml
 """
@@ -33,10 +34,14 @@ SCHEMA_MAP = {
     "grain.yaml": "grain.schema.json",
     "loaf.yaml": "loaf.schema.json",
 }
+V2_SCHEMA_MAP = {
+    "slice.yaml": "slice.schema.v2.json",
+    "loaf.yaml": "loaf.schema.v2.json",
+}
 
 
 def find_schema(explicit_path: str | None, manifest_path: Path) -> Path:
-    """Resolve schema: explicit arg > auto-detect from manifest filename."""
+    """Resolve schema: explicit arg > auto-detect from manifest filename and schema_version."""
     if explicit_path:
         p = Path(explicit_path)
         if not p.exists():
@@ -44,6 +49,10 @@ def find_schema(explicit_path: str | None, manifest_path: Path) -> Path:
         return p
 
     schema_name = SCHEMA_MAP.get(manifest_path.name, "slice.schema.json")
+    if manifest_path.name in V2_SCHEMA_MAP:
+        manifest = yaml.safe_load(manifest_path.read_text())
+        if isinstance(manifest, dict) and str(manifest.get("schema_version", "")).startswith("2."):
+            schema_name = V2_SCHEMA_MAP[manifest_path.name]
 
     # Try relative to this script (bread-infra/scripts/ → bread-infra/schemas/)
     script_dir = Path(__file__).resolve().parent

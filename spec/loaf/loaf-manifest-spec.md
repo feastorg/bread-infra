@@ -1,6 +1,43 @@
 # Loaf Manifest Field Reference
 
-Every field in `loaf.yaml`, with its type, constraints, and rationale.
+Every field in `loaf.yaml`. Schema 2.0 is first; the 1.0 reference follows
+it and holds until each manifest moves to 2.0.
+
+## Schema 2.0
+
+Schema: [`schemas/loaf.schema.v2.json`](../../schemas/loaf.schema.v2.json)
+
+The same rule as the [Slice 2.0 manifest](../slice/slice-manifest-spec.md#schema-20):
+what a tool reads or a reader needs, under the 1.0 paths.
+
+```yaml
+schema_version: "2.0"
+id: "loaf-x004"
+name: "..."
+summary: "One line."
+role: "backplane"
+status: "development"
+hardware:
+  hw_gen_current: 3
+  interface: "SI1"
+  pcb:
+    layers: 2
+interconnect:
+  slice_slots: 4
+  bus:
+    type: "i2c"
+metadata:
+  tags: []
+```
+
+`role`, `interconnect.slice_slots`, `interconnect.bus.type`,
+`hardware.pcb.layers` and `metadata.tags` mean what they do in 1.0 and are
+read by the site's loaf index; `status`, `hardware.hw_gen_current` and
+`hardware.interface` are as in the Slice 2.0 manifest. 2.0 has no
+`hw_gen_supported`: what a Loaf's supported-generation list means is not yet
+settled, and the field returns when it is.
+
+## Schema 1.0 (legacy)
 
 Schema: [`schemas/loaf.schema.json`](../../schemas/loaf.schema.json)
 Template: [`templates/loaf.yaml.template`](../../templates/loaf.yaml.template)

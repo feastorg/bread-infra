@@ -11,6 +11,10 @@ For schema-specific changes, see [SCHEMA_CHANGELOG.md](SCHEMA_CHANGELOG.md).
 ## [Unreleased]
 
 ### Added
+- Manifest schema 2.0 for Slices and Loaves (`schemas/*.schema.v2.json`),
+  described in `slice-manifest-spec.md` and `loaf-manifest-spec.md`. The
+  validator picks it by `schema_version`; 1.0 manifests validate as before.
+  `tests/test_validate_manifest.py` covers both.
 - `pyproject.toml` and `uv.lock` declare and lock the scripts' dependencies
   (PyYAML, jsonschema; ruff and pyright for development). A `justfile` runs
   `setup`, `check` and `test`, and `.github/workflows/ci.yml` runs them on
