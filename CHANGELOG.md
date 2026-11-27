@@ -53,6 +53,14 @@ For schema-specific changes, see [SCHEMA_CHANGELOG.md](SCHEMA_CHANGELOG.md).
   state: `Slice_AOEM`, `Slice_STPC`, and `Slice_TEMP_PICO_L4L-r1` (a *released*
   template, so every 4-layer PICO Slice cloned from it inherits the fault).
 
+### Fixed
+- `scripts/validate_board.py` failed boards that use KiCad's own logic and
+  processor symbol libraries, such as `74xGxx` (Slice_HEAT's level shifters):
+  its list of stock libraries missed `4xxx*`, `74x*`, `Auxiliary_Items`,
+  `Buffer`, `CPLD_*`, `CPU*`, `DSP_*`, `FPGA_*`, `Fiber_Optic`, `GPU`, `LED`
+  and `Security`. The list now covers every library in KiCad 10's stock symbol
+  set; `tests/test_validate_board.py` checks it.
+
 ---
 
 ## v1.1.0 — 2026-07-12
@@ -124,12 +132,6 @@ drift this repo exists to eliminate.
   `lib_footprint_issues` warnings per board — noise that concealed real defects.
 
 ### Fixed
-- `scripts/validate_board.py` failed boards that use KiCad's own logic and
-  processor symbol libraries, such as `74xGxx` (Slice_HEAT's level shifters):
-  its list of stock libraries missed `4xxx*`, `74x*`, `Auxiliary_Items`,
-  `Buffer`, `CPLD_*`, `CPU*`, `DSP_*`, `FPGA_*`, `Fiber_Optic`, `GPU`, `LED`
-  and `Security`. The list now covers every library in KiCad 10's stock symbol
-  set; `tests/test_validate_board.py` checks it.
 - `hardware/Makefile` ERC and DRC targets were inverted fleet-wide: KiBot's
   `-s`/`--skip-pre` *skips* the named preflight, so the `erc` target ran DRC and
   vice versa. Both checks still ran, but every violation was reported under the

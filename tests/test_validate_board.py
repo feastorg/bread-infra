@@ -12,8 +12,8 @@ SPEC.loader.exec_module(validate_board)
 
 
 class StockLibraries(unittest.TestCase):
-    # Every symbol library KiCad 10's stock symbol set ships whose name the
-    # old list missed, plus a few it already had.
+    # A sample of KiCad 10's stock symbol libraries, one per pattern the
+    # old list lacked, plus a few it already had.
     STOCK = [
         "4xxx", "4xxx_IEEE", "74xGxx", "74xx", "74xx_IEEE", "Auxiliary_Items", "Buffer",
         "CPLD_Xilinx", "CPU", "CPU_NXP_IMX", "DSP_Texas", "Fiber_Optic", "FPGA_Lattice",
