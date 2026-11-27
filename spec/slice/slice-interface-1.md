@@ -63,9 +63,9 @@ pins 3–4 and `_5V` on 6–8. Where a Slice calls the bus ground `GNDPWR`, its
 logic ground is a separate net joined to it at one net tie, NT1.
 
 A Slice's microcontroller joins pins 3, 4, 7 and 8 directly, through solder
-"bus link" jumpers bridged by default (Slice_TEMP_NANO_S2L-r2,
-Slice_TEMP_PICO_S2L-r1, Slice_TEMP_PICO_L4L-r1, Slice_TEMP_NUCL_S4L-r1,
-Slice_TEMP_NUCL_L4L-r1, Slice_IOCT, Slice_STPC), or through a 4-way DIP
+"bus link" jumpers bridged by default (Slice_TEMP_NANO_S2L,
+Slice_TEMP_PICO_S2L, Slice_TEMP_PICO_L4L, Slice_TEMP_NUCL_S4L,
+Slice_TEMP_NUCL_L4L, Slice_IOCT, Slice_STPC), or through a 4-way DIP
 switch (Slice_IOAC, Slice_PRTO_THTA_S2L).
 
 - Slice_THMX leaves pin 7 unconnected: its Nano's `INT` net does not reach
@@ -102,10 +102,10 @@ switch (Slice_IOAC, Slice_PRTO_THTA_S2L).
   - No other board carries I²C pull-ups: not Loaf_x004, not the Slice
     templates, not Slice_DCMT or Slice_RLHT.
 - Seven Slices put 3.3 V parts on the bus lines with no level translation:
-  - an RP2040 through bus link jumpers on Slice_TEMP_PICO_S2L-r1,
-    Slice_TEMP_PICO_L4L-r1 and Slice_STPC;
-  - an STM32L432 Nucleo through jumpers on Slice_TEMP_NUCL_S4L-r1 and
-    Slice_TEMP_NUCL_L4L-r1, and directly on Slice_FPSG;
+  - an RP2040 through bus link jumpers on Slice_TEMP_PICO_S2L,
+    Slice_TEMP_PICO_L4L and Slice_STPC;
+  - an STM32L432 Nucleo through jumpers on Slice_TEMP_NUCL_S4L and
+    Slice_TEMP_NUCL_L4L, and directly on Slice_FPSG;
   - Slice_IAQM's sensors, as above.
 - Ten Slices bring the bus SDA and SCL out on a 4-pin JST-SH connector with
   +5V and ground: Slice_HEAT, Slice_IAQM, Slice_LVAI, Slice_PHDO, Slice_RLAY,
@@ -186,8 +186,8 @@ Two outline sizes are in use with the G2 placement:
 | L | 100 × 145 | (5, 5), (5, 140), (95, 5), (95, 140) |
 
 - Every G1 board is S-sized. No L board meets every L value: Slice_STPC and
-  Slice_TEMP_PICO_L4L-r1 meet the outline, Slice_AOEM, Slice_THMX and
-  Slice_TEMP_NUCL_L4L-r1 the bus row, and none the hole pattern.
+  Slice_TEMP_PICO_L4L meet the outline, Slice_AOEM, Slice_THMX and
+  Slice_TEMP_NUCL_L4L the bus row, and none the hole pattern.
 - Slice board corners are R5.
 - The mounting holes locate the case, not the Loaf. The case and the
   printed slot guide (bread-mechanical calls it the backplane part) are
@@ -204,8 +204,8 @@ Two outline sizes are in use with the G2 placement:
 | Board, `main` | Measured | Differs in |
 | --- | --- | --- |
 | [Slice_STEP](https://github.com/feastorg/Slice_STEP) `b9fdc8e` | row x 7.00, y 49.57; Ø5.0 NPTH holes | bus row still in the G1 place |
-| [Slice_STPC](https://github.com/feastorg/Slice_STPC) `14c9c50`, [Slice_TEMP_PICO_L4L-r1](https://github.com/feastorg/Slice_TEMP_PICO_L4L-r1) `0776a39` | 100 × 145; row x 3.80, y 50.43; three holes 0.2 in | bus row and holes |
-| [Slice_AOEM](https://github.com/feastorg/Slice_AOEM) `309f9a4`, [Slice_THMX](https://github.com/feastorg/Slice_THMX) `205785a`, [Slice_TEMP_NUCL_L4L-r1](https://github.com/feastorg/Slice_TEMP_NUCL_L4L-r1) `1aa59ff` | 100.12 × 144.89; holes up to 0.13 off in x or y | outline and holes |
+| [Slice_STPC](https://github.com/feastorg/Slice_STPC) `14c9c50`, [Slice_TEMP_PICO_L4L](https://github.com/feastorg/Slice_TEMP_PICO_L4L) `0776a39` | 100 × 145; row x 3.80, y 50.43; three holes 0.2 in | bus row and holes |
+| [Slice_AOEM](https://github.com/feastorg/Slice_AOEM) `309f9a4`, [Slice_THMX](https://github.com/feastorg/Slice_THMX) `205785a`, [Slice_TEMP_NUCL_L4L](https://github.com/feastorg/Slice_TEMP_NUCL_L4L) `1aa59ff` | 100.12 × 144.89; holes up to 0.13 off in x or y | outline and holes |
 | [Slice_FPSG](https://github.com/feastorg/Slice_FPSG) `8ffa8e3` | 100.12 × 99.95 | neither size |
 
 Other records disagree with the boards:

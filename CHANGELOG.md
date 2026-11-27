@@ -61,6 +61,14 @@ For schema-specific changes, see [SCHEMA_CHANGELOG.md](SCHEMA_CHANGELOG.md).
   state: `Slice_AOEM`, `Slice_STPC`, and `Slice_TEMP_PICO_L4L-r1` (a *released*
   template, so every 4-layer PICO Slice cloned from it inherits the fault).
 
+### Changed
+- The template repos dropped their `-r1`/`-r2` suffixes: `Slice_TEMP_NANO_S2L`,
+  `_NUCL_S4L`, `_NUCL_L4L`, `_PICO_S2L`, `_PICO_L4L`. The old
+  `Slice_TEMP_NANO_S2L-r1` is merged into `Slice_TEMP_NANO_S2L` and is no
+  longer public. README, CITATION.md, `concept.md`, `getting-started.md`
+  (which now lists the two Pico templates) and `slice-interface-1.md` use
+  the new names.
+
 ### Fixed
 - `scripts/validate_board.py` failed boards that use KiCad's own logic and
   processor symbol libraries, such as `74xGxx` (Slice_HEAT's level shifters):
