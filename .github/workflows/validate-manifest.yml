@@ -4,7 +4,7 @@ on:
   workflow_call:
     inputs:
       manifest_path:
-        description: "Path to manifest file (slice.yaml or grain.yaml, relative to repo root)"
+        description: "Path to manifest file (slice.yaml, loaf.yaml or grain.yaml, relative to repo root)"
         required: false
         type: string
         default: "slice.yaml"
@@ -36,10 +36,33 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Install dependencies
+      # A bread-infra ref with uv.lock runs the validator on its locked dependencies.
+      # Older refs (schema-v1.0 and the other 1.0 tags) predate the lock and keep the unpinned install.
+      - name: Check for a lock file
+        id: lock
+        run: |
+          if [ -f _bread-infra/uv.lock ]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Set up uv
+        if: steps.lock.outputs.present == 'true'
+        uses: astral-sh/setup-uv@v6
+
+      - name: Install dependencies (unpinned, refs without uv.lock)
+        if: steps.lock.outputs.present != 'true'
         run: pip install pyyaml jsonschema
 
       - name: Validate manifest
+        env:
+          MANIFEST_PATH: ${{ inputs.manifest_path }}
+          LOCKED: ${{ steps.lock.outputs.present }}
         run: |
-          python _bread-infra/scripts/validate_manifest.py \
-            "${{ inputs.manifest_path }}"
+          if [ "$LOCKED" = true ]; then
+            uv run --locked --no-dev --project _bread-infra \
+              python _bread-infra/scripts/validate_manifest.py "$MANIFEST_PATH"
+          else
+            python _bread-infra/scripts/validate_manifest.py "$MANIFEST_PATH"
+          fi

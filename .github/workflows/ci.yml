@@ -38,3 +38,12 @@ jobs:
 
       - name: Test
         run: just test
+
+  # Runs the reusable manifest validation against this commit, so a change to
+  # validate-manifest.yml or the validator is exercised before callers see it.
+  validate-manifest:
+    name: Validate manifest workflow
+    uses: ./.github/workflows/validate-manifest.yml
+    with:
+      manifest_path: templates/slice.yaml.template
+      schema_ref: ${{ github.event.pull_request.head.sha || github.sha }}
