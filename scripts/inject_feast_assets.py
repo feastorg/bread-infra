@@ -59,9 +59,7 @@ def clone_theme_repo(retries: int = RETRY_ATTEMPTS, delay: int = RETRY_DELAY) ->
             print(f"✅ Clone successful on attempt {attempt}")
             return True
         except subprocess.CalledProcessError as e:
-            print(
-                f"❌ Clone attempt {attempt} failed.\n{e.output.decode(errors='ignore')}"
-            )
+            print(f"❌ Clone attempt {attempt} failed.\n{e.output.decode(errors='ignore')}")
             if attempt < retries:
                 print(f"⏳ Retrying in {delay} seconds...")
                 time.sleep(delay)
@@ -117,16 +115,11 @@ def main() -> None:
         print(f"⏭ {msg}, skipping injection.")
         return
 
-    print(
-        f"🎨 Detected color_scheme: '{WANTED_COLOR_SCHEME}' — proceeding with injection."
-    )
+    print(f"🎨 Detected color_scheme: '{WANTED_COLOR_SCHEME}' — proceeding with injection.")
 
-    if TEMP_CLONE_DIR.exists():
-        if not safe_rmtree(TEMP_CLONE_DIR):
-            print(
-                f"⛔ Failed to clean temp dir '{TEMP_CLONE_DIR}'. Aborting to avoid conflicts."
-            )
-            sys.exit(1)
+    if TEMP_CLONE_DIR.exists() and not safe_rmtree(TEMP_CLONE_DIR):
+        print(f"⛔ Failed to clean temp dir '{TEMP_CLONE_DIR}'. Aborting to avoid conflicts.")
+        sys.exit(1)
 
     if not clone_theme_repo():
         sys.exit(1)

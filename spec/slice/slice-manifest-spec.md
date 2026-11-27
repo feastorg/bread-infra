@@ -1,6 +1,61 @@
 # Slice Manifest Field Reference
 
-This document describes every field in `slice.yaml` with its type, constraints, and rationale.
+This document describes every field in `slice.yaml`. Schema 2.0 is first;
+the 1.0 reference follows it and holds until each manifest moves to 2.0.
+
+## Schema 2.0
+
+Schema: [`schemas/slice.schema.v2.json`](../../schemas/slice.schema.v2.json)
+
+2.0 keeps what a tool reads or a reader needs, under the same paths as 1.0.
+Every other 1.0 field is removed. A field is added back when something reads
+it. The validator picks 2.0 for a manifest whose `schema_version` is `2.x`;
+CI picks it with `schema_ref: schema-v2.0`.
+
+```yaml
+schema_version: "2.0"
+id: "slice-dcmt"
+name: "DC Motor Controller"
+summary: "One line."
+category: "actuation"
+status: "development"
+hardware:
+  hw_gen_current: 3
+  interface: "SI1"
+  pcb:
+    layers: 2
+    dimensions: "70mm x 100mm"
+    thickness: "1.6mm"
+  mounting:
+    pattern: "slice-S-v0"
+  mcu:
+    form_factor: "nano"
+interfaces:
+  host:
+    address_default: 18
+metadata:
+  tags: ["motor"]
+```
+
+| Field | Required | Meaning | Read by |
+|---|---|---|---|
+| `schema_version` | yes | `2.x` | validator, site index |
+| `id`, `name`, `summary`, `category` | yes | as in 1.0 | site index |
+| `status` | yes | lifecycle of the board in `hardware/`: `concept` (not designed), `development` (designed, not fabricated), `built` (fabricated, under test), `released` (has a `g<N>-r<n>` tag), `retired` | site index |
+| `hardware.hw_gen_current` | yes | generation the board is built for, or heading for while in development ([terminology](../terminology.md)) | site index |
+| `hardware.interface` | yes | slot interface the board meets: `SI1` ([Slice Interface 1](slice-interface-1.md)) | SI2 migration |
+| `hardware.pcb.layers`, `.dimensions`, `.thickness` | yes | as in 1.0 | bread-mechanical (`dimensions`, `thickness`) |
+| `hardware.mounting.pattern` | yes | board format: `slice-S-v0` (70 x 100) or `slice-L-v0` (100 x 145), per Slice Interface 1; `null` if the board meets neither | bread-mechanical |
+| `hardware.mcu.form_factor` | no | `nano`, `nucleo32` or `pico`; `mcu: null` for none | bread-mechanical (USB port) |
+| `interfaces.host.address_default` | no | default 7-bit I2C address, decimal; `null` if set at run time | whoever sets up the bus |
+| `metadata.tags` | no | free tags | site index |
+
+The facts 1.0 also held live elsewhere: a revision in its release tag,
+license in `LICENSE`, the repository URL and dates in GitHub, and
+electrical, firmware, protocol and safety detail in the README, board files
+and bench records.
+
+## Schema 1.0 (legacy)
 
 Schema: [`schemas/slice.schema.json`](../../schemas/slice.schema.json)  
 Template: [`templates/slice.yaml.template`](../../templates/slice.yaml.template)
@@ -37,7 +92,7 @@ concept → prototype → validated → released
 
 | Field | Type | Notes |
 |---|---|---|
-| `hardware` | semver string | PCB revision |
+| `hardware` | semver string | Legacy; not the board's revision, which is its G and r label ([terminology](../terminology.md#generations-revisions-and-interfaces)) |
 | `firmware` | semver string \| null | Firmware version; null for hardware-only |
 | `manifest` | semver string | Version of this manifest file's content |
 
@@ -104,8 +159,8 @@ Object or null. The main functional IC on the board (not the MCU).
 
 | Field | Type | Notes |
 |---|---|---|
-| `hw_gen_current` | integer | Current HW generation number |
-| `hw_gen_supported` | integer[] | All gens firmware supports |
+| `hw_gen_current` | integer | Generation (G number) the board in `hardware/` is built for, or heading for while in development; see [terminology](../terminology.md#generations-revisions-and-interfaces) |
+| `hw_gen_supported` | integer[] | Generations the firmware supports |
 | `pcb_color_prototype` | string \| null | Solder mask color for prototypes |
 | `pcb_color_production` | string \| null | Solder mask color for production |
 | `enclosure` | object \| null | `{supported: bool, path: string|null}` |

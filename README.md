@@ -26,7 +26,7 @@ BREAD started as an open-source hardware project on OSF. See
 [`CITATION.md`](CITATION.md) for how to cite it, the papers and thesis behind
 it, and which OSF page each Slice came from.
 
-See [Slice_TEMP_NANO_S2L-r2](https://github.com/feastorg/Slice_TEMP_NANO_S2L-r2) for an example of the required auxiliary and template files.
+See [Slice_TEMP_NANO_S2L](https://github.com/feastorg/Slice_TEMP_NANO_S2L) for an example of the required auxiliary and template files.
 
 Results of testing a Slice on real hardware go in that Slice's `docs/bench/`:
 see [`spec/slice/bench-records.md`](spec/slice/bench-records.md) and
@@ -84,3 +84,17 @@ python3 scripts/validate_board.py <repo> --master-lib <KiCad-Master-Lib>
 ```
 
 A green **Validate Board** is the definition of "this board is done".
+
+## Development
+
+The scripts' dependencies are declared in `pyproject.toml` and locked in
+`uv.lock`. With [uv](https://docs.astral.sh/uv/) and
+[just](https://just.systems/):
+
+```sh
+just setup   # install the locked dependencies into .venv
+just check   # format check, lint, type check
+just test    # unit tests in tests/
+```
+
+`.github/workflows/ci.yml` runs the same three on every pull request here.

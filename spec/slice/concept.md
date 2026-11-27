@@ -48,7 +48,7 @@ Current Slice categories:
 
 | Name | Type | Notes |
 |---|---|---|
-| [Slice_TEMP_NANO_S2L-r2](https://github.com/feastorg/Slice_TEMP_NANO_S2L-r2) | Template | 70x100mm 2-layer Nano template |
+| [Slice_TEMP_NANO_S2L](https://github.com/feastorg/Slice_TEMP_NANO_S2L) | Template | 70x100mm 2-layer Nano template |
 | [Slice_DCMT](https://github.com/feastorg/Slice_DCMT) | Actuation | DC motor driver |
 | [Slice_RLAY](https://github.com/feastorg/Slice_RLAY) | Actuation | 4-channel relay |
 | [Slice_SERV](https://github.com/feastorg/Slice_SERV) | Actuation | Servo controller |

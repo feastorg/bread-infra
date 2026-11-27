@@ -52,7 +52,7 @@ because Grains do not participate in the BREADS Slice interface:
 - `capabilities` — no ADPP capability model
 - `protocol` — no CRUMBS/ADPP
 - `electrical.power_consumption` — Grains do not sit on the Slice bus power rail
-- `hw_gen_current` / `hw_gen_supported` — generation model is Slice-specific
+- `hw_gen_current` / `hw_gen_supported` — Grains are not given a generation
 - `compatibility.slice_spec` / `crumbs_protocol` / `anolis_provider_api`
 
 ---

@@ -87,8 +87,8 @@
             "part_number": { "type": "string" }
           }
         },
-        "hw_gen_current": { "type": "integer" },
-        "hw_gen_supported": { "type": "array", "items": { "type": "integer" } },
+        "hw_gen_current": { "type": "integer", "description": "Generation (G number) the board in hardware/ is built for, or heading for while in development; see spec/terminology.md." },
+        "hw_gen_supported": { "type": "array", "items": { "type": "integer" }, "description": "Generations (G numbers) this board interoperates with." },
         "pcb": {
           "type": "object",
           "required": ["layers", "dimensions"],

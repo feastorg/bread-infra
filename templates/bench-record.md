@@ -17,7 +17,7 @@ parent: Bench Records
 | | |
 | --- | --- |
 | Firmware | `<commit>`, env `<pio env>` <!-- note any uncommitted changes --> |
-| Board | <generation or revision>, <MCU> <!-- and anything unusual about this board --> |
+| Board | <generation and revision, e.g. G2 r1>, <MCU> <!-- and anything unusual about this board --> |
 | Controller | <what sends commands, and over what: serial, I2C> |
 | Outputs | <what is connected: motors, encoders, heaters, nothing> |
 
