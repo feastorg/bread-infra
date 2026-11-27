@@ -191,9 +191,9 @@ on the slice side of the BIB choose how they connect:
 **SNS-2** A slice's own fixed sensors, like IAQM's, MUST go on its private
 bus. A direct-mode sensor MUST NOT sit in the slice band, 0x10–0x1F.
 
-**SNS-3** A Qwiic jack on a slice MUST connect only to its private bus. Nine
-slices have one today: HEAT, IAQM, LVAI, PHDO, RLAY, SERV, THRM_31855,
-THRM_31856 and USBP.
+**SNS-3** A Qwiic jack on a slice MUST connect only to its private bus. Ten
+slices have one today, on the slot bus under SI1: HEAT, IAQM, LVAI, PHDO,
+RLAY, SERV, SOLR, THRM_31855, THRM_31856 and USBP.
 
 [bread-slice-core](https://github.com/feastorg/bread-slice-core) gets one
 generic I²C-proxy family. ACAR, a power stage plus Atlas isolated EZO carriers

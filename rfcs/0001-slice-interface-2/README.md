@@ -4,7 +4,7 @@
 | --- | --- |
 | Status | **Draft** |
 | Created | 2026-11-15 |
-| Replaces | Slice Interface 1, the 1×10 bus of every G1–G3 board ([design constraints](../../spec/slice/design-constraints.md)) |
+| Replaces | [Slice Interface 1](../../spec/slice/slice-interface-1.md), the 1×10 bus of every G1–G3 board |
 | Acceptance | the bench tests in [09 Bench plan](09-bench-plan.md) pass, including runs of real slice firmware under load, or this RFC changes to match what they measure |
 
 Slice Interface 2 (SI2) is the second interface between a BREADS Slice and the
@@ -31,6 +31,24 @@ defines them. SI2 defines:
 
 SI2 is not backward compatible with Slice Interface 1: G1–G3 boards don't
 plug into an SI2 loaf.
+
+## Compared with Slice Interface 1
+
+What SI1 does as built, from [Slice Interface 1](../../spec/slice/slice-interface-1.md),
+against what SI2 requires:
+
+| | SI1 as built | SI2 |
+| --- | --- | --- |
+| Slot connector | 1×10, unkeyed, no guide | keyed 2×12 with a card guide ([02](02-connectors.md)) |
+| Power | +12V on two pins, one rail; slot current not defined | V_ACT (stop-switched) and V_LOGIC, 12 V or 24 V per loaf with a voltage key ([06](06-power.md)) |
+| I²C level and pull-ups | not defined: 3.3 V or 5 V depending on the stack, pull-ups on some boards and none on others | 3.3 V on VIO, one 2.2 k pair on the head, an LTC4313-3 on every slice ([03](03-bus.md)) |
+| I²C clock | not defined; the bench runs 50 kHz | 50 kHz, provisional ([03](03-bus.md)) |
+| INT and SYNC | pin positions only; timing not defined | INT open-drain active low; SYNC push-pull, rising edge samples; both optional per slice ([03](03-bus.md)) |
+| Addressing | fixed in each slice's firmware | from SLOT_ID: slot and loaf position ([04](04-addressing.md)) |
+| E-stop | one line, LOW stops; an open line should stop and does not yet | a relay stop loop through every loaf; slices sense V_ACT ([05](05-stop.md)) |
+| Chain | 1×10 header and socket in slot order | keyed 2×12, OUT to IN ([02](02-connectors.md#chain-connector)) |
+| Insertion | not defined | with the loaf powered off (CON-6) |
+| Board formats | S and L, bus row x 3.6, y 50.0, Ø5.0 NPTH holes; reference, thickness and envelope not defined | the same formats, plus J1, thickness, hole keep-out and envelope ([07](07-mechanical.md)) |
 
 ## Documents
 
@@ -97,6 +115,7 @@ fleet, cited to their source.
 
 - The KiCad board files of the 40 existing slices and the existing loafs.
 - This repository's [`spec/`](../../spec/), including
+  [`slice/slice-interface-1.md`](../../spec/slice/slice-interface-1.md),
   [`slice/firmware.md`](../../spec/slice/firmware.md) and
   [`slice/design-constraints.md`](../../spec/slice/design-constraints.md); the
   slot interface and case model in

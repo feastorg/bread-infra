@@ -10,6 +10,9 @@ When this RFC is accepted, each of these becomes a tracked issue:
 - [`spec/slice/firmware.md`](../../spec/slice/firmware.md): the status LED
   moves from D5 to D9; the e-stop input becomes V_ACT sense; addresses come
   from SLOT_ID.
+- [`spec/slice/slice-interface-1.md`](../../spec/slice/slice-interface-1.md):
+  stays as the record of the interface every G1–G3 board uses; an SI2 page
+  joins it rather than replacing it.
 - [`spec/slice/design-constraints.md`](../../spec/slice/design-constraints.md):
   fab-first replaces "manufacturable on commonly available circuit milling
   machines", the through-hole preference and the 0805 minimum; the 2×12

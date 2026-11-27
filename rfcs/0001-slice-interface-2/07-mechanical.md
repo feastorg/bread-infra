@@ -5,8 +5,13 @@
 
 ## Formats and datums
 
-Formats and datums are unchanged from Slice Interface 1. Of the 40 existing
-slices, 37 already share the bus datum.
+SI2 keeps the board formats of Slice Interface 1 as the G2 boards set them
+([SI1: Slice board formats](../../spec/slice/slice-interface-1.md#slice-board-formats)):
+the S and L outlines, the bus row centre at x 3.6, y 50.0, and Ø5.0 NPTH
+holes 5 mm from each edge. Of the 40 slices, 37 already put the bus row
+there. SI1 leaves several things open that SI2 fixes here: the bus
+connector's reference (MEC-3), board thickness (MEC-4), a keep-out around the
+holes (MEC-2), and the case envelope (MEC-5).
 
 **MEC-1** A slice is S (70 × 100 mm) or L (100 × 145 mm), with R5 corners.
 FPSG is 100 × 100 today; it moves to L, or the standard gains a third format.
