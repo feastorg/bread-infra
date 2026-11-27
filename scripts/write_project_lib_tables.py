@@ -53,9 +53,7 @@ def main() -> int:
         count = 0
         for nickname, uri in LIB_RE.findall(src.read_text()):
             path = uri.replace("${KICAD_MASTER_LIB}", str(master))
-            lines.append(
-                f'  (lib (name "{nickname}")(type "KiCad")(uri "{path}")(options "")(descr ""))'
-            )
+            lines.append(f'  (lib (name "{nickname}")(type "KiCad")(uri "{path}")(options "")(descr ""))')
             count += 1
         lines.append(")\n")
 
