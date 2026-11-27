@@ -68,6 +68,10 @@ For schema-specific changes, see [SCHEMA_CHANGELOG.md](SCHEMA_CHANGELOG.md).
   template, so every 4-layer PICO Slice cloned from it inherits the fault).
 
 ### Changed
+- `validate-manifest.yml` runs the validator on the locked dependencies
+  (`uv run --locked`) when the bread-infra ref it checks out has `uv.lock`.
+  Refs without one, including `schema-v1.0`, keep the unpinned
+  `pip install`. `ci.yml` runs the workflow against each commit here.
 - The template repos dropped their `-r1`/`-r2` suffixes: `Slice_TEMP_NANO_S2L`,
   `_NUCL_S4L`, `_NUCL_L4L`, `_PICO_S2L`, `_PICO_L4L`. The old
   `Slice_TEMP_NANO_S2L-r1` is merged into `Slice_TEMP_NANO_S2L` and is no
