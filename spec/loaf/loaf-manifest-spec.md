@@ -81,7 +81,7 @@ the bus but does not terminate it in a Slice.
 | `controller.type` | string | `dev-board-socket` · `embedded` · `external` |
 | `controller.form_factor` | string \| null | e.g. `thing-plus` |
 | `primary_ic` | object \| null | Manufacturer and part number of the defining IC |
-| `hw_gen_current` | integer | Current hardware generation |
+| `hw_gen_current` | integer | Generation (G number) the board in `hardware/` is built for, or heading for while in development; see [terminology](../terminology.md#generations-revisions-and-interfaces) |
 | `hw_gen_supported` | integer[] | Generations this board interoperates with |
 | `pcb.layers` | integer | Copper layers. Must match the board; the KiBot config is chosen from it. |
 | `pcb.dimensions` | string | e.g. `180mm x 162mm` |

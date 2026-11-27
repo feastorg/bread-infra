@@ -39,8 +39,8 @@ hardware:
   # primary_ic:
   #   manufacturer: "Manufacturer"
   #   part_number: "PARTNO"
-  hw_gen_current: 1
-  hw_gen_supported: [1]
+  hw_gen_current: 3
+  hw_gen_supported: []
   pcb:
     layers: 2
     thickness: "1.6mm"            # nullable
