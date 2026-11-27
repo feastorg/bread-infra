@@ -11,6 +11,9 @@ For schema-specific changes, see [SCHEMA_CHANGELOG.md](SCHEMA_CHANGELOG.md).
 ## [Unreleased]
 
 ### Added
+- `scripts/migrate_manifest_v2.py` converts a 1.0 `slice.yaml` or `loaf.yaml`
+  to schema 2.0, taking the board format from the board outline. Tested in
+  `tests/test_migrate_manifest_v2.py`.
 - Manifest schema 2.0 for Slices and Loaves (`schemas/*.schema.v2.json`),
   described in `slice-manifest-spec.md` and `loaf-manifest-spec.md`. The
   validator picks it by `schema_version`; 1.0 manifests validate as before.
