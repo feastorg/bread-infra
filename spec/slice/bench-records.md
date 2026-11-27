@@ -15,7 +15,7 @@ Start from [`templates/bench-record.md`](../../templates/bench-record.md).
 - **When and who.** The date, and who ran it.
 - **What firmware.** The commit hash it was built from, and the PlatformIO env.
   If the tree had uncommitted changes, say so and say what they were.
-- **What hardware.** The board, its revision or generation, and the MCU. Note
+- **What hardware.** The board, its generation and revision, and the MCU. Note
   anything unusual about this particular board, such as a rework or a swapped
   part.
 - **The rig.** The controller and how it talks to the board (serial, I2C and
