@@ -16,6 +16,9 @@ This is a master doc / wish list to brainstorm and start to plan out ideas for f
     - [Safety Interlock](#safety-interlock)
     - [Impedance/Capacitance Measurement](#impedancecapacitance-measurement)
     - [General Purpose DAQ](#general-purpose-daq)
+    - [USB Host Data Logger](#usb-host-data-logger)
+    - [USB-to-Bus Debug Bridge](#usb-to-bus-debug-bridge)
+  - [Revisions Of Existing Slices](#revisions-of-existing-slices)
 
 ## Elaborated Ideas
 
@@ -209,3 +212,23 @@ A full blown open source, BREADS-friendly inverter. This is essential for any AC
 
 - Multi-channel, configurable analog input/output with digital I/O and signal generation.
 - Can include low-pass filtering, excitation, and software calibration. Ideal for lab or testbench automation.
+
+### USB Host Data Logger
+
+- A Slice whose MCU is a USB host: an ESP32-S3 (native OTG, ESP-IDF CDC-ACM, HID and MSC host drivers) or a Pico 2 (TinyUSB host).
+- Enumerates USB-serial instruments, barcode scanners, keypads or USB drives, parses their data and serves it over CRUMBS.
+- Per-port switching and metering as in Slice_USBP rev B ([Slice_USBP#2](https://github.com/feastorg/Slice_USBP/issues/2)).
+- A Nano can't be a USB host. The cheaper route is a MAX3421E SPI host controller with the USB Host Shield 2.0 library, at the cost of the Nano's small RAM.
+
+### USB-to-Bus Debug Bridge
+
+- A correctly oriented USB device slot: a USB-C UFP into a USB-to-I2C/UART bridge.
+- Lets a PC act as controller or sniffer on the Loaf bus from inside the stack.
+
+## Revisions Of Existing Slices
+
+Later revisions of existing Slices are tracked as issues in their repositories:
+
+- Slice_SERV: SI2 24 V operation, and an 8-16 channel L variant with a PCA9685 ([Slice_SERV#2](https://github.com/feastorg/Slice_SERV/issues/2)).
+- Slice_USBP: a populated pass-through hub ([Slice_USBP#2](https://github.com/feastorg/Slice_USBP/issues/2)).
+- Slice_PHDO (ACAR): 4 channels on the L format with an RP2040 ([Slice_PHDO#2](https://github.com/feastorg/Slice_PHDO/issues/2)).
