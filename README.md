@@ -13,6 +13,10 @@ infrastructure for BREADS-compatible hardware repos.
 Start with [`spec/terminology.md`](spec/terminology.md) for the active
 definitions of BREAD, BREADS, Slices, Loaves, and Grains.
 
+[`spec/slice/slice-interface-1.md`](spec/slice/slice-interface-1.md) is the
+10-pin bus every Slice and Loaf uses today: the pin map, signals, and where
+the bus and mounting holes sit on a board.
+
 For Slice firmware, [`spec/slice/firmware.md`](spec/slice/firmware.md) defines
 what every Slice's firmware does the same way, and
 [`spec/firmware-layering.md`](spec/firmware-layering.md) sets out where shared

@@ -22,6 +22,10 @@ The paper's title expands the acronym in a different order from
 
 ## Related publications
 
+- Shane Oberloier. *Open-Source TIG-Based Metal 3D-Printing*. PhD
+  dissertation, Electrical Engineering, Michigan Technological University,
+  2021. <https://doi.org/10.37099/mtu.dc.etdr/1301>. Chapter 3 is an early
+  version of the HardwareX paper.
 - Finn K. Hafting, Daniel Kulas, Etienne Michels, Sarvada Chipkar, Stefan
   Wisniewski, David Shonnard, Joshua M. Pearce. Modular Open-Source Design of
   Pyrolysis Reactor Monitoring and Control Electronics. *Electronics* 12(24)

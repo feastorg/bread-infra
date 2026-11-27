@@ -11,12 +11,17 @@ For schema-specific changes, see [SCHEMA_CHANGELOG.md](SCHEMA_CHANGELOG.md).
 ## [Unreleased]
 
 ### Added
-- `spec/terminology.md` — board generation (G1, G2, G3…), revision (r1, r2…)
-  and Slice interface (Slice Interface 1, 2…) as three separate labels, with
-  the generations so far.
+- `spec/slice/slice-interface-1.md` — Slice Interface 1, the 10-pin bus
+  every Slice and Loaf uses today: the slot pin map and who drives each
+  signal, power, logic levels and pull-ups as built, e-stop, addressing,
+  and the chain connector. Slice board formats (bus row, mounting holes,
+  outline) are recorded per generation, with the boards that differ. An
+  origins section traces the slot back to 2021.
+- `CITATION.md` lists Oberloier's 2021 dissertation, whose Chapter 3 is an
+  early version of the HardwareX paper.
 - `rfcs/` and RFC 0001, a Draft of Slice Interface 2, the Slice and backplane
-  standard that G4 boards are built to: the
-  2×12 slot and chain connectors, the bus interface block, automatic
+  standard that G4 boards are built to, written against Slice Interface 1:
+  the 2×12 slot and chain connectors, the bus interface block, automatic
   addressing from SLOT_ID, the relay stop circuit, power and ground, the
   mechanical datums, the migration list, and the bench tests that gate its
   acceptance. Nothing in `spec/` changes until it is accepted.
@@ -63,6 +68,14 @@ For schema-specific changes, see [SCHEMA_CHANGELOG.md](SCHEMA_CHANGELOG.md).
   builds a board with no internal copper. Three boards are currently in this
   state: `Slice_AOEM`, `Slice_STPC`, and `Slice_TEMP_PICO_L4L-r1` (a *released*
   template, so every 4-layer PICO Slice cloned from it inherits the fault).
+
+### Fixed
+- `scripts/validate_board.py` failed boards that use KiCad's own logic and
+  processor symbol libraries, such as `74xGxx` (Slice_HEAT's level shifters):
+  its list of stock libraries missed `4xxx*`, `74x*`, `Auxiliary_Items`,
+  `Buffer`, `CPLD_*`, `CPU*`, `DSP_*`, `FPGA_*`, `Fiber_Optic`, `GPU`, `LED`
+  and `Security`. The list now covers every library in KiCad 10's stock symbol
+  set; `tests/test_validate_board.py` checks it.
 
 ---
 
