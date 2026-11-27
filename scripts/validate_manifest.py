@@ -65,14 +65,19 @@ def find_schema(explicit_path: str | None, manifest_path: Path) -> Path:
 
 def validate(manifest_path: Path, schema_path: Path) -> list[str]:
     """Validate manifest against schema. Returns list of error messages."""
-    with open(schema_path) as f:
-        schema = json.load(f)
-
     with open(manifest_path) as f:
         manifest = yaml.safe_load(f)
 
     if manifest is None:
         return ["Manifest file is empty or not valid YAML."]
+
+    return validate_data(manifest, schema_path)
+
+
+def validate_data(manifest: dict, schema_path: Path) -> list[str]:
+    """Validate an already-loaded manifest against schema. Returns list of error messages."""
+    with open(schema_path) as f:
+        schema = json.load(f)
 
     validator = Draft202012Validator(schema)
     errors = sorted(validator.iter_errors(manifest), key=lambda e: list(e.path))

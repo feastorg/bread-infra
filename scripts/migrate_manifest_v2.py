@@ -15,17 +15,25 @@ Reads <repo-dir>/slice.yaml or loaf.yaml and prints the 2.0 manifest; --write re
 - Slices: mounting.pattern from the board outline in hardware/BREAD_Slice.kicad_pcb, slice-S-v0
   for 70 x 100 and slice-L-v0 for 100 x 145 (within 0.5 mm), with pcb.dimensions set to
   match; null for any other outline, or with --no-format for a board whose bus or holes do
-  not meet its outline's format.
+  not meet its outline's format. A board file with no Edge.Cuts outline stops the run unless
+  --no-format is given. Edge.Cuts drawn inside footprints is not read.
 
-Prints what it could not carry over to stderr.
+Prints each value it changes or drops to stderr, and validates the result against the 2.0
+schema before printing or writing it; an invalid result is neither printed nor written.
 """
 
 import argparse
+import importlib.util
 import re
 import sys
 from pathlib import Path
 
 import yaml
+
+_spec = importlib.util.spec_from_file_location("validate_manifest", Path(__file__).with_name("validate_manifest.py"))
+assert _spec is not None and _spec.loader is not None
+validate_manifest = importlib.util.module_from_spec(_spec)
+_spec.loader.exec_module(validate_manifest)
 
 STATUS = {
     "concept": "concept",
@@ -43,16 +51,16 @@ def outline(pcb: Path) -> tuple[float, float] | None:
     """Width and height of the Edge.Cuts bounding box, or None if the board has no outline."""
     text = pcb.read_text(encoding="utf-8")
     xs, ys = [], []
-    for m in re.finditer(r"\(gr_(?:line|arc|rect)\s", text):
+    for m in re.finditer(r"\(gr_(?:line|arc|rect|poly)\s", text):
         depth, i = 0, m.start()
         for i in range(m.start(), len(text)):
             depth += {"(": 1, ")": -1}.get(text[i], 0)
             if depth == 0:
                 break
         item = text[m.start() : i + 1]
-        if '(layer "Edge.Cuts")' not in item:
+        if not re.search(r'\(layer "?Edge\.Cuts"?\)', item):
             continue
-        for x, y in re.findall(r"\((?:start|mid|end) (-?[\d.]+) (-?[\d.]+)\)", item):
+        for x, y in re.findall(r"\((?:start|mid|end|xy) (-?[\d.]+) (-?[\d.]+)\)", item):
             xs.append(float(x))
             ys.append(float(y))
     if not xs:
@@ -84,6 +92,10 @@ def migrate(
     for key in ("id", "name", "summary", "category" if kind == "slice" else "role"):
         out[key] = v1[key]
     out["status"] = STATUS[v1["status"]]
+    if out["status"] != v1["status"]:
+        notes.append(f"status {v1['status']!r} -> {out['status']!r}")
+    if hw1.get("hw_gen_current") != gen:
+        notes.append(f"hw_gen_current {hw1.get('hw_gen_current')} -> {gen}")
     hw = {"hw_gen_current": gen, "interface": "SI1"}
     pcb1 = hw1.get("pcb") or {}
     if kind == "slice":
@@ -128,6 +140,8 @@ def main() -> int:
     parser.add_argument("--no-format", action="store_true", help="board meets no format: mounting.pattern null")
     parser.add_argument("--write", action="store_true", help="replace the manifest instead of printing it")
     args = parser.parse_args()
+    if args.gen < 1:
+        sys.exit("--gen must be 1 or more")
 
     for kind in ("slice", "loaf"):
         path = args.repo / f"{kind}.yaml"
@@ -138,13 +152,27 @@ def main() -> int:
     v1 = yaml.safe_load(path.read_text(encoding="utf-8"))
     if str(v1.get("schema_version", "")).startswith("2."):
         sys.exit(f"{path} is already schema 2.x")
-    size = outline(args.repo / "hardware" / "BREAD_Slice.kicad_pcb") if kind == "slice" else None
+    size = None
+    if kind == "slice":
+        pcb = args.repo / "hardware" / "BREAD_Slice.kicad_pcb"
+        if not pcb.exists():
+            sys.exit(f"no board file at {pcb}")
+        size = outline(pcb)
+        if size is None and not args.no_format:
+            sys.exit(f"no Edge.Cuts outline found in {pcb}; pass --no-format if the board meets no format")
     out, notes = migrate(kind, v1, args.gen, size, not args.no_format)
     text = HEADER.format(kind=kind, Kind=kind.capitalize()) + yaml.safe_dump(
         out, sort_keys=False, allow_unicode=True, width=100
     )
     for note in notes:
         print(f"{path}: {note}", file=sys.stderr)
+    schema = Path(__file__).resolve().parent.parent / "schemas" / f"{kind}.schema.v2.json"
+    errors = validate_manifest.validate_data(yaml.safe_load(text), schema)
+    if errors:
+        print(f"{path}: the 2.0 result is invalid, nothing written:", file=sys.stderr)
+        for e in errors:
+            print(e, file=sys.stderr)
+        return 1
     if args.write:
         path.write_text(text, encoding="utf-8")
     else:

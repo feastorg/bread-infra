@@ -2,6 +2,8 @@
 
 import copy
 import importlib.util
+import subprocess
+import sys
 import tempfile
 import unittest
 from pathlib import Path
@@ -35,6 +37,9 @@ def board(w, h):
     )
     silk = '\t(gr_line\n\t\t(start 0 0)\n\t\t(end 500 500)\n\t\t(layer "F.SilkS")\n\t)\n'
     return f"(kicad_pcb\n{lines}{silk})\n"
+
+
+S_BOARD = board(70, 100)
 
 
 class Migrate(unittest.TestCase):
@@ -112,6 +117,82 @@ class Migrate(unittest.TestCase):
         v1["status"] = "shipped"
         with self.assertRaises(SystemExit):
             migrate.migrate("slice", v1, 3, (70, 100), True)
+
+    def test_firmware_address_fallback(self):
+        v1 = copy.deepcopy(SLICE_V1)
+        v1["interfaces"]["host"]["address_default"] = None
+        v1["firmware"] = {"i2c": {"address_default": 23}}
+        out, notes = self.convert("slice", v1, (70, 100))
+        self.assertEqual(out["interfaces"]["host"]["address_default"], 23)
+        self.assertTrue(any("firmware.i2c" in n for n in notes))
+
+    def test_poly_and_unquoted_layer_outlines(self):
+        poly = (
+            "(kicad_pcb\n\t(gr_poly\n\t\t(pts (xy 0 0) (xy 70 0) (xy 70 100) (xy 0 100))\n"
+            '\t\t(layer "Edge.Cuts")\n\t)\n)\n'
+        )
+        unquoted = board(70, 100).replace('(layer "Edge.Cuts")', "(layer Edge.Cuts)")
+        for label, text in (("gr_poly", poly), ("unquoted layer", unquoted)):
+            with self.subTest(label), tempfile.TemporaryDirectory() as d:
+                pcb = Path(d) / "BREAD_Slice.kicad_pcb"
+                pcb.write_text(text)
+                self.assertEqual(migrate.outline(pcb), (70.0, 100.0))
+
+
+class Cli(unittest.TestCase):
+    """Runs the script the way a repository would, on a temporary repo directory."""
+
+    def repo(self, d, manifest=SLICE_V1, pcb=S_BOARD):
+        root = Path(d)
+        (root / "slice.yaml").write_text(yaml.safe_dump(manifest))
+        if pcb is not None:
+            (root / "hardware").mkdir()
+            (root / "hardware" / "BREAD_Slice.kicad_pcb").write_text(pcb)
+        return root
+
+    def run_cli(self, root, *args):
+        script = ROOT / "scripts" / "migrate_manifest_v2.py"
+        return subprocess.run([sys.executable, script, root, *args], capture_output=True, text=True)
+
+    def test_write_then_refuse_a_second_run(self):
+        with tempfile.TemporaryDirectory() as d:
+            root = self.repo(d)
+            r = self.run_cli(root, "--gen", "3", "--write")
+            self.assertEqual(r.returncode, 0, r.stderr)
+            self.assertEqual(r.stdout, "")
+            text = (root / "slice.yaml").read_text()
+            self.assertTrue(text.startswith("# slice.yaml: BREAD Slice manifest, schema 2.0"))
+            path = root / "slice.yaml"
+            self.assertEqual(validate.validate(path, validate.find_schema(None, path)), [])
+            again = self.run_cli(root, "--gen", "3", "--write")
+            self.assertEqual(again.returncode, 1)
+            self.assertIn("already schema 2.x", again.stderr)
+
+    def test_refusals_leave_the_manifest_alone(self):
+        no_thickness = copy.deepcopy(SLICE_V1)
+        no_thickness["hardware"]["pcb"]["thickness"] = None
+        no_edges = '(kicad_pcb\n\t(gr_line\n\t\t(start 0 0)\n\t\t(end 5 5)\n\t\t(layer "F.SilkS")\n\t)\n)\n'
+        cases = {
+            "gen 0": (dict(), ("--gen", "0", "--write"), "--gen must be 1 or more"),
+            "no board file": (dict(pcb=None), ("--gen", "3", "--write"), "no board file"),
+            "no outline": (dict(pcb=no_edges), ("--gen", "3", "--write"), "no Edge.Cuts outline"),
+            "invalid result": (dict(manifest=no_thickness), ("--gen", "3", "--write"), "nothing written"),
+        }
+        for label, (repo_args, cli_args, message) in cases.items():
+            with self.subTest(label), tempfile.TemporaryDirectory() as d:
+                root = self.repo(d, **repo_args)
+                before = (root / "slice.yaml").read_text()
+                r = self.run_cli(root, *cli_args)
+                self.assertEqual(r.returncode, 1)
+                self.assertIn(message, r.stderr)
+                self.assertEqual((root / "slice.yaml").read_text(), before)
+
+    def test_no_outline_with_no_format(self):
+        no_edges = '(kicad_pcb\n\t(gr_line\n\t\t(start 0 0)\n\t\t(end 5 5)\n\t\t(layer "F.SilkS")\n\t)\n)\n'
+        with tempfile.TemporaryDirectory() as d:
+            r = self.run_cli(self.repo(d, pcb=no_edges), "--gen", "3", "--no-format")
+            self.assertEqual(r.returncode, 0, r.stderr)
+            self.assertIn("pattern: null", r.stdout)
 
 
 if __name__ == "__main__":
