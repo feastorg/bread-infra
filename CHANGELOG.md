@@ -15,6 +15,12 @@ For schema-specific changes, see [SCHEMA_CHANGELOG.md](SCHEMA_CHANGELOG.md).
   described in `slice-manifest-spec.md` and `loaf-manifest-spec.md`. The
   validator picks it by `schema_version`; 1.0 manifests validate as before.
   `tests/test_validate_manifest.py` covers both.
+- `pyproject.toml` and `uv.lock` declare and lock the scripts' dependencies
+  (PyYAML, jsonschema; ruff and pyright for development). A `justfile` runs
+  `setup`, `check` and `test`, and `.github/workflows/ci.yml` runs them on
+  this repository's pull requests; nothing ran `tests/` before. The scripts
+  are formatted with ruff, except `validate_board.py` and its test, which
+  #26 rewrites.
 - `spec/terminology.md` — "Generations, Revisions And Interfaces": a
   generation is a release of BREADS-compatible hardware (G1 = BREAD v1,
   2021–2023; G2 = BREAD v2, 2024; G3 = the next release, which most
@@ -23,12 +29,6 @@ For schema-specific changes, see [SCHEMA_CHANGELOG.md](SCHEMA_CHANGELOG.md).
   named separately. The `hw_gen` fields in the schemas and manifest specs,
   `naming.md` (repo names no longer carry a revision), the bench-record guide
   and the manifest templates (`hw_gen_current: 3`) follow it.
-- `pyproject.toml` and `uv.lock` declare and lock the scripts' dependencies
-  (PyYAML, jsonschema; ruff and pyright for development). A `justfile` runs
-  `setup`, `check` and `test`, and `.github/workflows/ci.yml` runs them on
-  this repository's pull requests; nothing ran `tests/` before. The scripts
-  are formatted with ruff, except `validate_board.py` and its test, which
-  #26 rewrites.
 - `spec/slice/slice-interface-1.md` — Slice Interface 1, the 10-pin bus
   every Slice and Loaf uses today: the slot pin map and who drives each
   signal, power, logic levels and pull-ups as built, e-stop, addressing,
