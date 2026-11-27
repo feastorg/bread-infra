@@ -24,7 +24,6 @@ except ImportError:
     sys.exit("Error: PyYAML not installed. Run: pip install pyyaml")
 
 try:
-    import jsonschema
     from jsonschema import Draft202012Validator
 except ImportError:
     sys.exit("Error: jsonschema not installed. Run: pip install jsonschema")
@@ -61,10 +60,7 @@ def find_schema(explicit_path: str | None, manifest_path: Path) -> Path:
     if default.exists():
         return default
 
-    sys.exit(
-        f"Error: Could not find {schema_name}. "
-        "Pass --schema <path> or run from bread-infra."
-    )
+    sys.exit(f"Error: Could not find {schema_name}. Pass --schema <path> or run from bread-infra.")
 
 
 def validate(manifest_path: Path, schema_path: Path) -> list[str]:

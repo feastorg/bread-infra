@@ -23,6 +23,12 @@ For schema-specific changes, see [SCHEMA_CHANGELOG.md](SCHEMA_CHANGELOG.md).
   named separately. The `hw_gen` fields in the schemas and manifest specs,
   `naming.md` (repo names no longer carry a revision), the bench-record guide
   and the manifest templates (`hw_gen_current: 3`) follow it.
+- `pyproject.toml` and `uv.lock` declare and lock the scripts' dependencies
+  (PyYAML, jsonschema; ruff and pyright for development). A `justfile` runs
+  `setup`, `check` and `test`, and `.github/workflows/ci.yml` runs them on
+  this repository's pull requests; nothing ran `tests/` before. The scripts
+  are formatted with ruff, except `validate_board.py` and its test, which
+  #26 rewrites.
 - `spec/slice/slice-interface-1.md` — Slice Interface 1, the 10-pin bus
   every Slice and Loaf uses today: the slot pin map and who drives each
   signal, power, logic levels and pull-ups as built, e-stop, addressing,
@@ -72,6 +78,14 @@ For schema-specific changes, see [SCHEMA_CHANGELOG.md](SCHEMA_CHANGELOG.md).
   builds a board with no internal copper. Three boards are currently in this
   state: `Slice_AOEM`, `Slice_STPC`, and `Slice_TEMP_PICO_L4L-r1` (a *released*
   template, so every 4-layer PICO Slice cloned from it inherits the fault).
+
+### Changed
+- The template repos dropped their `-r1`/`-r2` suffixes: `Slice_TEMP_NANO_S2L`,
+  `_NUCL_S4L`, `_NUCL_L4L`, `_PICO_S2L`, `_PICO_L4L`. The old
+  `Slice_TEMP_NANO_S2L-r1` is merged into `Slice_TEMP_NANO_S2L` and is no
+  longer public. README, CITATION.md, `concept.md`, `getting-started.md`
+  (which now lists the two Pico templates) and `slice-interface-1.md` use
+  the new names.
 
 ### Fixed
 - `scripts/validate_board.py` failed boards that use KiCad's own logic and

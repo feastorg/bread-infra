@@ -1,0 +1,40 @@
+# bread-infra's own checks: the scripts and tests in this repository.
+# Calls the `just` recipes so CI and local share one gate definition.
+# The other workflows here are reusable (workflow_call) and run in the Slice and Loaf repos.
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: Check and test
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install just
+        uses: extractions/setup-just@v2
+
+      - uses: astral-sh/setup-uv@v6
+
+      - name: Setup
+        run: just setup
+
+      - name: Check (format + lint + typecheck)
+        run: just check
+
+      - name: Test
+        run: just test
