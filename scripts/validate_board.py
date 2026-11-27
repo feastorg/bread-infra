@@ -67,12 +67,13 @@ KICAD10_SCH = 20260306
 
 # Libraries that ship with KiCad. Anything else must come from KiCad-Master-Lib.
 STOCK = re.compile(
-    r"^(Amplifier|Analog|Audio|Battery|Button|Buzzer|Calibration|Capacitor|Choke|Comparator"
-    r"|Connector|Converter|Crystal|Device|Diode|Display|Driver|Fiducial|Filter|Fuse|Graphic"
-    r"|Heatsink|Inductor|Interface|Isolator|Jumper|LED_|Logic|MCU|Mechanical|Memory|Module"
-    r"|Motor|Mounting|NetTie|OptoDevice|Oscillator|Package|Pin|Potentiometer|Power|RF|Reference"
-    r"|Regulator|Relay|Resistor|Sensor|Simulation|Socket|Switch|Symbol|TerminalBlock|TestPoint"
-    r"|Timer|Transformer|Transistor|Triac|Valve|Varistor|Video|power)"
+    r"^(4xxx|74x|Amplifier|Analog|Audio|Auxiliary_Items|Battery|Buffer|Button|Buzzer|CPLD_|CPU"
+    r"|Calibration|Capacitor|Choke|Comparator|Connector|Converter|Crystal|DSP_|Device|Diode"
+    r"|Display|Driver|FPGA_|Fiber_Optic|Fiducial|Filter|Fuse|GPU|Graphic|Heatsink|Inductor"
+    r"|Interface|Isolator|Jumper|LED|Logic|MCU|Mechanical|Memory|Module|Motor|Mounting|NetTie"
+    r"|OptoDevice|Oscillator|Package|Pin|Potentiometer|Power|RF|Reference|Regulator|Relay"
+    r"|Resistor|Security|Sensor|Simulation|Socket|Switch|Symbol|TerminalBlock|TestPoint|Timer"
+    r"|Transformer|Transistor|Triac|Valve|Varistor|Video|power)"
 )
 
 LIB_RE = re.compile(r'\(name "([^"]+)"\)\(type "KiCad"\)\(uri "([^"]+)"\)')

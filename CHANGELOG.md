@@ -54,6 +54,12 @@ For schema-specific changes, see [SCHEMA_CHANGELOG.md](SCHEMA_CHANGELOG.md).
   template, so every 4-layer PICO Slice cloned from it inherits the fault).
 
 ### Fixed
+- `scripts/validate_board.py` failed boards that use KiCad's own logic and
+  processor symbol libraries, such as `74xGxx` (Slice_HEAT's level shifters):
+  its list of stock libraries missed `4xxx*`, `74x*`, `Auxiliary_Items`,
+  `Buffer`, `CPLD_*`, `CPU*`, `DSP_*`, `FPGA_*`, `Fiber_Optic`, `GPU`, `LED`
+  and `Security`. The list now covers every library in KiCad 10's stock symbol
+  set; `tests/test_validate_board.py` checks it.
 - `validate_board.py` checks that a reference into a stock KiCad library names
   a symbol or footprint that exists, using the installed stock libraries
   (`/usr/share/kicad`, the Flatpak runtimes, or `KICAD10_SYMBOL_DIR` /
