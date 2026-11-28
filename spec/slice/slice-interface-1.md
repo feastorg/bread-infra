@@ -26,7 +26,7 @@ silkscreen.
 
 - A Slice carries a 1x10 female socket at 2.54 mm pitch, right-angle (KiCad
   `PinSocket_1x10_P2.54mm_Horizontal`), on its bus edge. Its reference is
-  not fixed: J1 on 28 Slices, J2 on 10, J4 on Slice_IOCT, J12 on
+  not fixed: J1 on 27 Slices, J2 on 11, J4 on Slice_IOCT, J12 on
   Slice_PRTO_THTA_S2L.
 - A Loaf carries a vertical 1x10 male header at each slot. Loaf_x004 uses
   KiCad-Master-Lib's `KMLib_Connectors:BREAD_Slice_Bus_10Pin`: the 1x10 row
@@ -52,8 +52,9 @@ The papers' pin table (Oberloier 2021, Table 3.2; HardwareX 2023, Table 2)
 says E_STOP and SYNC are "driven by loaf" and INT "driven by slice". In 2021
 the controller sat on the Loaf, as LOAF_X08's own Arduino Nano. Today
 Loaf_x004 is passive: its only parts are the supply jack and the 1x10
-connectors. Ctrl_ESPT, an ESP32 controller, drives pins 6 and 8 and pulls
-pin 7 up ([Logic levels](#logic-levels-and-pull-ups)).
+connectors, and the controller is a Raspberry Pi. In G2, Ctrl_ESPT, an ESP32
+controller now archived, drove pins 6 and 8 and pulled pin 7 up
+([Logic levels](#logic-levels-and-pull-ups)).
 
 The pin numbers are the interface; net names are not. The fleet calls the
 grounds `GND` or `GNDPWR`, the I²C lines `I2C_CLK`/`I2C_DAT` (Slice_RLHT:
@@ -107,9 +108,10 @@ switch (Slice_IOAC, Slice_PRTO_THTA_S2L).
   - an STM32L432 Nucleo through jumpers on Slice_TEMP_NUCL_S4L and
     Slice_TEMP_NUCL_L4L, and directly on Slice_FPSG;
   - Slice_IAQM's sensors, as above.
-- Ten Slices bring the bus SDA and SCL out on a 4-pin JST-SH connector with
-  +5V and ground: Slice_HEAT, Slice_IAQM, Slice_LVAI, Slice_ACAR_S2L, Slice_RLAY,
-  Slice_SERV, Slice_SOLR, Slice_THRM_31855, Slice_THRM_31856 and Slice_USBP.
+- Eleven Slices bring the bus SDA and SCL out on a 4-pin JST-SH connector with
+  +5V and ground: Slice_HEAT, Slice_IAQM, Slice_LVAI, Slice_ACAR_L2L,
+  Slice_ACAR_S2L, Slice_RLAY, Slice_SERV, Slice_SOLR, Slice_THRM_31855,
+  Slice_THRM_31856 and Slice_USBP.
   A device plugged in there is on the slot bus. **Not defined:** what may be
   connected there.
 - **Not defined:** the I²C clock rate. The bench records in
@@ -247,10 +249,10 @@ What changed around the slot:
 
 | | G1 (2021–2023) | G2 (2024) | Today |
 | --- | --- | --- | --- |
-| Loaf | LOAF_X08: 8 slots and its own Arduino Nano | LOAF_x04: 4 slots, chainable; LOAF_ESPTP, an ESP32 controller | Loaf_x004; Ctrl_ESPT |
+| Loaf | LOAF_X08: 8 slots and its own Arduino Nano | LOAF_x04: 4 slots, chainable; LOAF_ESPTP, an ESP32 controller | Loaf_x004 |
 | Loaf to Loaf | the dissertation: two RJ45 jacks, "amplified" (printed pp. 32, 65); LOAF_X08 as published: a 3-pin connector carrying I²C (HardwareX pp. 3, 8) | a right-angle 1x10 at each end, signals in slot order (the male header's footprint numbers its pins in reverse) | 1x10 header and socket, numbered pin for pin with the slot |
 | Addressing | fixed in firmware | fixed in firmware | fixed in firmware |
-| Controller | LOAF_X08's Nano; then a Raspberry Pi or BeagleBone running OpenReactor (Electronics 2023) | the ESP32 Loaf controller running Butter (Technologies 2025) | Ctrl_ESPT's ESP32; a Raspberry Pi 4 on the bench |
+| Controller | LOAF_X08's Nano; then a Raspberry Pi or BeagleBone running OpenReactor (Electronics 2023) | the ESP32 Loaf controller running Butter (Technologies 2025) | a Raspberry Pi 4 |
 | Slice board format | G1 placement | G2 placement | G2 placement (Slice_STEP's bus row still G1) |
 | Board rules | one or two layers, millable, 1206 or larger, through-hole preferred ([design-constraints-legacy](design-constraints-legacy.md)) | not recorded | boards made by a PCB fab, up to four layers; [Design Constraints](design-constraints.md) mixes the milling rules with fab colour conventions |
 

@@ -73,8 +73,9 @@ from it.
 
 Slice_DCMT and Slice_RLHT are tied to their pages by the archive snapshots
 they carry: `archive/hw_archive/g1-2021-06-08-mtu` matches the date 6aw9m was
-created, and `archive/hw_archive/osf_2022-05-19` matches pf6gy. Every other row
-is matched by title only; note that LOAF_ESPC on OSF is Ctrl_ESPT here (named Loaf_ESPT until 2026-11-27).
+created, and `archive/hw_archive/osf_2022-05-19` matches pf6gy. Loaf_x008 holds
+x4yqj's file history, imported with its OSF dates. Every other row is matched
+by title only; note that LOAF_ESPC on OSF is Ctrl_ESPT here (named Loaf_ESPT until 2026-11-27).
 
 Slices not in the table have no OSF page that we know of. Other people have
 published BREAD Slices on OSF as separate projects that u2h4g does not link;

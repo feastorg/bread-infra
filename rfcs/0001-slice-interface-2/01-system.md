@@ -69,8 +69,8 @@ There is one loaf design with two BOMs, one per voltage class: the window
 thresholds and the supply-held relay's coil change with the class.
 
 **SYS-3** A loaf with its own controller, like
-[Ctrl_ESPT](https://github.com/feastorg/Ctrl_ESPT), is a head and a loaf on one
-board. It MAY be built if it carries everything SYS-1 lists for a head.
+[Loaf_x008](https://github.com/feastorg/Loaf_x008) and its Arduino Nano, is a
+head and a loaf on one board. It MAY be built if it carries everything SYS-1 lists for a head.
 
 ## Slice
 
