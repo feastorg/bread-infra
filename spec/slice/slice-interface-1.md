@@ -52,13 +52,13 @@ The papers' pin table (Oberloier 2021, Table 3.2; HardwareX 2023, Table 2)
 says E_STOP and SYNC are "driven by loaf" and INT "driven by slice". In 2021
 the controller sat on the Loaf, as LOAF_X08's own Arduino Nano. Today
 Loaf_x004 is passive: its only parts are the supply jack and the 1x10
-connectors. Loaf_ESPT, an ESP32 controller, drives pins 6 and 8 and pulls
+connectors. Ctrl_ESPT, an ESP32 controller, drives pins 6 and 8 and pulls
 pin 7 up ([Logic levels](#logic-levels-and-pull-ups)).
 
 The pin numbers are the interface; net names are not. The fleet calls the
 grounds `GND` or `GNDPWR`, the I²C lines `I2C_CLK`/`I2C_DAT` (Slice_RLHT:
 `I2C_TC_CLK` for pin 3) or `SCL`/`SDA`, and the stop `E_STOP`, `ESTOP` or
-`ESTOP_BUS`. Loaf_x004 adds `_5V` to pins 3–8; Loaf_ESPT uses `_3.3V` on
+`ESTOP_BUS`. Loaf_x004 adds `_5V` to pins 3–8; Ctrl_ESPT uses `_3.3V` on
 pins 3–4 and `_5V` on 6–8. Where a Slice calls the bus ground `GNDPWR`, its
 logic ground is a separate net joined to it at one net tie, NT1.
 
@@ -87,12 +87,12 @@ switch (Slice_IOAC, Slice_PRTO_THTA_S2L).
 ## Logic levels and pull-ups
 
 - E_STOP, INT and SYNC are 5 V signals, the Arduino Nano's level. Loaf_x004
-  names them `E_STOP_5V`, `INT_5V`, `SYNC_5V`. Loaf_ESPT joins its ESP32 to
+  names them `E_STOP_5V`, `INT_5V`, `SYNC_5V`. Ctrl_ESPT joins its ESP32 to
   them through BSS138 level shifters (Q1–Q3) with 10 kΩ pull-ups to +5V (R4,
   R5, R6).
 - **Not defined:** the I²C level. What pulls SDA and SCL up depends on the
   stack:
-  - Loaf_ESPT pulls them to +3.3V through 2.2 kΩ (R8, R9, behind solder
+  - Ctrl_ESPT pulls them to +3.3V through 2.2 kΩ (R8, R9, behind solder
     jumpers JP3 and JP4, bridged by default) and adds an LTC4311 rise-time
     accelerator (U2). Its ESP32 drives pins 3–4 with no level translation.
   - Slice_IAQM ties the bus by default (JP1, JP2) to its BME280 and ENS160
@@ -129,7 +129,7 @@ and boot rules in [E-stop Input](firmware.md#e-stop-input).
 ([#20](https://github.com/feastorg/bread-infra/issues/20)).
 
 - Loaf_x004 has no pull on pin 6.
-- Loaf_ESPT pulls it up to +5V through 10 kΩ (R4).
+- Ctrl_ESPT pulls it up to +5V through 10 kΩ (R4).
 - The Slice_DCMT and Slice_RLHT firmware enables the Nano's internal
   pull-up.
 - Three Slices also load the line to ground through a series resistor and
@@ -155,7 +155,7 @@ bus.
 
 - Loaf_x004 has one at each end: J2, a right-angle male header, and J7, a
   right-angle female socket. Its slots are 30.4 mm apart.
-- Loaf_ESPT has no slots. Its only 1x10 is J3, a right-angle female socket
+- Ctrl_ESPT has no slots. Its only 1x10 is J3, a right-angle female socket
   (the same part as Loaf_x004's J7) on its back side.
 - The manifests record the chain connector as `1x10-2.54mm`.
 - Loaf_CANPB has no board file and is not covered here.
@@ -233,7 +233,7 @@ paper (Table 2, p. 10). The board files agree:
 - G1:
   - SLC_CR10 "R0 2021" (OSF ajmbe).
   - SLC_DCMT "R0 2021" (Slice_DCMT `archive/hw_archive/g1-2021-06-08-mtu`).
-  - The LOAF_X08 backplane, silkscreen "LOAF R0 2022" (OSF x4yqj).
+  - The LOAF_X08 backplane, silkscreen "LOAF R0 2022" (OSF x4yqj; [Loaf_x008](https://github.com/feastorg/Loaf_x008)).
 - G2:
   - SLC_DCMT "R1 2024" (Slice_DCMT `archive/hw_archive/g2-2024-02-13-finn`).
   - SLC_RLHT "R2 2024" (Slice_RLHT `archive/hw_archive/finn_recent`).
@@ -247,10 +247,10 @@ What changed around the slot:
 
 | | G1 (2021–2023) | G2 (2024) | Today |
 | --- | --- | --- | --- |
-| Loaf | LOAF_X08: 8 slots and its own Arduino Nano | LOAF_x04: 4 slots, chainable; LOAF_ESPTP, an ESP32 controller | Loaf_x004; Loaf_ESPT |
+| Loaf | LOAF_X08: 8 slots and its own Arduino Nano | LOAF_x04: 4 slots, chainable; LOAF_ESPTP, an ESP32 controller | Loaf_x004; Ctrl_ESPT |
 | Loaf to Loaf | the dissertation: two RJ45 jacks, "amplified" (printed pp. 32, 65); LOAF_X08 as published: a 3-pin connector carrying I²C (HardwareX pp. 3, 8) | a right-angle 1x10 at each end, signals in slot order (the male header's footprint numbers its pins in reverse) | 1x10 header and socket, numbered pin for pin with the slot |
 | Addressing | fixed in firmware | fixed in firmware | fixed in firmware |
-| Controller | LOAF_X08's Nano; then a Raspberry Pi or BeagleBone running OpenReactor (Electronics 2023) | the ESP32 Loaf controller running Butter (Technologies 2025) | Loaf_ESPT's ESP32; a Raspberry Pi 4 on the bench |
+| Controller | LOAF_X08's Nano; then a Raspberry Pi or BeagleBone running OpenReactor (Electronics 2023) | the ESP32 Loaf controller running Butter (Technologies 2025) | Ctrl_ESPT's ESP32; a Raspberry Pi 4 on the bench |
 | Slice board format | G1 placement | G2 placement | G2 placement (Slice_STEP's bus row still G1) |
 | Board rules | one or two layers, millable, 1206 or larger, through-hole preferred ([design-constraints-legacy](design-constraints-legacy.md)) | not recorded | boards made by a PCB fab, up to four layers; [Design Constraints](design-constraints.md) mixes the milling rules with fab colour conventions |
 

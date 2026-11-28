@@ -66,7 +66,7 @@ pin 6. To meet the rule:
 | Board | E-stop line |
 | --- | --- |
 | Loaf_x004 | `E_STOP_5V` passes bus pin 6 between the chain connectors (J2, J7) and the four Slice sockets, with no pull resistor |
-| Loaf_ESPT | `E_STOP_5V` has a 10 kOhm pull-up to +5V (R4), and a BSS138 level shifter (Q1) lets the ThingPlus pull it LOW |
+| Ctrl_ESPT | `E_STOP_5V` has a 10 kOhm pull-up to +5V (R4), and a BSS138 level shifter (Q1) lets the ThingPlus pull it LOW |
 | Slice_DCMT, Slice_RLHT | bus pin 6 goes straight to the Nano's D2; the firmware enables the internal pull-up |
 
 So the line idles HIGH and stops only when driven LOW; an open chain reads as
