@@ -69,6 +69,10 @@ For schema-specific changes, see [SCHEMA_CHANGELOG.md](SCHEMA_CHANGELOG.md).
   Slice and Loaf came from.
 
 ### Changed
+- Slice_PHDO is renamed Slice_ACAR_S2L, and Slice_ACAR_L2L is its two-channel
+  L sibling. CITATION.md's repository link, Slice Interface 1's JST-SH list,
+  RFC 0001's SNS-3 list and future-ideas.md use the new name. Historical
+  labels such as G1's `SLC_PHDO` stay.
 - Every reusable workflow that runs bread-infra's scripts takes them from
   `inputs.infra_ref`: `deploy-pages.yml` and `publish-kibot.yml` gain the
   input in place of a fixed `ref: main`. The default stays `main` on main.

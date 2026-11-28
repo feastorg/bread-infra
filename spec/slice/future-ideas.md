@@ -231,4 +231,4 @@ Later revisions of existing Slices are tracked as issues in their repositories:
 
 - Slice_SERV: SI2 24 V operation, and an 8-16 channel L variant with a PCA9685 ([Slice_SERV#2](https://github.com/feastorg/Slice_SERV/issues/2)).
 - Slice_USBP: a populated pass-through hub ([Slice_USBP#2](https://github.com/feastorg/Slice_USBP/issues/2)).
-- Slice_PHDO (ACAR): 4 channels on the L format with an RP2040 ([Slice_PHDO#2](https://github.com/feastorg/Slice_PHDO/issues/2)).
+- Slice_ACAR_S2L (was Slice_PHDO): 4 channels on the L format with an RP2040 ([Slice_ACAR_S2L#2](https://github.com/feastorg/Slice_ACAR_S2L/issues/2)). Slice_ACAR_L2L is the two-channel L board.
