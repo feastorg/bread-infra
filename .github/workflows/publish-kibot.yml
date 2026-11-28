@@ -7,6 +7,11 @@ on:
         description: "Run ID from KiBot CI to fetch artifacts"
         required: true
         type: string
+      infra_ref:
+        description: "bread-infra ref to use for helper scripts"
+        required: false
+        type: string
+        default: "main"
     outputs:
       kibot_index_sha:
         description: "Commit SHA containing the latest KiBot index"
@@ -46,7 +51,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: feastorg/bread-infra
-          ref: main
+          ref: ${{ inputs.infra_ref }}
           path: _infra
 
       - name: Download KiBot artifact (for assets + index)

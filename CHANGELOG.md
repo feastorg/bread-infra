@@ -73,6 +73,15 @@ For schema-specific changes, see [SCHEMA_CHANGELOG.md](SCHEMA_CHANGELOG.md).
   L sibling. CITATION.md's repository link, Slice Interface 1's JST-SH list,
   RFC 0001's SNS-3 list and future-ideas.md use the new name. Historical
   labels such as G1's `SLC_PHDO` stay.
+- Every reusable workflow that runs bread-infra's scripts takes them from
+  `inputs.infra_ref`: `deploy-pages.yml` and `publish-kibot.yml` gain the
+  input in place of a fixed `ref: main`. The default stays `main` on main.
+  A release tag's commit sets it to the tag with `scripts/set_infra_ref.py`,
+  so a board pinned at a tag runs that tag's scripts (README, "Releasing").
+  CI checks the defaults: `main` on branches, the tag name on a tag push.
+  Tags cut before this change (v1.0.0 to v1.2.0) still default to `main`;
+  boards move off main's scripts when they pin the first tag cut this way.
+  (#38)
 - `templates/docs-pipeline.yml` calls the reusable workflows at `@v1.2.0`,
   the latest tag, in place of `@v1.1.0`. The CHANGELOG gains the v1.2.0
   section; its entries had stayed under Unreleased. (#39)
