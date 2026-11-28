@@ -14,7 +14,7 @@ on:
         description: "bread-infra ref to use for the validator"
         required: false
         type: string
-        default: "main"
+        default: "v1.3.0"
       master_lib_ref:
         description: "KiCad-Master-Lib ref to resolve libraries against"
         required: false

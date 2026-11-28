@@ -11,7 +11,7 @@ on:
         description: "bread-infra ref to use for helper scripts"
         required: false
         type: string
-        default: "main"
+        default: "v1.3.0"
     outputs:
       kibot_index_sha:
         description: "Commit SHA containing the latest KiBot index"
