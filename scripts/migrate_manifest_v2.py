@@ -19,8 +19,9 @@ Reads <repo-dir>/slice.yaml or loaf.yaml and prints the 2.0 manifest; --write re
   format. A board file with no Edge.Cuts outline stops the run unless
   --no-format is given. Edge.Cuts drawn inside footprints is not read.
 
-Prints each value it changes to stderr (1.0 fields that 2.0 removes are dropped without a
-note), and validates the result against the 2.0
+Prints each value it changes to stderr, and hw_gen_supported when it is dropped with more
+than the current generation in it; the other 1.0 fields that 2.0 removes are dropped without
+a note. It validates the result against the 2.0
 schema before printing or writing it; an invalid result is neither printed nor written.
 """
 
@@ -74,7 +75,8 @@ def board_format(size: tuple[float, float] | None) -> str | None:
     if size is None:
         return None
     for name, (w, h) in FORMATS.items():
-        if abs(size[0] - w) <= TOLERANCE and abs(size[1] - h) <= TOLERANCE:
+        # 1e-9 absorbs float error, so 145.02 is inside like 70.02 (145.02 - 145 > 0.02 in floats).
+        if abs(size[0] - w) <= TOLERANCE + 1e-9 and abs(size[1] - h) <= TOLERANCE + 1e-9:
             return name
     return None
 
