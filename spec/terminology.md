@@ -180,11 +180,12 @@ The generations so far:
 - A hardware release is a git tag on the board's repo, one per fabricated
   revision, such as `g3-r1`, with the fabrication outputs attached to a
   GitHub release built from that tag. A generation's release is a list in
-  bread-infra of the board tags that make it up. No board has a release tag
-  yet.
+  bread-infra of the board tags that make it up. Loaf_x008 (`g1-r1`) and
+  Ctrl_ESPT (`g2-r1`) have release tags; no G3 board has one yet.
 - Built earlier designs are kept under `archive/hw_archive/` and tagged as
-  well. Today only Slice_DCMT and Slice_RLHT keep designs there; the other
-  G1 designs are on OSF ([CITATION.md](../CITATION.md)).
+  well. Today only Slice_DCMT and Slice_RLHT keep designs there. Loaf_x008
+  holds LOAF_X08's OSF history; the other G1 designs are on OSF
+  ([CITATION.md](../CITATION.md)).
 - A new generation can keep its interface: G1 to G3 all use Slice
   Interface 1. Slice Interface 2 is proposed to start at G4.
 - "BREAD v1" and "BREAD v2" are the papers' names for G1 and G2 (Hafting et

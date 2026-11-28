@@ -31,6 +31,20 @@ For schema-specific changes, see [SCHEMA_CHANGELOG.md](SCHEMA_CHANGELOG.md).
   CITATION.md, Slice Interface 1, RFC 0001, firmware.md, the Loaf manifest
   spec (now with Loaf_x008 as a `hybrid` example) and the fleet worklist use
   the new names. OSF labels such as LOAF_X08 and LOAF_ESPC stay.
+- Spec text corrected against the boards and repos:
+  - firmware.md no longer lists the amber LED state as not yet met:
+    bread-slice-core 0.2.0 added it (bread-slice-core#3), and Slice_DCMT and
+    Slice_RLHT use it. Its DCMT driver-input gap cites the open Slice_DCMT#66,
+    not the duplicate #83, and its e-stop note says bread-slice-core 0.2.0
+    can read the line without the pull-up.
+  - Slice Interface 1 counts the bus socket as J1 on 27 Slices and J2 on 11,
+    lists the 11 JST-SH boards with the supply each carries (+5V on eight,
+    +3V3 on the ACAR pair and Slice_THRM_31856), and gives a Raspberry Pi,
+    not the archived Ctrl_ESPT, as today's controller.
+  - RFC 0001's SYS-3 gives Loaf_x008 as its example of a loaf with its own
+    controller; Ctrl_ESPT has no slots.
+  - terminology.md records the release tags Loaf_x008 g1-r1 and Ctrl_ESPT
+    g2-r1, and CITATION.md the import tie for x4yqj.
 
 ---
 
