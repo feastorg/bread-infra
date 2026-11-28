@@ -67,6 +67,44 @@ For schema-specific changes, see [SCHEMA_CHANGELOG.md](SCHEMA_CHANGELOG.md).
 - `CITATION.md` — how to cite BREAD (Oberloier et al., HardwareX 2023), the
   related papers and thesis, the master OSF project, and which OSF page each
   Slice and Loaf came from.
+
+### Changed
+- Every reusable workflow that runs bread-infra's scripts takes them from
+  `inputs.infra_ref`: `deploy-pages.yml` and `publish-kibot.yml` gain the
+  input in place of a fixed `ref: main`. The default stays `main` on main.
+  A release tag's commit sets it to the tag with `scripts/set_infra_ref.py`,
+  so a board pinned at a tag runs that tag's scripts (README, "Releasing").
+  CI checks the defaults: `main` on branches, the tag name on a tag push.
+  Tags cut before this change (v1.0.0 to v1.2.0) still default to `main`;
+  boards move off main's scripts when they pin the first tag cut this way.
+  (#38)
+- `templates/docs-pipeline.yml` calls the reusable workflows at `@v1.2.0`,
+  the latest tag, in place of `@v1.1.0`. The CHANGELOG gains the v1.2.0
+  section; its entries had stayed under Unreleased. (#39)
+- `validate-manifest.yml` runs the validator on the locked dependencies
+  (`uv run --locked`) when the bread-infra ref it checks out has `uv.lock`.
+  Refs without one, including `schema-v1.0`, keep the unpinned
+  `pip install`. `ci.yml` runs the workflow against each commit here.
+- The template repos dropped their `-r1`/`-r2` suffixes: `Slice_TEMP_NANO_S2L`,
+  `_NUCL_S4L`, `_NUCL_L4L`, `_PICO_S2L`, `_PICO_L4L`. The old
+  `Slice_TEMP_NANO_S2L-r1` is merged into `Slice_TEMP_NANO_S2L` and is no
+  longer public. README, CITATION.md, `concept.md`, `getting-started.md`
+  (which now lists the two Pico templates) and `slice-interface-1.md` use
+  the new names.
+
+### Fixed
+- `scripts/validate_board.py` failed boards that use KiCad's own logic and
+  processor symbol libraries, such as `74xGxx` (Slice_HEAT's level shifters):
+  its list of stock libraries missed `4xxx*`, `74x*`, `Auxiliary_Items`,
+  `Buffer`, `CPLD_*`, `CPU*`, `DSP_*`, `FPGA_*`, `Fiber_Optic`, `GPU`, `LED`
+  and `Security`. The list now covers every library in KiCad 10's stock symbol
+  set; `tests/test_validate_board.py` checks it.
+
+---
+
+## v1.2.0 — 2026-07-13
+
+### Added
 - **Loaf tier.** `schemas/loaf.schema.json`, `templates/loaf.yaml.template`, and
   `spec/loaf/loaf-manifest-spec.md`. The Loaf tier was specified conceptually but
   had no schema, no manifest template, and no manifests -- Grain, with zero repos,
@@ -89,35 +127,6 @@ For schema-specific changes, see [SCHEMA_CHANGELOG.md](SCHEMA_CHANGELOG.md).
   builds a board with no internal copper. Three boards are currently in this
   state: `Slice_AOEM`, `Slice_STPC`, and `Slice_TEMP_PICO_L4L-r1` (a *released*
   template, so every 4-layer PICO Slice cloned from it inherits the fault).
-
-### Changed
-- Every reusable workflow that runs bread-infra's scripts takes them from
-  `inputs.infra_ref`: `deploy-pages.yml` and `publish-kibot.yml` gain the
-  input in place of a fixed `ref: main`. The default stays `main` on main.
-  A release tag's commit sets it to the tag with `scripts/set_infra_ref.py`,
-  so a board pinned at a tag runs that tag's scripts (README, "Releasing").
-  CI checks the defaults: `main` on branches, the tag name on a tag push.
-  Tags cut before this change (v1.0.0 to v1.2.0) still default to `main`;
-  boards move off main's scripts when they pin the first tag cut this way.
-  (#38)
-- `validate-manifest.yml` runs the validator on the locked dependencies
-  (`uv run --locked`) when the bread-infra ref it checks out has `uv.lock`.
-  Refs without one, including `schema-v1.0`, keep the unpinned
-  `pip install`. `ci.yml` runs the workflow against each commit here.
-- The template repos dropped their `-r1`/`-r2` suffixes: `Slice_TEMP_NANO_S2L`,
-  `_NUCL_S4L`, `_NUCL_L4L`, `_PICO_S2L`, `_PICO_L4L`. The old
-  `Slice_TEMP_NANO_S2L-r1` is merged into `Slice_TEMP_NANO_S2L` and is no
-  longer public. README, CITATION.md, `concept.md`, `getting-started.md`
-  (which now lists the two Pico templates) and `slice-interface-1.md` use
-  the new names.
-
-### Fixed
-- `scripts/validate_board.py` failed boards that use KiCad's own logic and
-  processor symbol libraries, such as `74xGxx` (Slice_HEAT's level shifters):
-  its list of stock libraries missed `4xxx*`, `74x*`, `Auxiliary_Items`,
-  `Buffer`, `CPLD_*`, `CPU*`, `DSP_*`, `FPGA_*`, `Fiber_Optic`, `GPU`, `LED`
-  and `Security`. The list now covers every library in KiCad 10's stock symbol
-  set; `tests/test_validate_board.py` checks it.
 
 ---
 
