@@ -10,6 +10,10 @@ For schema-specific changes, see [SCHEMA_CHANGELOG.md](SCHEMA_CHANGELOG.md).
 
 ## [Unreleased]
 
+---
+
+## v1.3.0 — 2026-11-27
+
 ### Added
 - `scripts/migrate_manifest_v2.py` converts a 1.0 `slice.yaml` or `loaf.yaml`
   to schema 2.0, taking the board format from the board outline. Tested in
@@ -69,6 +73,9 @@ For schema-specific changes, see [SCHEMA_CHANGELOG.md](SCHEMA_CHANGELOG.md).
   Slice and Loaf came from.
 
 ### Changed
+- `loaf-manifest-spec.md`: a Loaf has no supported-generation list. What it
+  works with is its `hardware.interface`, and `hw_gen_current` says which
+  release it belongs to; Loaf 2.0 drops `hw_gen_supported` for good.
 - Slice_PHDO is renamed Slice_ACAR_S2L, and Slice_ACAR_L2L is its two-channel
   L sibling. CITATION.md's repository link, Slice Interface 1's JST-SH list,
   RFC 0001's SNS-3 list and future-ideas.md use the new name. Historical

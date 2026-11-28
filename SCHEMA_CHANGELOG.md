@@ -8,6 +8,10 @@ Format: [Keep a Changelog](https://keepachangelog.com/)
 
 ## [Unreleased]
 
+---
+
+## schema-v2.0 — 2026-11-27
+
 ### Added
 
 - Slice and loaf schema 2.0: `schemas/slice.schema.v2.json` and

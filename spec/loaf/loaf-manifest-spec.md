@@ -34,8 +34,9 @@ metadata:
 `hardware.pcb.layers` and `metadata.tags` mean what they do in 1.0 and are
 read by the site's loaf index; `status`, `hardware.hw_gen_current` and
 `hardware.interface` are as in the Slice 2.0 manifest. 2.0 has no
-`hw_gen_supported`: what a Loaf's supported-generation list means is not yet
-settled, and the field returns when it is.
+`hw_gen_supported`: what a Loaf works with is its `hardware.interface`, and
+`hardware.hw_gen_current` says which release it belongs to, so a Loaf has no
+list of supported generations.
 
 ## Schema 1.0 (legacy)
 
