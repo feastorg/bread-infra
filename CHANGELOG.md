@@ -10,6 +10,21 @@ For schema-specific changes, see [SCHEMA_CHANGELOG.md](SCHEMA_CHANGELOG.md).
 
 ## [Unreleased]
 
+### Added
+- `templates/ci.yml`: a board's manifest validation against `schema-v2.0`,
+  run when the manifest or the workflow changes. Of the 40 public Slices,
+  only Slice_DCMT and Slice_RLHT checked their manifest in CI.
+
+### Fixed
+- `templates/docs-pipeline.yml` calls the reusable workflows at `@v1.3.0`. At
+  `@v1.2.0` a new board ran main's scripts, the problem v1.3.0 fixed (#38).
+  README "Releasing" now ends by pointing the templates at the new tag.
+- `migrate_manifest_v2.py` matches a board to slice-S-v0 or slice-L-v0 within
+  0.02 mm, Slice Interface 1's tolerance, not 0.5 mm. At 0.5 mm, Slice_AOEM,
+  Slice_TEMP_NUCL_L4L and Slice_THMX (100.116 x 144.894 mm) were given
+  slice-L-v0 and a nominal size. Its docstring says which dropped 1.0 field
+  it reports, and to set a designed 1.0 `concept` to `development`.
+
 ### Changed
 - Loaf_ESPT is renamed Ctrl_ESPT and archived as the G2 controller, and
   LOAF_X08 is imported from OSF as Loaf_x008, the archived G1 backplane.

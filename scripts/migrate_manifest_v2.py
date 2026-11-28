@@ -8,17 +8,20 @@ Reads <repo-dir>/slice.yaml or loaf.yaml and prints the 2.0 manifest; --write re
 2.0 keeps the 1.0 fields a tool reads, under the same paths (spec/slice/slice-manifest-spec.md):
 
 - status: concept stays concept, deprecated becomes retired, and prototype, validated and
-  released become development. 1.0's released never meant a release tag, and a fabricated
-  board is set to built by hand.
+  released become development. 1.0's released never meant a release tag. Set by hand a
+  fabricated board to built, and a 1.0 concept whose board is already designed to development.
 - hardware.hw_gen_current: --gen, the generation the board in hardware/ is heading for.
 - hardware.interface: SI1.
 - Slices: mounting.pattern from the board outline in hardware/BREAD_Slice.kicad_pcb, slice-S-v0
-  for 70 x 100 and slice-L-v0 for 100 x 145 (within 0.5 mm), with pcb.dimensions set to
-  match; null for any other outline, or with --no-format for a board whose bus or holes do
-  not meet its outline's format. A board file with no Edge.Cuts outline stops the run unless
+  for 70 x 100 and slice-L-v0 for 100 x 145 (within 0.02 mm, Slice Interface 1's tolerance),
+  with pcb.dimensions set to match; null, with the measured dimensions, for any other
+  outline, or with --no-format for a board whose bus or holes do not meet its outline's
+  format. A board file with no Edge.Cuts outline stops the run unless
   --no-format is given. Edge.Cuts drawn inside footprints is not read.
 
-Prints each value it changes or drops to stderr, and validates the result against the 2.0
+Prints each value it changes to stderr, and hw_gen_supported when it is dropped with more
+than the current generation in it; the other 1.0 fields that 2.0 removes are dropped without
+a note. It validates the result against the 2.0
 schema before printing or writing it; an invalid result is neither printed nor written.
 """
 
@@ -43,7 +46,7 @@ STATUS = {
     "deprecated": "retired",
 }
 FORMATS = {"slice-S-v0": (70.0, 100.0), "slice-L-v0": (100.0, 145.0)}
-TOLERANCE = 0.5
+TOLERANCE = 0.02  # Slice Interface 1: a board meets a format to 0.02 mm
 HEADER = "# {kind}.yaml: BREAD {Kind} manifest, schema 2.0 (bread-infra spec/{kind}/{kind}-manifest-spec.md)\n"
 
 
@@ -72,7 +75,8 @@ def board_format(size: tuple[float, float] | None) -> str | None:
     if size is None:
         return None
     for name, (w, h) in FORMATS.items():
-        if abs(size[0] - w) <= TOLERANCE and abs(size[1] - h) <= TOLERANCE:
+        # 1e-9 absorbs float error, so 145.02 is inside like 70.02 (145.02 - 145 > 0.02 in floats).
+        if abs(size[0] - w) <= TOLERANCE + 1e-9 and abs(size[1] - h) <= TOLERANCE + 1e-9:
             return name
     return None
 

@@ -59,7 +59,17 @@ class Migrate(unittest.TestCase):
             self.assertEqual(migrate.outline(pcb), (70.0, 100.0))
 
     def test_format_from_outline(self):
-        cases = {(70, 100): "slice-S-v0", (100.116, 144.894): "slice-L-v0", (100.116, 99.951): None, (70.6, 100): None}
+        cases = {
+            (70, 100): "slice-S-v0",
+            (70.02, 99.98): "slice-S-v0",
+            (100, 145): "slice-L-v0",
+            (100.02, 145.02): "slice-L-v0",
+            (99.98, 144.98): "slice-L-v0",
+            (100, 145.03): None,
+            (100.116, 144.894): None,
+            (70.03, 100): None,
+            (100.116, 99.951): None,
+        }
         for size, fmt in cases.items():
             with self.subTest(size=size):
                 out, _ = self.convert("slice", SLICE_V1, size)
@@ -68,8 +78,10 @@ class Migrate(unittest.TestCase):
     def test_dimensions_follow_the_board(self):
         v1 = copy.deepcopy(SLICE_V1)
         v1["hardware"]["pcb"]["dimensions"] = "70mm x 100mm"
-        out, notes = self.convert("slice", v1, (100.116, 144.894))
+        out, notes = self.convert("slice", v1, (100.01, 144.99))
         self.assertEqual(out["hardware"]["pcb"]["dimensions"], "100mm x 145mm")
+        out, _ = self.convert("slice", v1, (100.116, 144.894))
+        self.assertEqual(out["hardware"]["pcb"]["dimensions"], "100.116mm x 144.894mm")
         self.assertTrue(any("pcb.dimensions" in n for n in notes))
 
     def test_no_format(self):

@@ -1,0 +1,28 @@
+# Copy to .github/workflows/ci.yml in a board repo.
+#
+# Validates the board's manifest against schema 2.0 whenever it or this file
+# changes. The docs pipeline does not read the manifest. A Loaf repo replaces
+# slice.yaml with loaf.yaml below and passes `manifest_path: loaf.yaml`.
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "slice.yaml"
+      - ".github/workflows/ci.yml"
+  pull_request:
+    paths:
+      - "slice.yaml"
+      - ".github/workflows/ci.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    uses: feastorg/bread-infra/.github/workflows/validate-manifest.yml@v1.3.0
+    with:
+      schema_ref: schema-v2.0
