@@ -21,7 +21,7 @@ coverage — is complete on all 42; no board fails a structural check for those
 any more. Everything left is a board defect: unresolved library references, ERC,
 or DRC.
 
-Green: `Loaf_ESPT`, `Loaf_x004`, `Slice_DCMT`, `Slice_IOAC`,
+Green: `Ctrl_ESPT`, `Loaf_x004`, `Slice_DCMT`, `Slice_IOAC`,
 `Slice_PRTO_CONN_S2L`, `Slice_PRTO_THTA_S2L`, `Slice_PRTO_THT_S2L`,
 `Slice_RLAY`, `Slice_RTDM`, `Slice_TEMP_NANO_S2L-r1`, `Slice_TEMP_NANO_S2L-r2`,
 `Slice_TEMP_NUCL_L4L-r1`, `Slice_TEMP_NUCL_S4L-r1`.

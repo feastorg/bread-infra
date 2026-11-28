@@ -89,7 +89,8 @@ carrying the bus.
 Worked examples:
 
 - `Loaf_x004` — `backplane`, 4 slots, no controller, barrel-jack power in.
-- `Loaf_ESPT` — `controller`, **0 slots**, hosts an ESP32 Thing Plus, chains onto x004.
+- `Ctrl_ESPT` — `controller`, **0 slots**, hosts an ESP32 Thing Plus, chains onto x004 (the G2 controller, archived).
+- `Loaf_x008` — `hybrid`, 8 slots and its own Arduino Nano (the G1 backplane, archived).
 
 ---
 

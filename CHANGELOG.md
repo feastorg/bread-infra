@@ -10,6 +10,13 @@ For schema-specific changes, see [SCHEMA_CHANGELOG.md](SCHEMA_CHANGELOG.md).
 
 ## [Unreleased]
 
+### Changed
+- Loaf_ESPT is renamed Ctrl_ESPT and archived as the G2 controller, and
+  LOAF_X08 is imported from OSF as Loaf_x008, the archived G1 backplane.
+  CITATION.md, Slice Interface 1, RFC 0001, firmware.md, the Loaf manifest
+  spec (now with Loaf_x008 as a `hybrid` example) and the fleet worklist use
+  the new names. OSF labels such as LOAF_X08 and LOAF_ESPC stay.
+
 ---
 
 ## v1.3.0 — 2026-11-27

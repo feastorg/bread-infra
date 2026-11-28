@@ -63,18 +63,18 @@ from it.
 | [zbg98](https://osf.io/zbg98/) | BREAD Slice - Bioreactor (SPECIALIZED) (SLC_PHDO) | component | [Slice_ACAR_S2L](https://github.com/feastorg/Slice_ACAR_S2L) |
 | [v5327](https://osf.io/v5327/) | BREAD Slice - Template (SLC_TEMP) | component | [Slice_TEMP_NANO_S2L](https://github.com/feastorg/Slice_TEMP_NANO_S2L) |
 | [7mk4w](https://osf.io/7mk4w/) | LOAF_x04 Backplane | component | [Loaf_x004](https://github.com/feastorg/Loaf_x004) |
-| [nxrtm](https://osf.io/nxrtm/) | LOAF_ESPC - ESP32 Controller | component | [Loaf_ESPT](https://github.com/feastorg/Loaf_ESPT) |
+| [nxrtm](https://osf.io/nxrtm/) | LOAF_ESPC - ESP32 Controller | component | [Ctrl_ESPT](https://github.com/feastorg/Ctrl_ESPT) |
 | [a8nk5](https://osf.io/a8nk5/) | BREAD Slice - Audio Analysis (SLC_AAFT) | linked | none |
 | [ajmbe](https://osf.io/ajmbe/) | BREAD Slice - +/- 10A Current Sensor (SLC_CR10) | linked | none |
 | [xe6cz](https://osf.io/xe6cz/) | BREAD Slice - +/- 20A Current Sensor (SLC_CR20) | linked | none |
 | [xpgf8](https://osf.io/xpgf8/) | BREAD Slice - +/- 40A Current Sensor (SLC_CR40) | linked | none |
 | [4mzs8](https://osf.io/4mzs8/) | BREAD Slice - Pump Control Board (Specialized) (SLC_PUMP) | linked | none |
-| [x4yqj](https://osf.io/x4yqj/) | BREAD LOAF_x08 | component | none |
+| [x4yqj](https://osf.io/x4yqj/) | BREAD LOAF_x08 | component | [Loaf_x008](https://github.com/feastorg/Loaf_x008) |
 
 Slice_DCMT and Slice_RLHT are tied to their pages by the archive snapshots
 they carry: `archive/hw_archive/g1-2021-06-08-mtu` matches the date 6aw9m was
 created, and `archive/hw_archive/osf_2022-05-19` matches pf6gy. Every other row
-is matched by title only; note that LOAF_ESPC on OSF is Loaf_ESPT here.
+is matched by title only; note that LOAF_ESPC on OSF is Ctrl_ESPT here (named Loaf_ESPT until 2026-11-27).
 
 Slices not in the table have no OSF page that we know of. Other people have
 published BREAD Slices on OSF as separate projects that u2h4g does not link;
