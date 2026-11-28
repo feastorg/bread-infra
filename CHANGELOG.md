@@ -69,6 +69,10 @@ For schema-specific changes, see [SCHEMA_CHANGELOG.md](SCHEMA_CHANGELOG.md).
   Slice and Loaf came from.
 
 ### Changed
+- Slice_PHDO is renamed Slice_ACAR_S2L, and Slice_ACAR_L2L is its two-channel
+  L sibling. CITATION.md's repository link, Slice Interface 1's JST-SH list,
+  RFC 0001's SNS-3 list and future-ideas.md use the new name. Historical
+  labels such as G1's `SLC_PHDO` stay.
 - `templates/docs-pipeline.yml` calls the reusable workflows at `@v1.2.0`,
   the latest tag, in place of `@v1.1.0`. The CHANGELOG gains the v1.2.0
   section; its entries had stayed under Unreleased. (#39)

@@ -60,7 +60,7 @@ from it.
 | [9gm5h](https://osf.io/9gm5h/) | BREAD Slice - Field Solar Power (SLC_SOLR) | linked | [Slice_SOLR](https://github.com/feastorg/Slice_SOLR) |
 | [m53fu](https://osf.io/m53fu/) | BREAD Slice-- Heating Element Controller (SLC_HEAT) | linked | [Slice_HEAT](https://github.com/feastorg/Slice_HEAT) |
 | [2xpnu](https://osf.io/2xpnu/) | BREAD Slice -- Buck Converter / Analog Signal Generator (SLC_BUCK) | linked | [Slice_BUCK](https://github.com/feastorg/Slice_BUCK) |
-| [zbg98](https://osf.io/zbg98/) | BREAD Slice - Bioreactor (SPECIALIZED) (SLC_PHDO) | component | [Slice_PHDO](https://github.com/feastorg/Slice_PHDO) |
+| [zbg98](https://osf.io/zbg98/) | BREAD Slice - Bioreactor (SPECIALIZED) (SLC_PHDO) | component | [Slice_ACAR_S2L](https://github.com/feastorg/Slice_ACAR_S2L) |
 | [v5327](https://osf.io/v5327/) | BREAD Slice - Template (SLC_TEMP) | component | [Slice_TEMP_NANO_S2L](https://github.com/feastorg/Slice_TEMP_NANO_S2L) |
 | [7mk4w](https://osf.io/7mk4w/) | LOAF_x04 Backplane | component | [Loaf_x004](https://github.com/feastorg/Loaf_x004) |
 | [nxrtm](https://osf.io/nxrtm/) | LOAF_ESPC - ESP32 Controller | component | [Loaf_ESPT](https://github.com/feastorg/Loaf_ESPT) |
