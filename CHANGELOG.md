@@ -20,9 +20,11 @@ For schema-specific changes, see [SCHEMA_CHANGELOG.md](SCHEMA_CHANGELOG.md).
   - firmware.md no longer lists the amber LED state as not yet met:
     bread-slice-core 0.2.0 added it (bread-slice-core#3), and Slice_DCMT and
     Slice_RLHT use it. Its DCMT driver-input gap cites the open Slice_DCMT#66,
-    not the duplicate #83.
+    not the duplicate #83, and its e-stop note says bread-slice-core 0.2.0
+    can read the line without the pull-up.
   - Slice Interface 1 counts the bus socket as J1 on 27 Slices and J2 on 11,
-    lists Slice_ACAR_L2L among the JST-SH boards, and gives a Raspberry Pi,
+    lists the 11 JST-SH boards with the supply each carries (+5V on eight,
+    +3V3 on the ACAR pair and Slice_THRM_31856), and gives a Raspberry Pi,
     not the archived Ctrl_ESPT, as today's controller.
   - RFC 0001's SYS-3 gives Loaf_x008 as its example of a loaf with its own
     controller; Ctrl_ESPT has no slots.

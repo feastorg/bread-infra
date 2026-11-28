@@ -108,10 +108,14 @@ switch (Slice_IOAC, Slice_PRTO_THTA_S2L).
   - an STM32L432 Nucleo through jumpers on Slice_TEMP_NUCL_S4L and
     Slice_TEMP_NUCL_L4L, and directly on Slice_FPSG;
   - Slice_IAQM's sensors, as above.
-- Eleven Slices bring the bus SDA and SCL out on a 4-pin JST-SH connector with
-  +5V and ground: Slice_HEAT, Slice_IAQM, Slice_LVAI, Slice_ACAR_L2L,
-  Slice_ACAR_S2L, Slice_RLAY, Slice_SERV, Slice_SOLR, Slice_THRM_31855,
-  Slice_THRM_31856 and Slice_USBP.
+- Eleven Slices have a 4-pin JST-SH connector carrying I²C:
+  - with the bus SDA and SCL, +5V and ground: Slice_HEAT, Slice_IAQM,
+    Slice_LVAI, Slice_RLAY, Slice_SERV, Slice_SOLR, Slice_THRM_31855 and
+    Slice_USBP;
+  - with the bus SDA and SCL, +3V3 and ground: Slice_ACAR_L2L and
+    Slice_ACAR_S2L;
+  - with +3V3, ground, and a translated copy of the bus (`QWIIC_SDA` and
+    `QWIIC_SCL`, through U10): Slice_THRM_31856.
   A device plugged in there is on the slot bus. **Not defined:** what may be
   connected there.
 - **Not defined:** the I²C clock rate. The bench records in

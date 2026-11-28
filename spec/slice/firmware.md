@@ -67,8 +67,11 @@ pin 6. To meet the rule:
 
 So the line idles HIGH and stops only when driven LOW; an open chain reads as
 released on every Slice
-([#20](https://github.com/feastorg/bread-infra/issues/20); the Slice side is
-[feastorg/bread-slice-core#3](https://github.com/feastorg/bread-slice-core/issues/3)).
+([#20](https://github.com/feastorg/bread-infra/issues/20)).
+`bread-slice-core` 0.2.0 reads the line without the pull-up
+(`EStop::Input::NoPullUp`,
+[feastorg/bread-slice-core#3](https://github.com/feastorg/bread-slice-core/issues/3));
+Slice_DCMT and Slice_RLHT still use the default, which enables it.
 
 ## Boot
 
