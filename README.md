@@ -43,7 +43,9 @@ to `.github/workflows/docs-pipeline.yml`. It wires up board validation, KiBot ER
 and the docs site, and it runs on **pull requests** as well as pushes — hardware checks
 that only run after merge cannot stop anything from breaking.
 
-Board repos also need [`templates/hardware.Makefile`](templates/hardware.Makefile) at
+Board repos also need [`templates/ci.yml`](templates/ci.yml) at
+`.github/workflows/ci.yml`, which validates the manifest,
+[`templates/hardware.Makefile`](templates/hardware.Makefile) at
 `hardware/Makefile`, and [`templates/gitignore`](templates/gitignore) at `.gitignore`.
 
 ### Migrating a board to KiCad 10
@@ -117,3 +119,6 @@ git push origin vX.Y.Z
 The release commit is reachable only from its tag, so main keeps `main`. CI on
 the tag push runs `set_infra_ref.py --check vX.Y.Z` and fails if the defaults
 do not name the tag. Add the release's CHANGELOG section on main first.
+
+Once the tag is pushed, point `templates/docs-pipeline.yml` and
+`templates/ci.yml` at it on main, so a new board starts on the release.
