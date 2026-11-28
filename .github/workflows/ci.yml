@@ -7,6 +7,7 @@ name: CI
 on:
   push:
     branches: [main]
+    tags: ["v*"]
   pull_request:
     branches: [main]
 
@@ -38,6 +39,12 @@ jobs:
 
       - name: Test
         run: just test
+
+      # main says main; a release tag's commit says its own tag (README, "Releasing").
+      - name: Check the infra_ref defaults
+        env:
+          WANT: ${{ github.ref_type == 'tag' && github.ref_name || 'main' }}
+        run: uv run --locked python scripts/set_infra_ref.py --check "$WANT"
 
   # Runs the reusable manifest validation against this commit, so a change to
   # validate-manifest.yml or the validator is exercised before callers see it.

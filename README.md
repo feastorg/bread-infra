@@ -98,3 +98,22 @@ just test    # unit tests in tests/
 ```
 
 `.github/workflows/ci.yml` runs the same three on every pull request here.
+
+## Releasing
+
+Boards call the reusable workflows at a tag, `@vX.Y.Z`. Those workflows check
+bread-infra out a second time for the scripts they run, at `inputs.infra_ref`.
+On main its default is `main`; a release tag's commit sets it to the tag, so a
+board pinned at a tag runs that tag's scripts:
+
+```sh
+git switch --detach origin/main
+python3 scripts/set_infra_ref.py vX.Y.Z
+git commit -am "chore(release): vX.Y.Z"
+git tag -a vX.Y.Z -m "vX.Y.Z"
+git push origin vX.Y.Z
+```
+
+The release commit is reachable only from its tag, so main keeps `main`. CI on
+the tag push runs `set_infra_ref.py --check vX.Y.Z` and fails if the defaults
+do not name the tag. Add the release's CHANGELOG section on main first.

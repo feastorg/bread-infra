@@ -91,6 +91,15 @@ For schema-specific changes, see [SCHEMA_CHANGELOG.md](SCHEMA_CHANGELOG.md).
   template, so every 4-layer PICO Slice cloned from it inherits the fault).
 
 ### Changed
+- Every reusable workflow that runs bread-infra's scripts takes them from
+  `inputs.infra_ref`: `deploy-pages.yml` and `publish-kibot.yml` gain the
+  input in place of a fixed `ref: main`. The default stays `main` on main.
+  A release tag's commit sets it to the tag with `scripts/set_infra_ref.py`,
+  so a board pinned at a tag runs that tag's scripts (README, "Releasing").
+  CI checks the defaults: `main` on branches, the tag name on a tag push.
+  Tags cut before this change (v1.0.0 to v1.2.0) still default to `main`;
+  boards move off main's scripts when they pin the first tag cut this way.
+  (#38)
 - `validate-manifest.yml` runs the validator on the locked dependencies
   (`uv run --locked`) when the bread-infra ref it checks out has `uv.lock`.
   Refs without one, including `schema-v1.0`, keep the unpinned
